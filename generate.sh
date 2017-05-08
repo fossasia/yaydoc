@@ -1,7 +1,6 @@
 mkdir temp
 
 #cp rep/doc temp/
-export ANSIBLE_HOST_KEY_CHECKING = false
 cd temp
 sphinx-quickstart -q -v 1 -a sch00lb0y -p yay
 rm index.rst
