@@ -8,8 +8,6 @@ cd ..
 cp -a doc/. temp/
 cd temp
 make html
-git config --global user.email "travis@travis-ci.org"
-git config --global user.name "travis-ci"
 git clone --quiet --branch=gh-pages https://a4839d23df317c6fb787216d8095ef8a3c9ef15f@github.com/sch00lb0y/tempCheck.git gh-pages
 cd gh-pages
 git rm -rf ./*
