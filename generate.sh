@@ -12,7 +12,7 @@ git config --global user.email "rbalajis25@gmail.com"
 git config --global user.name "sch00lb0y"
 
 
-git clone --quiet --branch=gh-pages https://sch00lb0y:ed383a96ed75e3608fa3340bedb5f0bd7954aac0@github.com/sch00lb0y/tempCheck.git gh-pages
+git clone --quiet --branch=gh-pages git@github.com:sch00lb0y/tempCheck.git gh-pages
 cd gh-pages
 git rm -rf ./*
 cp -a ../_build/html/. ./
