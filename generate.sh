@@ -8,7 +8,7 @@ cd ..
 cp -a doc/. temp/
 cd temp
 make html
-git clone --quiet --branch=gh-pages https://0afd38adfa0ef6f74e828a9b130ef660c8f4d83f:x-oauth-basic@github.com/sch00lb0y/tempCheck.git gh-pages
+git clone --quiet --branch=gh-pages https://sch00lb0y:0afd38adfa0ef6f74e828a9b130ef660c8f4d83f@github.com/sch00lb0y/tempCheck.git gh-pages
 cd gh-pages
 git rm -rf ./*
 cp -a ../_build/html/. ./
