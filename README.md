@@ -40,5 +40,9 @@ script:
 - ssh-add id_rsa
 - ./generate.sh
 ```
-## note
-change the ssh key enviromental variable according to your project
+## note          
+```yml
+- openssl aes-256-cbc -K $encrypted_29cf7fe7b2e3_key -iv $encrypted_29cf7fe7b2e3_iv -in id_rsa.enc -out id_rsa -d
+```
+change the enviromental variable and file name according to your configuration 
+
