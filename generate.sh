@@ -26,5 +26,5 @@ git push -fq origin gh-pages
 cd ..
 cd ..
 chmod -R u+x temp
-rm -r temp
+rm -rf temp
 
