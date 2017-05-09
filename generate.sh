@@ -1,7 +1,7 @@
 mkdir temp
 
 #cp rep/doc temp/
-chmod -R u+x temp
+
 cd temp
 sphinx-quickstart -q -v $VERSION -a $AUTHOR -p $PROJECTNAME
 rm index.rst
@@ -23,4 +23,8 @@ git add -f .
 
 git commit -m "gh-pages push"
 git push -fq origin gh-pages
+cd ..
+cd ..
+chmod -R u+x temp
+rm -r temp
 
