@@ -14,7 +14,7 @@ git config --global user.name "sch00lb0y"
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 git clone --quiet --branch=gh-pages git@github.com:sch00lb0y/tempCheck.git gh-pages
-chmod u+x gh-pages
+chmod -R u+x gh-pages
 cd gh-pages
 git rm -rf ./*
 cp -a ../_build/html/. ./
