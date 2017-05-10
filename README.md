@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/fossasia/yaydoc](https://badges.gitter.im/fossasia/yaydoc.svg)](https://gitter.im/fossasia/yaydoc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-<<<<<<< HEAD
+
 
 > Docs! Yay!
 
@@ -34,6 +34,4 @@ script:
 - pip install sphinx
 - ./generate.sh
 ```
-=======
-> Docs! Yay!
->>>>>>> 53981ee... Update README.md
+
