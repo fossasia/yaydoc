@@ -11,11 +11,10 @@
 - set the following environment variable in the travis       
      1) AUTHOR      (author of the repository)
      2) DOCPATH     (path of the documentation)
-     3) EMAIL       (email of the author)
-     4) GITURL      (https url not ssh)
-     5) PROJECTNAME (project name)
-     6) VERSION     (version of project)
-     7) USERNAME    (github username)                         
+     3) GITURL      (https url not ssh)
+     4) PROJECTNAME (project name)
+     5) VERSION     (version of project)
+
 
 
  your git url should look like this
@@ -34,4 +33,3 @@ script:
 - pip install sphinx
 - ./generate.sh
 ```
-

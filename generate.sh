@@ -9,8 +9,8 @@ cd ..
 cp -a $DOCPATH. temp/
 cd temp
 make html
-git config --global user.email $EMAIL
-git config --global user.name $USERNAME
+git config --global user.name "Bot"
+git config --global user.email "noreply+bot@example.com"
 
 
 
