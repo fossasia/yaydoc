@@ -1,6 +1,6 @@
 mkdir temp
 cd temp
-sphinx-quickstart -q -v $VERSION -a $AUTHOR -p $PROJECTNAME
+sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME
 rm index.rst
 cd ..
 cp -a $DOCPATH. temp/
