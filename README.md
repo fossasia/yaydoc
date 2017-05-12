@@ -14,8 +14,9 @@
      6) DOCURL      (custom url at which site should be published.
                      If it is not set then default gh-pages url is used which is of the format
                      <username or organization>.github.io/<reponame>)
+     7) DOCTHEME    (name of the theme, default alabaster)
 
-
+ Click [here](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes) to see a list of supported themes
 
  your git url should look like this
   ```shell
@@ -30,6 +31,5 @@ python:
 script:
 - wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
 - chmod +x ./generate.sh
-- pip install sphinx
 - ./generate.sh
 ```
