@@ -11,6 +11,9 @@
      3) GITURL      (https url not ssh)
      4) PROJECTNAME (project name)
      5) VERSION     (version of project)
+     6) DOCURL      (custom url at which site should be published.
+                     If it is not set then default gh-pages url is used which is of the format
+                     <username or organization>.github.io/<reponame>)
 
 
 

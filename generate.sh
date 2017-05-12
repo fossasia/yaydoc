@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mkdir temp
 cd temp
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME
@@ -12,6 +14,11 @@ git clone --quiet --branch=gh-pages $GITURL gh-pages
 cd gh-pages
 git rm -rf ./*
 cp -a ../_build/html/. ./
+if [[ -z "${DOCURL}" ]]; then
+    echo -e "DOCURL not set. Using default github pages URL"
+else
+    echo $DOCURL > CNAME
+fi
 git add -f .
 git commit -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
 git push origin gh-pages
