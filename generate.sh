@@ -1,8 +1,11 @@
 #!/bin/bash
 
+pip install sphinx
+pip install recommonmark
+git clone https://github.com/fossasia/yaydoc.git yaydoctemp
 mkdir temp
 cd temp
-sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME
+sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t ../yaydoctemp/templates -d html_theme=${DOCTHEME:-alabaster}
 rm index.rst
 cd ..
 cp -a $DOCPATH. temp/
@@ -24,3 +27,4 @@ git commit -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
 git push origin gh-pages
 cd ../../
 rm -rf temp
+rm -rf yaydoctemp
