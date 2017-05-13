@@ -3,6 +3,7 @@
 mkdir temp
 cd temp
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME
+sed -i -e "s/source_suffix = '.rst'/source_suffix = ['.rst','.md']/g" conf.py
 rm index.rst
 cd ..
 cp -a $DOCPATH. temp/
