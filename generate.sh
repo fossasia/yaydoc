@@ -28,3 +28,4 @@ git push origin gh-pages
 cd ../../
 rm -rf temp
 rm -rf yaydoctemp
+rm -- "$0"
