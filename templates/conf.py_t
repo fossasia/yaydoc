@@ -65,7 +65,7 @@ master_doc = '{{ master_str }}'
 
 # General information about the project.
 project = u'{{ project_str }}'
-copyright = u'{{ copyright_str }}'
+copyright = 'FOSSASIA'
 author = u'{{ author_str }}'
 
 # The version info for the project you're documenting, acts as replacement for
