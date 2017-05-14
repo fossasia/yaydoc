@@ -16,7 +16,8 @@
                      <username or organization>.github.io/<reponame>)
      7) DOCTHEME    (name of the theme, default alabaster)
 
- Click [here](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes) to see a list of supported themes
+ Click [here](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes) to see a list of builtin themes.
+ You can also specify any custom themes available on pypi.
 
  your git url should look like this
   ```shell

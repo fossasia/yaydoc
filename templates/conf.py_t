@@ -34,6 +34,8 @@ sys.path.insert(0, u'{{ module_path }}')
 {% endif %}
 
 from recommonmark.parser import CommonMarkParser
+import os
+import sys
 
 # -- General configuration ------------------------------------------------
 
@@ -101,7 +103,39 @@ todo_include_todos = {{ ext_todo }}
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+
+{% if html_theme in (['alabaster', 'classic', 'sphinxdoc', 'scrolls',
+                     'agogo', 'traditional', 'nature', 'haiku',
+                     'pyramid', 'bizstyle'])
+%}
+# Theme is builtin. Just set the name
 html_theme = '{{ html_theme }}'
+
+{% else %}
+# Theme is a custom python package. Lets install it.
+import pip
+exitcode = pip.main(['install', '{{ html_theme }}'])
+
+if exitcode:
+    # Non-zero exit code
+    print("""{0} is not available on pypi. Please ensure the theme can be installed
+using 'pip install {0}'.""".format('{{ html_theme }}'), file=sys.stderr)
+else:
+    import {{ html_theme }}
+
+    def get_path_to_theme():
+        for root, dirs, files in os.walk(os.path.dirname({{ html_theme }}.__file__)):
+            if 'theme.conf' in files:
+                return root
+
+    path_to_theme = get_path_to_theme()
+    if path_to_theme is None:
+        print("\n{0} does not appear to be a sphinx theme.".format('{{ html_theme }}'), file=sys.stderr)
+        html_theme = 'alabaster'
+    else:
+        html_theme = os.path.basename(path_to_theme)
+        html_theme_path = [os.path.abspath(os.path.join(path_to_theme, os.pardir))]
+{% endif %}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
