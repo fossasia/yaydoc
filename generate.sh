@@ -2,6 +2,7 @@
 
 pip install sphinx
 pip install recommonmark
+pip install pypandoc
 git clone https://github.com/fossasia/yaydoc.git yaydoctemp
 mkdir temp
 cd temp

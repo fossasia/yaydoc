@@ -124,7 +124,8 @@ else:
     import {{ html_theme }}
 
     def get_path_to_theme():
-        for root, dirs, files in os.walk(os.path.dirname({{ html_theme }}.__file__)):
+        package_path = os.path.dirname({{ html_theme }}.__file__)
+        for root, dirs, files in os.walk(package_path):
             if 'theme.conf' in files:
                 return root
 
@@ -232,3 +233,11 @@ epub_exclude_files = ['search.html']
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
 {% endif %}
+
+# Adding scripts directory to path
+sys.path.insert(0, os.path.abspath(os.path.join(os.pardir, 'scripts')))
+
+import mdinclude
+
+def setup(app):
+    app.add_directive('mdinclude', mdinclude.MdInclude)
