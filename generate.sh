@@ -4,13 +4,12 @@ pip install sphinx
 pip install recommonmark
 pip install pypandoc
 git clone https://github.com/fossasia/yaydoc.git yaydoctemp
-mkdir temp
-cd temp
-sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t ../yaydoctemp/templates -d html_theme=${DOCTHEME:-alabaster}
+cd yaydoctemp
+sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster}
 rm index.rst
 cd ..
-cp -a $DOCPATH. temp/
-cd temp
+cp -a $DOCPATH. yaydoctemp/
+cd yaydoctemp
 make html
 git config --global user.name "Bot"
 git config --global user.email "noreply+bot@example.com"
@@ -27,6 +26,5 @@ git add -f .
 git commit -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
 git push origin gh-pages
 cd ../../
-rm -rf temp
 rm -rf yaydoctemp
 rm -- "$0"
