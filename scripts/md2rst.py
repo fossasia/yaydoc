@@ -1,6 +1,6 @@
 from sys import platform
 import pypandoc
-
+import os
 
 def download_pandoc():
     """Download pandoc if not already installed"""
