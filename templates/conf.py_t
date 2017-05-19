@@ -1,6 +1,7 @@
 {% if PY3 -%}
 #!/usr/bin/env python3
 {% endif -%}
+from __future__ import print_function
 # -*- coding: utf-8 -*-
 #
 # {{ project }} documentation build configuration file, created by
@@ -36,6 +37,9 @@ sys.path.insert(0, u'{{ module_path }}')
 from recommonmark.parser import CommonMarkParser
 import os
 import sys
+
+# Adding scripts directory to path
+sys.path.insert(0, os.path.abspath('scripts'))
 
 # -- General configuration ------------------------------------------------
 
@@ -119,7 +123,7 @@ exitcode = pip.main(['install', '{{ html_theme }}'])
 if exitcode:
     # Non-zero exit code
     print("""{0} is not available on pypi. Please ensure the theme can be installed
-using 'pip install {0}'.""".format('{{ html_theme }}'), file=sys.stderr)
+using pip.""".format('{{ html_theme }}'), file=sys.stderr)
 else:
     import {{ html_theme }}
 
@@ -233,9 +237,6 @@ epub_exclude_files = ['search.html']
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
 {% endif %}
-
-# Adding scripts directory to path
-sys.path.insert(0, os.path.abspath('scripts'))
 
 import mdinclude
 
