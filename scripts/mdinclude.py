@@ -1,6 +1,7 @@
 import os
 from docutils.parsers import rst
 from docutils import statemachine, nodes, io, utils
+from docutils.utils.error_reporting import SafeString, ErrorString
 from md2rst import md2rst
 
 class MdInclude(rst.Directive):
