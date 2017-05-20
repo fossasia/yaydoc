@@ -7,7 +7,7 @@
 ### Prerequisites
 - Create a directory in your repository containing all the markup files along with an `index.rst` file which contains [toctrees](http://www.sphinx-doc.org/en/stable/markup/toctree.html) to link the various documents.
 - Create a `gh-pages` branch in your repository.
-- Register your repository with [Travis CI](https://www.google.co.in/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwjn8Y3v1_zTAhUKtI8KHaJWBssQFgg6MAA&url=https%3A%2F%2Ftravis-ci.org%2F&usg=AFQjCNFI_4340tr1MDD78A2HC-luYCxgAQ&sig2=d-UEeLAfCHrO-7wo9qYSGg).
+- Register your repository with [Travis CI](https://travis-ci.org).
 
 ## Usage
 - Generate `Github Personal Token` by following this [Guide](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
@@ -17,7 +17,7 @@
 |:--------------------:| ------------------------------------------------- |:-----------------:|
 | AUTHOR               | Author of the repository.                         | NONE * |
 | DOCPATH              | Path of the documentation.                        | NONE * (eg. `docs/`) |
-| DOCTHEME             | Name of the theme.                                | alabaster ([built-in themes](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes)) | 
+| DOCTHEME             | Name of the theme.                                | alabaster ([built-in themes](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes)) / <i>(Custom themes available in PyPi are also supported)</i>| 
 | DOCURL               | Custom URL at which the site should be published. | <i>\<username or organization>.github.io/\<reponame></i> ([Reference](https://help.github.com/articles/using-a-custom-domain-with-github-pages/)) |
 | GITURL               | HTTPS URL of the repository (Not SSH).            | https://\<username>:\<token>@github.com/\<organisation or username>/<repname> * |
 | PROJECTNAME          | Name of the Project.                              | NONE * |
@@ -46,3 +46,4 @@ script:
 - wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
 - chmod +x ./generate.sh
 - ./generate.sh
+```
