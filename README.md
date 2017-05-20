@@ -23,13 +23,22 @@
   ```shell
   https://<username>:<token>@github.com/<organisation or username>/<repname>
   ```
-- configure the travis as follow
-```yml
-language: python
-python:
-  - 3.5
+- add the following to travis.yml
 
+If language is python
+
+```yml
 script:
+- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
+- chmod +x ./generate.sh
+- ./generate.sh
+```
+
+If language is not python
+
+```yml
+script:
+- pip install --user virtualenv
 - wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
 - chmod +x ./generate.sh
 - ./generate.sh

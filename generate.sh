@@ -1,9 +1,14 @@
 #!/bin/bash
 
+virtualenv --python=python yaydocvenv
+source yaydocvenv/bin/activate
 pip install sphinx
 pip install recommonmark
 pip install pypandoc
-git clone https://github.com/fossasia/yaydoc.git yaydoctemp
+git clone https://github.com/fossasia/yaydoc.git yaydocclone
+mkdir yaydoctemp
+cp -a yaydocclone/scripts/ yaydoctemp/
+cp -a yaydocclone/templates/ yaydoctemp/
 cd yaydoctemp
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster}
 rm index.rst
@@ -26,5 +31,8 @@ git add -f .
 git commit -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
 git push origin gh-pages
 cd ../../
+rm -rf yaydocclone
 rm -rf yaydoctemp
+rm -rf yaydocvenv
+deactivate
 rm -- "$0"
