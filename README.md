@@ -18,7 +18,7 @@
 | AUTHOR               | Author of the repository.                         | NONE * |
 | DOCPATH              | Path of the documentation.                        | NONE * (eg. `docs/`) |
 | DOCTHEME             | Name of the theme.                                | alabaster ([built-in themes](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes)) | 
-| DOCURL               | Custom URL at which the site should be published. | <i>\<username or organization>.github.io/\<reponame></i> * |
+| DOCURL               | Custom URL at which the site should be published. | <i>\<username or organization>.github.io/\<reponame></i> ([Reference](https://help.github.com/articles/using-a-custom-domain-with-github-pages/)) |
 | GITURL               | HTTPS URL of the repository (Not SSH).            | https://\<username>:\<token>@github.com/\<organisation or username>/<repname> * |
 | PROJECTNAME          | Name of the Project.                              | NONE * |
 | VERSION              | Version of the Project.                           | NONE * |
@@ -29,13 +29,20 @@
 
 ## Travis Configuration
 Add the following content to the `.travis.yml` file in the root directory of your repository.
-```yml
-language: python
-python:
-  - 3.5
 
+**If the primary language is Python**
+```yml
 script:
 - wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
 - chmod +x ./generate.sh
 - ./generate.sh
 ```
+
+**For Languages other than Python**
+
+```yml
+script:
+- pip install --user virtualenv
+- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
+- chmod +x ./generate.sh
+- ./generate.sh
