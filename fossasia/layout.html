@@ -1,0 +1,123 @@
+{% extends "basic/layout.html" %}
+
+{% set theme_css_files = [] %}
+{% if theme_bootstrap_version == "3" %}
+  {% set bootstrap_version, bootstrap_additional_css, navbar_version = "3.3.6", "theme", "" %}
+  {% set bs_span_prefix = "col-md-" %}
+{% else %}
+  {% set bootstrap_version, bootstrap_additional_css, navbar_version = "2.3.2", "responsive", "-2" %}
+  {% set bs_span_prefix = "span" %}
+{% endif %}
+
+
+  {% set theme_css_files = theme_css_files + [
+      '_static/bootstrap-' + bootstrap_version + '/css/bootstrap.min.css',
+      '_static/bootstrap-' + bootstrap_version + '/css/bootstrap-' + bootstrap_additional_css + '.min.css',
+      '_static/bootstrap-sphinx.css'
+    ]
+  %}
+
+
+
+{% set css_files =  theme_css_files + [
+  '_static/custom.css'
+  ] %}
+
+{% set script_files = script_files + [
+    '_static/js/jquery-1.11.0.min.js',
+    '_static/js/jquery-fix.js',
+    '_static/bootstrap-' + bootstrap_version + '/js/bootstrap.min.js',
+    '_static/bootstrap-sphinx.js'
+  ]
+%}
+
+{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and sidebars %}
+
+{%- set bs_content_width = render_sidebar and "9" or "12"%}
+
+{%- block doctype -%}
+<!DOCTYPE html>
+{%- endblock %}
+
+{# Sidebar: Rework into our Bootstrap nav section. #}
+{% macro navBar() %}
+{% include "navbar" + navbar_version + ".html" %}
+{% endmacro %}
+
+{% if theme_bootstrap_version == "3" %}
+  {%- macro bsidebar() %}
+      {%- if render_sidebar %}
+      <div class="{{ bs_span_prefix }}3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+          {%- for sidebartemplate in sidebars %}
+            {%- include sidebartemplate %}
+          {%- endfor %}
+        </div>
+      </div>
+      {%- endif %}
+  {%- endmacro %}
+{% else %}
+  {%- macro bsidebar() %}
+      {%- if render_sidebar %}
+      <div class="{{ bs_span_prefix }}3" >
+        <div id="sidebar" class="bs-sidenav well" data-spy="affix">
+          {%- for sidebartemplate in sidebars %}
+            {%- include sidebartemplate %}
+          {%- endfor %}
+        </div>
+      </div>
+      {%- endif %}
+  {%- endmacro %}
+{% endif %}
+
+{%- block extrahead %}
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+{% endblock %}
+
+{# Silence the sidebar's, relbar's #}
+{% block header %}{% endblock %}
+{% block relbar1 %}{% endblock %}
+{% block relbar2 %}{% endblock %}
+{% block sidebarsourcelink %}{% endblock %}
+
+{%- block content %}
+{{ navBar() }}
+<div class="container">
+  <div class="row">
+    {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
+    <div class="{{ bs_span_prefix }}{{ bs_content_width }} content" style="margin-top:3%;">
+      {% block body %}{% endblock %}
+    </div>
+    {% block sidebar2 %} {# possible location for sidebar #} {% endblock %}
+  </div>
+</div>
+{%- endblock %}
+
+{%- block footer %}
+  <div class="footer-container">
+			<footer class="short footer">
+				<div class="container">
+					<div class="row ui-sortable">
+						<div class="col-sm-3">
+							<span class="text-white">© Copyright 2016 Creative Commons By License. FOSSASIA CodeHeat.</span>
+						</div>
+
+						<div class="col-sm-9 text-right">
+							<ul class="menu">
+								<li><a href="http://fossasia.org" target="_self">FOSSASIA</a></li>
+								<li><a href="https://github.com/fossasia" target="_self">GitHub</a></li>
+								<li><a href="#about" class="inner-link" target="_self">About</a></li>
+								<li><a href="mailto:contact@fossasia.org" target="_self">Contact</a></li>
+								<li><a href="http://blog.fossasia.org/tag/codeheat/" target="_self">Blog</a></li>
+								<li><a class="inner-link back-to-top" href="#top">Back To Top&nbsp;<i class="icon pe-7s-angle-up-circle"></i></a></li>
+							</ul>
+						</div>
+
+					</div>
+				</div>
+		</div>
+</footer>
+{%- endblock %}
