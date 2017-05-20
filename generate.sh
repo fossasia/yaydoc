@@ -18,8 +18,12 @@ cd yaydoctemp
 make html
 git config --global user.name "Bot"
 git config --global user.email "noreply+bot@example.com"
-git clone --quiet --branch=gh-pages $GITURL gh-pages
+git clone --quiet $GITURL gh-pages
 cd gh-pages
+git fetch
+if ! git checkout gh-pages ; then
+  git checkout -b gh-pages
+fi
 git rm -rf ./*
 cp -a ../_build/html/. ./
 if [[ -z "${DOCURL}" ]]; then
