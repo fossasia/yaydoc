@@ -118,7 +118,7 @@ html_theme = '{{ html_theme }}'
 {% else %}
 # Theme is a custom python package. Lets install it.
 import pip
-exitcode = pip.main(['install', '{{ html_theme }}'])
+exitcode = pip.main(['install', '-q', '{{ html_theme }}'])
 
 if exitcode:
     # Non-zero exit code
