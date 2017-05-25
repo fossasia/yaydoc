@@ -176,3 +176,17 @@ footer.classic .social-profiles {
 .menu li a:hover {
   border-bottom: 2px solid #fff;
 }
+.footer {
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  min-height: 185px;
+}
+.body-content{
+  min-height: 70vh;
+}
+@media (max-width:600px) {
+  .menu{
+    display: inline-grid;
+  }
+}

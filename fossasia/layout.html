@@ -85,7 +85,7 @@
 
 {%- block content %}
 {{ navBar() }}
-<div class="container">
+<div class="container body-content">
   <div class="row">
     {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
     <div class="{{ bs_span_prefix }}{{ bs_content_width }} content" style="margin-top:3%;">
@@ -97,27 +97,27 @@
 {%- endblock %}
 
 {%- block footer %}
-  <div class="footer-container">
-			<footer class="short footer">
-				<div class="container">
-					<div class="row ui-sortable">
-						<div class="col-sm-3">
-							<span class="text-white">© Copyright 2016 Creative Commons By License. FOSSASIA CodeHeat.</span>
-						</div>
+<div class="footer-container">
+     <footer class="short footer">
+       <div class="container">
+         <div class="row ui-sortable">
+           <div class="col-sm-3">
+             <span class="text-white">© Copyright 2016 Creative Commons By License. FOSSASIA CodeHeat.</span>
+           </div>
 
-						<div class="col-sm-9 text-right">
-							<ul class="menu">
-								<li><a href="http://fossasia.org" target="_self">FOSSASIA</a></li>
-								<li><a href="https://github.com/fossasia" target="_self">GitHub</a></li>
-								<li><a href="#about" class="inner-link" target="_self">About</a></li>
-								<li><a href="mailto:contact@fossasia.org" target="_self">Contact</a></li>
-								<li><a href="http://blog.fossasia.org/tag/codeheat/" target="_self">Blog</a></li>
-								<li><a class="inner-link back-to-top" href="#top">Back To Top&nbsp;<i class="icon pe-7s-angle-up-circle"></i></a></li>
-							</ul>
-						</div>
+           <div class="col-sm-9 text-right">
+             <ul class="menu">
+               <li><a href="http://fossasia.org" target="_self">FOSSASIA</a></li>
+               <li><a href="https://github.com/fossasia" target="_self">GitHub</a></li>
+               <li><a href="#about" class="inner-link" target="_self">About</a></li>
+               <li><a href="mailto:contact@fossasia.org" target="_self">Contact</a></li>
+               <li><a href="http://blog.fossasia.org/tag/codeheat/" target="_self">Blog</a></li>
+               <li><a class="inner-link back-to-top" href="#top">Back To Top&nbsp;<i class="icon pe-7s-angle-up-circle"></i></a></li>
+             </ul>
+           </div>
 
-					</div>
-				</div>
-		</div>
-</footer>
+         </div>
+       </div>
+     </footer>
+   </div>
 {%- endblock %}
