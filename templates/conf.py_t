@@ -108,6 +108,8 @@ todo_include_todos = {{ ext_todo }}
 # a list of builtin themes.
 #
 
+html_logo = '{{ html_logo }}'
+
 {% if html_theme in (['alabaster', 'classic', 'sphinxdoc', 'scrolls',
                      'agogo', 'traditional', 'nature', 'haiku',
                      'pyramid', 'bizstyle'])

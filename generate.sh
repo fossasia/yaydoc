@@ -10,7 +10,7 @@ mkdir yaydoctemp
 cp -a yaydocclone/scripts/ yaydoctemp/
 cp -a yaydocclone/templates/ yaydoctemp/
 cd yaydoctemp
-sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster} > /dev/null
+sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
 rm index.rst
 cd ..
 cp -a $DOCPATH. yaydoctemp/
