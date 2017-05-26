@@ -14,7 +14,7 @@
 - Set the following Environment Variables in Travis CI. [Guide](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings)     
 
 | Environment Variable | Description                                       | Default / FORMAT  |
-|:--------------------:| ------------------------------------------------- |:-----------------:|
+|----------------------| ------------------------------------------------- |-------------------|
 | AUTHOR               | Author of the repository.                         | NONE * |
 | DOCPATH              | Path of the documentation.                        | NONE * (eg. `docs/`) |
 | DOCTHEME             | Name of the theme.                                | alabaster ([built-in themes](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes)) / <i>(Custom themes available in PyPi are also supported)</i>| 
@@ -22,6 +22,7 @@
 | GITURL               | HTTPS URL of the repository (Not SSH).            | https://\<username>:\<token>@github.com/\<organisation or username>/<repname> * |
 | PROJECTNAME          | Name of the Project.                              | NONE * |
 | VERSION              | Version of the Project.                           | NONE * |
+| LOGO                 | An image to be used as logo for the Project.      | path relative to DOCPATH. *example* - <i>To use DOCPATH/images/logo.svg as the logo, set LOGO as images/logo.svg</i>.|
 
 ```
    * : The following environment variables must be specified for yaydoc to work. 
