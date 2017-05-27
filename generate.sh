@@ -2,18 +2,19 @@
 
 virtualenv -q --python=python yaydocvenv
 source yaydocvenv/bin/activate
-pip install -q sphinx
-pip install -q recommonmark
-pip install -q pypandoc
 git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
 mkdir yaydoctemp
 cp -a yaydocclone/scripts/ yaydoctemp/
 cp -a yaydocclone/templates/ yaydoctemp/
+cp -a yaydocclone/requirements.txt yaydoctemp/
 cd yaydoctemp
+mkdir _themes
+pip install -q -r requirements.txt
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
 rm index.rst
 cd ..
 cp -a $DOCPATH. yaydoctemp/
+cp -a yaydocclone/fossasia yaydoctemp/_themes/
 cd yaydoctemp
 make html
 git config --global user.name "Bot"
