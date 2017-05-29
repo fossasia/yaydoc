@@ -5,3 +5,4 @@ before_script:
 
 script:
   - bash tests/generate_test.sh
+  - chmod +x .utility/deploy_docs.sh && .utility/deploy_docs.sh

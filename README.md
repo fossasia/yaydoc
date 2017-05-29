@@ -32,7 +32,7 @@
 Add the following content to the `.travis.yml` file in the root directory of your repository.
 
 **If the primary language is Python**
-```yml
+```yaml
 script:
 - wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
 - chmod +x ./generate.sh
@@ -41,7 +41,7 @@ script:
 
 **For Languages other than Python**
 
-```yml
+```yaml
 script:
 - pip install --user virtualenv
 - wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
