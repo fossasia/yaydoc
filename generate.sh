@@ -13,7 +13,13 @@ pip install -q -r requirements.txt
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
 rm index.rst
 cd ..
-cp -a $DOCPATH. yaydoctemp/
+if [ -f $DOCPATH/conf.py ]; then
+    echo >> yaydoctemp/conf.py
+    cat $DOCPATH/conf.py >> yaydoctemp/conf.py
+    rsync -a $DOCPATH. yaydoctemp/ --exclude=conf.py
+else
+    cp -a $DOCPATH. yaydoctemp/
+fi
 cp -a yaydocclone/fossasia yaydoctemp/_themes/
 cd yaydoctemp
 make html
