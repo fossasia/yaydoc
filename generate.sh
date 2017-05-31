@@ -11,8 +11,8 @@
 # $VERSION - Current version of the project.
 
 # Create an isolated Python environment
-virtualenv -q --python=python yaydocvenv
-source yaydocvenv/bin/activate
+virtualenv -q --python=python $HOME/yaydocvenv
+source $HOME/yaydocvenv/bin/activate
 
 git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
 
@@ -33,16 +33,16 @@ sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t
 rm index.rst
 cd ..
 
+cp -a yaydocclone/fossasia yaydoctemp/_themes/
+rm -rf yaydocclone
+
 # Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then
-  echo >> yaydoctemp/conf.py
-  cat $DOCPATH/conf.py >> yaydoctemp/conf.py
-  rsync -a $DOCPATH. yaydoctemp/ --exclude=conf.py
-else
-  cp -a $DOCPATH. yaydoctemp/
+    echo >> yaydoctemp/conf.py
+    cat $DOCPATH/conf.py >> yaydoctemp/conf.py
 fi
 
-cp -a yaydocclone/fossasia yaydoctemp/_themes/
+rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ yaydoctemp/
 cd yaydoctemp
 
 make html

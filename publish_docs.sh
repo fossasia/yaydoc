@@ -36,8 +36,6 @@ git push origin gh-pages
 
 # Cleanup
 cd ../../
-rm -rf yaydocclone
 rm -rf yaydoctemp
-rm -rf yaydocenv
 deactivate
 rm -- "$0"
