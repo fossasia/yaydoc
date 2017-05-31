@@ -28,5 +28,6 @@ def download_pandoc():
 
 def md2rst(text):
     download_pandoc()
-    output = pypandoc.convert_text(text, 'rst', format='md')
+    output = pypandoc.convert_text(text, 'rst', format='md',
+     filters=[os.path.join('filters', 'yml_filter.py')])
     return output
