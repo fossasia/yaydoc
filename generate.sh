@@ -1,49 +1,51 @@
 #!/bin/bash
+#
+# Generates documentation from a Github repository using Sphinx-docs
+#
+# Environment Variables:
+# $AUTHOR - Author of the repository.
+# $DOCTHEME - Name of a Sphinx theme. (Built-in or Custom themes in PyPi)
+# $DOCPATH - Path of the documentation inside the repository.
+# $LOGO - An image used as a logo in the generated website.
+# $PROJECTNAME - Name of the Project.
+# $VERSION - Current version of the project.
 
+# Create an isolated Python environment
 virtualenv -q --python=python yaydocvenv
 source yaydocvenv/bin/activate
+
 git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
+
 mkdir yaydoctemp
 cp -a yaydocclone/scripts/ yaydoctemp/
 cp -a yaydocclone/templates/ yaydoctemp/
 cp -a yaydocclone/requirements.txt yaydoctemp/
+
 cd yaydoctemp
 mkdir _themes
+
+# Install packages required for documentation generation
 pip install -q -r requirements.txt
+
+# Setting up documentation sources
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
+
 rm index.rst
 cd ..
+
+# Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then
-    echo >> yaydoctemp/conf.py
-    cat $DOCPATH/conf.py >> yaydoctemp/conf.py
-    rsync -a $DOCPATH. yaydoctemp/ --exclude=conf.py
+  echo >> yaydoctemp/conf.py
+  cat $DOCPATH/conf.py >> yaydoctemp/conf.py
+  rsync -a $DOCPATH. yaydoctemp/ --exclude=conf.py
 else
-    cp -a $DOCPATH. yaydoctemp/
+  cp -a $DOCPATH. yaydoctemp/
 fi
+
 cp -a yaydocclone/fossasia yaydoctemp/_themes/
 cd yaydoctemp
+
 make html
-git config --global user.name "Bot"
-git config --global user.email "noreply+bot@example.com"
-git clone --quiet $GITURL gh-pages
-cd gh-pages
-git fetch
-if ! git checkout gh-pages ; then
-  git checkout -b gh-pages
-fi
-git rm -rfq ./*
-cp -a ../_build/html/. ./
-if [[ -z "${DOCURL}" ]]; then
-    echo -e "DOCURL not set. Using default github pages URL"
-else
-    echo $DOCURL > CNAME
-fi
-git add -f .
-git commit -q -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
-git push origin gh-pages
-cd ../../
-rm -rf yaydocclone
-rm -rf yaydoctemp
-rm -rf yaydocvenv
-deactivate
-rm -- "$0"
+
+# Running the script to publish documentation
+source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/publish_docs.sh)
