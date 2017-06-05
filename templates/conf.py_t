@@ -246,7 +246,8 @@ epub_exclude_files = ['search.html']
 intersphinx_mapping = {'https://docs.python.org/': None}
 {% endif %}
 
-import mdinclude
+import directives
 
 def setup(app):
-    app.add_directive('mdinclude', mdinclude.MdInclude)
+    app.add_directive('include', directives.Include)
+    app.add_directive('mdinclude', directives.MdInclude)
