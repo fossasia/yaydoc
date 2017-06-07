@@ -30,8 +30,12 @@ mkdir _themes
 # Install packages required for documentation generation
 pip install -q -r requirements.txt
 
-# Setting up documentation sources
+URL_SPLIT=(${REPO//// })
+AUTHOR=${AUTHOR:-${URL_SPLIT[2]}}
+DEFAULT_NAME=(${URL_SPLIT[3]//./ })
+PROJECTNAME=${PROJECTNAME:-${DEFAULT_NAME}}
 
+# Setting up documentation sources
 sphinx-quickstart --ext-githubpages -q -v "${VERSION:-development}" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
 if [ $? -ne 0 ]; then
   echo -e "Failed to initialize build process.\n"
