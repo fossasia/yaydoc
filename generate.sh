@@ -10,6 +10,9 @@
 # $PROJECTNAME - Name of the Project.
 # $VERSION - Current version of the project.
 
+REPO=`git config remote.origin.url`
+SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
+
 # Create an isolated Python environment
 virtualenv -q --python=python $HOME/yaydocvenv
 source $HOME/yaydocvenv/bin/activate
