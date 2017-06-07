@@ -4,12 +4,11 @@
 #
 # Environment Variables:
 # $DOCURL - Custom URL where the documentation would be published.
-# $GITURL - HTTPS URL of the repository.
 
 git config --global user.name "Yaydoc Bot"
 git config --global user.email "noreply+bot@example.com"
 
-git clone --quiet $GITURL gh-pages
+git clone --quiet $SSH_REPO gh-pages
 cd gh-pages
 
 # Create gh-pages branch if it doesn't exist
