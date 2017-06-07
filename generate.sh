@@ -10,6 +10,9 @@
 # $PROJECTNAME - Name of the Project.
 # $VERSION - Current version of the project.
 
+REPO=`git config remote.origin.url`
+SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
+
 # Create an isolated Python environment
 virtualenv -q --python=python $HOME/yaydocvenv
 source $HOME/yaydocvenv/bin/activate
@@ -28,7 +31,12 @@ mkdir _themes
 pip install -q -r requirements.txt
 
 # Setting up documentation sources
-sphinx-quickstart --ext-githubpages -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
+
+sphinx-quickstart --ext-githubpages -q -v "${VERSION:-development}" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
+if [ $? -ne 0 ]; then
+  echo -e "Failed to initialize build process.\n"
+  exit 1
+fi
 
 rm index.rst
 cd ..
@@ -46,6 +54,10 @@ rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ yaydoctemp/
 cd yaydoctemp
 
 make html
+if [ $? -ne 0 ]; then
+  echo -e "Failed to generate documentation.\n"
+  exit 2
+fi
 
 # Running the script to publish documentation
 source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/publish_docs.sh)
