@@ -34,7 +34,7 @@ git commit -q -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
 git push origin gh-pages
 
 # Cleanup
-cd ../../
-rm -rf yaydoctemp
+cd $ROOT_DIR
+rm -rf $BUILD_DIR
 deactivate
 rm -- "$0"
