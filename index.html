@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>yaydoc &#8212; Yaydoc development documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'development',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="yaydoc">
+<h1>yaydoc<a class="headerlink" href="#yaydoc" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://travis-ci.org/fossasia/yaydoc"><img alt="Build Status" src="https://travis-ci.org/fossasia/yaydoc.svg?branch=master" /></a> <a class="reference external" href="https://gitter.im/fossasia/yaydoc?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/fossasia/yaydoc" src="https://badges.gitter.im/fossasia/yaydoc.svg" /></a></p>
+<blockquote>
+<div>Docs! Yay!</div></blockquote>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Create a directory in your repository containing all the markup files
+along with an <code class="docutils literal"><span class="pre">index.rst</span></code> file which contains
+<a class="reference external" href="http://www.sphinx-doc.org/en/stable/markup/toctree.html">toctrees</a>
+to link the various documents.</li>
+<li>Create a <code class="docutils literal"><span class="pre">gh-pages</span></code> branch in your repository.</li>
+<li>Register your repository with <a class="reference external" href="https://travis-ci.org">Travis CI</a>.</li>
+</ul>
+<div class="section" id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Generate <code class="docutils literal"><span class="pre">Github</span> <span class="pre">Personal</span> <span class="pre">Token</span></code> by following this
+<a class="reference external" href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/">Guide</a></li>
+<li>Set the following Environment Variables in Travis CI.
+<a class="reference external" href="https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings">Guide</a></li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="53%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Environment
+Variable</th>
+<th class="head">Description</th>
+<th class="head">Default /
+FORMAT</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AUTHOR</td>
+<td>Author of the repository.</td>
+<td>NONE *</td>
+</tr>
+<tr class="row-odd"><td>DOCPATH</td>
+<td>Path of the documentation.</td>
+<td>NONE * (eg.
+<code class="docutils literal"><span class="pre">docs/</span></code>)</td>
+</tr>
+<tr class="row-even"><td>DOCTHEME</td>
+<td>Name of the theme.</td>
+<td>alabaster
+(<a class="reference external" href="http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes">built-in
+themes</a>
+)
+/ (Custom
+themes
+available in
+PyPi are also
+supported)</td>
+</tr>
+<tr class="row-odd"><td>DOCURL</td>
+<td>Custom URL at which the site should be
+published.</td>
+<td>&lt;username or
+organization&gt;.g
+ithub.io/&lt;repon
+ame&gt;
+(<a class="reference external" href="https://help.github.com/articles/using-a-custom-domain-with-github-pages/">Reference</a>
+)</td>
+</tr>
+<tr class="row-even"><td>GITURL</td>
+<td>HTTPS URL of the repository (Not SSH).</td>
+<td><a class="reference external" href="https:/">https:/</a>/&lt;userna
+me&gt;:&lt;token&gt;&#64;git
+hub.com/&lt;organi
+sation
+or username&gt;/
+*</td>
+</tr>
+<tr class="row-odd"><td>PROJECTNAME</td>
+<td>Name of the Project.</td>
+<td>NONE *</td>
+</tr>
+<tr class="row-even"><td>VERSION</td>
+<td>Version of the Project.</td>
+<td>NONE *</td>
+</tr>
+<tr class="row-odd"><td>LOGO</td>
+<td>An image to be used as logo for the
+Project.</td>
+<td>path relative
+to DOCPATH.
+<em>example</em> - To
+use
+DOCPATH/images/
+logo.svg
+as the logo,
+set LOGO as
+images/logo.svg
+.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="p">:</span> <span class="n">The</span> <span class="n">following</span> <span class="n">environment</span> <span class="n">variables</span> <span class="n">must</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">for</span> <span class="n">yaydoc</span> <span class="n">to</span> <span class="n">work</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="travis-configuration">
+<h3>Travis Configuration<a class="headerlink" href="#travis-configuration" title="Permalink to this headline">¶</a></h3>
+<p>Add the following content to the <code class="docutils literal"><span class="pre">.travis.yml</span></code> file in the root
+directory of your repository.</p>
+<p><strong>If the primary language is Python</strong></p>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fossasia</span><span class="o">/</span><span class="n">yaydoc</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">generate</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">-</span> <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">./</span><span class="n">generate</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">-</span> <span class="o">./</span><span class="n">generate</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p><strong>For Languages other than Python</strong></p>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">virtualenv</span>
+<span class="o">-</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fossasia</span><span class="o">/</span><span class="n">yaydoc</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">generate</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">-</span> <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">./</span><span class="n">generate</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">-</span> <span class="o">./</span><span class="n">generate</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">yaydoc</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#travis-configuration">Travis Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FOSSASIA.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
