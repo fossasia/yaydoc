@@ -29,6 +29,10 @@ pip install -q -r requirements.txt
 
 # Setting up documentation sources
 sphinx-quickstart --ext-githubpages -q -v $VERSION -a $AUTHOR -p $PROJECTNAME -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
+if [ $? -ne 0 ]; then
+  echo -e "Failed to initialize build process.\n"
+  exit 1
+fi
 
 rm index.rst
 cd ..
@@ -46,6 +50,10 @@ rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ yaydoctemp/
 cd yaydoctemp
 
 make html
+if [ $? -ne 0 ]; then
+  echo -e "Failed to generate documentation.\n"
+  exit 2
+fi
 
 # Running the script to publish documentation
 source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/publish_docs.sh)
