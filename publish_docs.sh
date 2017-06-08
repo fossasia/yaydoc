@@ -8,7 +8,15 @@
 git config --global user.name "Yaydoc Bot"
 git config --global user.email "noreply+bot@example.com"
 
-git clone --quiet $SSH_REPO gh-pages
+GIT_SSH_URL=git@github.com:$USERNAME/$REPONAME.git
+
+git clone --quiet $GIT_SSH_URL gh-pages
+if [ $? -ne 0 ]; then
+  echo -e "Cloning using SSH failed. Trying with Github token instead\n"
+  GIT_HTTPS_URL=https://$USERNAME:$OAUTH_TOKEN@github.com/$USERNAME/$REPONAME.git
+  git clone --quiet $GIT_HTTPS_URL gh-pages
+fi
+
 cd gh-pages
 
 # Create gh-pages branch if it doesn't exist

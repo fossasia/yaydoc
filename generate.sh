@@ -11,7 +11,10 @@
 # $VERSION - Current version of the project.
 
 REPO=`git config remote.origin.url`
-SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
+URL_SPLIT=(${REPO//// })
+
+USERNAME=${URL_SPLIT[2]}
+REPONAME=(${URL_SPLIT[3]//./ })
 
 # Create an isolated Python environment
 virtualenv -q --python=python $HOME/yaydocvenv
@@ -40,11 +43,6 @@ mkdir _themes
 # Install packages required for documentation generation
 pip install -q -r requirements.txt
 
-URL_SPLIT=(${REPO//// })
-AUTHOR=${AUTHOR:-${URL_SPLIT[2]}}
-DEFAULT_NAME=(${URL_SPLIT[3]//./ })
-PROJECTNAME=${PROJECTNAME:-${DEFAULT_NAME}}
-
 # cleanup
 function clean() {
   cd $ROOT_DIR
@@ -54,7 +52,7 @@ function clean() {
 }
 
 # Setting up documentation sources
-sphinx-quickstart --ext-githubpages -q -v "${VERSION:-development}" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
+sphinx-quickstart --ext-githubpages -q -v "${VERSION:-development}" -a "${AUTHOR:-${USERNAME}}" -p "${PROJECTNAME:-${REPONAME}}" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
 if [ $? -ne 0 ]; then
   echo -e "Failed to initialize build process.\n"
   clean
