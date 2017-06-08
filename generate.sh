@@ -19,12 +19,22 @@ source $HOME/yaydocvenv/bin/activate
 
 git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
 
-mkdir yaydoctemp
-cp -a yaydocclone/scripts/ yaydoctemp/
-cp -a yaydocclone/templates/ yaydoctemp/
-cp -a yaydocclone/requirements.txt yaydoctemp/
+ROOT_DIR=$(pwd)
 
-cd yaydoctemp
+# Setting up build directory
+if [ "$DOCPATH" != "." ]; then
+  cd $DOCPATH/../
+fi
+mkdir yaydoctemp
+BUILD_DIR=$(pwd)/yaydoctemp
+
+cd $ROOT_DIR
+
+cp -a yaydocclone/scripts/ $BUILD_DIR/
+cp -a yaydocclone/templates/ $BUILD_DIR/
+cp -a yaydocclone/requirements.txt $BUILD_DIR/
+
+cd $BUILD_DIR
 mkdir _themes
 
 # Install packages required for documentation generation
@@ -43,19 +53,19 @@ if [ $? -ne 0 ]; then
 fi
 
 rm index.rst
-cd ..
+cd $ROOT_DIR
 
-cp -a yaydocclone/fossasia yaydoctemp/_themes/
+cp -a yaydocclone/fossasia $BUILD_DIR/_themes/
 rm -rf yaydocclone
 
 # Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then
-    echo >> yaydoctemp/conf.py
-    cat $DOCPATH/conf.py >> yaydoctemp/conf.py
+    echo >> $BUILD_DIR/conf.py
+    cat $DOCPATH/conf.py >> $BUILD_DIR/conf.py
 fi
 
-rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ yaydoctemp/
-cd yaydoctemp
+rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ $BUILD_DIR/
+cd $BUILD_DIR
 
 make html
 if [ $? -ne 0 ]; then
