@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  .container
+    .col-md-6.col-md-offset-3
+      form.form-horizontal(method='post' action='/generate')
+        .form-group
+          label.control-label.col-sm-3(for='email') Email:
+          .col-sm-9
+            input#email.form-control(type='email', placeholder='Enter Email', name='email')
+        .form-group
+          label.control-label.col-sm-3(for='git_url') GITURL:
+          .col-sm-9
+            input#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
+        .form-group
+          label.control-label.col-sm-3(for='author') Author:
+          .col-sm-9
+            input#author.form-control(type='text', placeholder='Enter Author', name='author')
+        .form-group
+          label.control-label.col-sm-3(for='doc_theme') Doc Theme:
+          .col-sm-9
+            input#doc_theme.form-control(type='text', placeholder='Enter Documentation Theme', name='doc_theme')
+        .form-group
+          label.control-label.col-sm-3(for='doc_path') Doc Path:
+          .col-sm-9
+            input#doc_path.form-control(type='text', placeholder='Enter Documentation Path', name='doc_path')
+        .form-group
+          label.control-label.col-sm-3(for='project_name') Project Name:
+          .col-sm-9
+            input#project_name.form-control(type='text', placeholder='Enter Project Name' , name='project_name')
+        .form-group
+          label.control-label.col-sm-3(for='version') Version:
+          .col-sm-9
+            input#version.form-control(type='text', placeholder='Enter Version', name='version')
+        .form-group
+          .col-sm-offset-3.col-sm-9
+            button.btn.btn-default(type='submit') Submit
