@@ -23,6 +23,7 @@
 | PROJECTNAME          | Name of the Project.                              | NONE * |
 | VERSION              | Version of the Project.                           | NONE * |
 | LOGO                 | An image to be used as logo for the Project.      | path relative to DOCPATH. *example* - <i>To use DOCPATH/images/logo.svg as the logo, set LOGO as images/logo.svg</i>.|
+| MARKDOWN_FLAVOUR     | Input file format flavour. The supported flavors are  `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`| markdown_github   |
 
 ```
    * : The following environment variables must be specified for yaydoc to work. 
