@@ -45,10 +45,19 @@ AUTHOR=${AUTHOR:-${URL_SPLIT[2]}}
 DEFAULT_NAME=(${URL_SPLIT[3]//./ })
 PROJECTNAME=${PROJECTNAME:-${DEFAULT_NAME}}
 
+# cleanup
+function clean() {
+  cd $ROOT_DIR
+  rm -rf $BUILD_DIR
+  deactivate
+  rm -- "$0"
+}
+
 # Setting up documentation sources
 sphinx-quickstart --ext-githubpages -q -v "${VERSION:-development}" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
 if [ $? -ne 0 ]; then
   echo -e "Failed to initialize build process.\n"
+  clean
   exit 1
 fi
 
@@ -70,6 +79,7 @@ cd $BUILD_DIR
 make html
 if [ $? -ne 0 ]; then
   echo -e "Failed to generate documentation.\n"
+  clean
   exit 2
 fi
 
