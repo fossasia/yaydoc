@@ -15,6 +15,11 @@ if [ $? -ne 0 ]; then
   echo -e "Cloning using SSH failed. Trying with Github token instead\n"
   GIT_HTTPS_URL=https://$USERNAME:$OAUTH_TOKEN@github.com/$USERNAME/$REPONAME.git
   git clone --quiet $GIT_HTTPS_URL gh-pages
+  if [[ $? -ne 0 ]]; then
+    echo -e "Failed to clone gh-pages.\n"
+    clean
+    exit 3
+  fi
 fi
 
 cd gh-pages
