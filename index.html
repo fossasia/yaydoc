@@ -189,17 +189,15 @@ steps.</p>
 <li>Add public key to github by following this
 <a class="reference external" href="https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/">Guide</a></li>
 <li>Add the following to your <code class="docutils literal"><span class="pre">.travis.yml</span></code> making appropriate changes
-where necessary
-```yaml
-before_deploy:</li>
-<li>openssl aes-256-cbc -K $encrypted_cab6203e105e_key -iv
-$encrypted_cab6203e105e_iv -in .utility/yaydoc_deploy.enc -out
-.utility/yaydoc_deploy -d</li>
-<li>eval &#8220;$(ssh-agent -s)&#8221;</li>
-<li>chmod 600 .utility/yaydoc_deploy</li>
-<li>ssh-add .utility/yaydoc_deploy
-```</li>
+where necessary</li>
 </ul>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span>before_deploy:
+- openssl aes-256-cbc -K $encrypted_cab6203e105e_key -iv $encrypted_cab6203e105e_iv -in .utility/yaydoc_deploy.enc -out .utility/yaydoc_deploy -d
+- eval &quot;$(ssh-agent -s)&quot;
+- chmod 600 .utility/yaydoc_deploy
+- ssh-add .utility/yaydoc_deploy
+</pre></div>
+</div>
 </div>
 </div>
 </div>
