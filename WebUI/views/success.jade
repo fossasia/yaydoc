@@ -2,6 +2,6 @@ extends layout
 
 block content
     .container
-        .col-md-6.col-md-offset-3
+        div(style='text-align:center')
             p Successfully Generated Docs
-            p Download as Zip
+            a(class='btn btn-default', href='/download/#{email}/#{projectName}') Download as ZIP
