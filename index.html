@@ -56,17 +56,12 @@
 along with an <code class="docutils literal"><span class="pre">index.rst</span></code> file which contains
 <a class="reference external" href="http://www.sphinx-doc.org/en/stable/markup/toctree.html">toctrees</a>
 to link the various documents.</li>
-<li>Create a <code class="docutils literal"><span class="pre">gh-pages</span></code> branch in your repository.</li>
 <li>Register your repository with <a class="reference external" href="https://travis-ci.org">Travis CI</a>.</li>
 </ul>
 <div class="section" id="usage">
 <h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Generate <code class="docutils literal"><span class="pre">Github</span> <span class="pre">Personal</span> <span class="pre">Token</span></code> by following this
-<a class="reference external" href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/">Guide</a></li>
-<li>Set the following Environment Variables in Travis CI.
-<a class="reference external" href="https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings">Guide</a></li>
-</ul>
+<p>Set the following Environment Variables in Travis CI.
+<a class="reference external" href="https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings">Guide</a></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -84,7 +79,8 @@ FORMAT</th>
 <tbody valign="top">
 <tr class="row-even"><td>AUTHOR</td>
 <td>Author of the repository.</td>
-<td>NONE *</td>
+<td>Github username
+or organization</td>
 </tr>
 <tr class="row-odd"><td>DOCPATH</td>
 <td>Path of the documentation.</td>
@@ -113,25 +109,16 @@ ame&gt;
 (<a class="reference external" href="https://help.github.com/articles/using-a-custom-domain-with-github-pages/">Reference</a>
 )</td>
 </tr>
-<tr class="row-even"><td>GITURL</td>
-<td>HTTPS URL of the repository (Not SSH).</td>
-<td><a href="#id1"><span class="problematic" id="id2">`https://\\ &lt;ht
-tps://\&gt;`__</span></a>:&lt;
-token&gt;&#64;github.c
-om/&lt;organisatio
-n
-or username&gt;/
-*</td>
-</tr>
-<tr class="row-odd"><td>PROJECTNAME</td>
+<tr class="row-even"><td>PROJECTNAME</td>
 <td>Name of the Project.</td>
-<td>NONE *</td>
+<td>Name of the
+repository</td>
 </tr>
-<tr class="row-even"><td>VERSION</td>
+<tr class="row-odd"><td>VERSION</td>
 <td>Version of the Project.</td>
-<td>NONE *</td>
+<td>development</td>
 </tr>
-<tr class="row-odd"><td>LOGO</td>
+<tr class="row-even"><td>LOGO</td>
 <td>An image to be used as logo for the
 Project.</td>
 <td>path relative
@@ -145,7 +132,7 @@ set LOGO as
 images/logo.svg
 .</td>
 </tr>
-<tr class="row-even"><td>MARKDOWN_FLAVOUR</td>
+<tr class="row-odd"><td>MARKDOWN_FLAVOUR</td>
 <td>Input file format flavour. The
 supported flavors are <code class="docutils literal"><span class="pre">markdown</span></code>,
 <code class="docutils literal"><span class="pre">markdown_strict</span></code>,
@@ -154,6 +141,14 @@ supported flavors are <code class="docutils literal"><span class="pre">markdown<
 <code class="docutils literal"><span class="pre">commonmark</span></code></td>
 <td>markdown_githu
 b</td>
+</tr>
+<tr class="row-even"><td>OAUTH_TOKEN</td>
+<td>Github Personal Token. generate it by
+following this
+<a class="reference external" href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/">Guide</a></td>
+<td>NONE *(Not
+required If
+using ssh)</td>
 </tr>
 </tbody>
 </table>
@@ -181,6 +176,31 @@ directory of your repository.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="using-ssh">
+<h3>Using SSH<a class="headerlink" href="#using-ssh" title="Permalink to this headline">¶</a></h3>
+<p>Additionally If you have ssh setup on your repository, yaydoc
+prioritizes it over Github Personal token. To setup ssh follow these
+steps.</p>
+<ul class="simple">
+<li>Generate a new ssh key following this
+<a class="reference external" href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#generating-a-new-ssh-key">Guide</a></li>
+<li>Encrypt the generated keys by following this
+<a class="reference external" href="https://docs.travis-ci.com/user/encrypting-files/#Automated-Encryption">Guide</a></li>
+<li>Add public key to github by following this
+<a class="reference external" href="https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/">Guide</a></li>
+<li>Add the following to your <code class="docutils literal"><span class="pre">.travis.yml</span></code> making appropriate changes
+where necessary
+```yaml
+before_deploy:</li>
+<li>openssl aes-256-cbc -K $encrypted_cab6203e105e_key -iv
+$encrypted_cab6203e105e_iv -in .utility/yaydoc_deploy.enc -out
+.utility/yaydoc_deploy -d</li>
+<li>eval &#8220;$(ssh-agent -s)&#8221;</li>
+<li>chmod 600 .utility/yaydoc_deploy</li>
+<li>ssh-add .utility/yaydoc_deploy
+```</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -196,6 +216,7 @@ directory of your repository.</p>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li><a class="reference internal" href="#usage">Usage</a></li>
 <li><a class="reference internal" href="#travis-configuration">Travis Configuration</a></li>
+<li><a class="reference internal" href="#using-ssh">Using SSH</a></li>
 </ul>
 </li>
 </ul>
