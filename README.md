@@ -55,6 +55,7 @@ Additionally If you have ssh setup on your repository, yaydoc prioritizes it ove
 - Encrypt the generated keys by following this [Guide](https://docs.travis-ci.com/user/encrypting-files/#Automated-Encryption)
 - Add public key to github by following this [Guide](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/)
 - Add the following to your `.travis.yml` making appropriate changes where necessary
+
 ```yaml
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_cab6203e105e_key -iv $encrypted_cab6203e105e_iv -in .utility/yaydoc_deploy.enc -out .utility/yaydoc_deploy -d
