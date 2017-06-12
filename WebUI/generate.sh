@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Setting Environment Variables..."
-while getopts g:a:t:p:o:v: option
+while getopts g:a:t:p:o:v:m: option
 do
  case "${option}"
  in
@@ -11,17 +11,12 @@ do
  p) DOCPATH=${OPTARG};;
  o) PROJECTNAME=${OPTARG};;
  v) VERSION=${OPTARG};;
+ m) EMAIL=${OPTARG};;
  esac
 done
 echo "Done..."
 
-USER_ID=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
-while [ -d "$USER_ID" ]
-do
-  USER_ID=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
-done
-
-mkdir -p temp/${USER_ID} && cd $_
+mkdir -p temp/${EMAIL} && cd $_
 echo "Moved to $(pwd)"
 echo "Cloning Repository..."
 git clone -q ${GITURL} "$PROJECTNAME" && cd $_
@@ -88,4 +83,11 @@ make html
 if [ $? -ne 0 ]; then
   echo -e "Failed to generate documentation.\n"
   exit 2
+fi
+
+mv $BUILD_DIR/_build/html $ROOT_DIR/../${PROJECTNAME}_preview && cd $_/../
+zip -r -q ${PROJECTNAME}.zip ${PROJECTNAME}_preview
+if [ $? -eq 0 ]; then
+  echo -e "Generated docs.\n"
+  exit 0
 fi
