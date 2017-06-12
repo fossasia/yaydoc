@@ -4,11 +4,14 @@
 
 > Docs! Yay!
 
-### Prerequisites
+## Prerequisites
 - Create a directory in your repository containing all the markup files along with an `index.rst` file which contains [toctrees](http://www.sphinx-doc.org/en/stable/markup/toctree.html) to link the various documents.
 - Register your repository with [Travis CI](https://travis-ci.org).
 
 ## Usage
+
+**With environment variables**
+
 Set the following Environment Variables in Travis CI. [Guide](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings)     
 
 | Environment Variable | Description                                       | Default / FORMAT  |
@@ -26,6 +29,40 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 ```
    * : The following environment variables must be specified for yaydoc to work. 
 ```
+
+**With a configuration file**
+
+You could also use a configuration file instead of setting up environment variables.
+Yaydoc automatically reads from a file named *.yaydoc.yml* if present in the root of the repository.
+
+- Specifying Metadata
+
+```yaml
+metadata:
+  author: FOSSSIA
+  projectname: Yaydoc
+  version: development
+```
+
+- Configuring build options
+
+```yaml
+build:
+  doctheme: fossasia
+  docpath: docs/
+  logo: images/logo.svg
+  markdown_flavour: markdown_github
+```
+
+- Configuring publishers
+
+```yaml
+publish:
+  ghpages:
+    docurl: yaydoc.fossasia.org
+```
+
+Currently Yaydoc only supports publishing to ghpages. More publishers to be added soon.
 
 ## Travis Configuration
 Add the following content to the `.travis.yml` file in the root directory of your repository.
