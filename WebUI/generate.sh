@@ -27,7 +27,6 @@ REPO=$(git config remote.origin.url)
 virtualenv -q --python=python $HOME/yaydocvenv
 source $HOME/yaydocvenv/bin/activate
 
-git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
 
 ROOT_DIR=$(pwd)
 
@@ -42,9 +41,9 @@ BUILD_DIR=$(pwd)/yaydoctemp
 
 cd $ROOT_DIR
 
-cp -a yaydocclone/scripts/ $BUILD_DIR/
-cp -a yaydocclone/templates/ $BUILD_DIR/
-cp -a yaydocclone/requirements.txt $BUILD_DIR/
+cp -a ../../../scripts/ $BUILD_DIR/
+cp -a ../../../templates/ $BUILD_DIR/
+cp -a ../../../requirements.txt $BUILD_DIR/
 
 cd ${BUILD_DIR}
 mkdir _themes
@@ -67,8 +66,7 @@ fi
 rm index.rst
 cd $ROOT_DIR
 
-cp -a yaydocclone/fossasia $BUILD_DIR/_themes/
-rm -rf yaydocclone
+cp -a ../../../fossasia $BUILD_DIR/_themes/
 
 # Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then
