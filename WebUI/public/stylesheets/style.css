@@ -6,3 +6,27 @@ body {
 a {
   color: #00B7FF;
 }
+
+.logs {
+  height: 400px;
+  background-color: #eee;
+}
+
+.progress {
+  overflow: hidden;
+}
+
+#messages {
+  font-family: "Lucida Console", Monaco, monospace;
+  list-style: none;
+  text-align: left;
+}
+
+#messages li {
+  margin-bottom: 5px;
+}
+
+#btnDownload {
+  display: none;
+  width: -moz-fit-content;
+}
