@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Setting Environment Variables..."
-while getopts g:a:t:p:o:v:m: option
+while getopts g:a:t:p:o:v:m:u: option
 do
  case "${option}"
  in
@@ -12,6 +12,7 @@ do
  o) PROJECTNAME=${OPTARG};;
  v) VERSION=${OPTARG};;
  m) EMAIL=${OPTARG};;
+ u) UNIQUEID=${OPTARG};;
  esac
 done
 echo "Done..."
@@ -41,9 +42,9 @@ BUILD_DIR=$(pwd)/yaydoctemp
 
 cd $ROOT_DIR
 
-cp -a ../../../scripts/ $BUILD_DIR/
-cp -a ../../../templates/ $BUILD_DIR/
-cp -a ../../../requirements.txt $BUILD_DIR/
+cp -a ../../../../scripts/ $BUILD_DIR/
+cp -a ../../../../templates/ $BUILD_DIR/
+cp -a ../../../../requirements.txt $BUILD_DIR/
 
 cd ${BUILD_DIR}
 mkdir _themes
@@ -66,7 +67,7 @@ fi
 rm index.rst
 cd $ROOT_DIR
 
-cp -a ../../../fossasia $BUILD_DIR/_themes/
+cp -a ../../../../fossasia $BUILD_DIR/_themes/
 
 # Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then
@@ -83,8 +84,8 @@ if [ $? -ne 0 ]; then
   exit 2
 fi
 
-mv $BUILD_DIR/_build/html $ROOT_DIR/../${PROJECTNAME}_preview && cd $_/../
-zip -r -q ${PROJECTNAME}.zip ${PROJECTNAME}_preview
+mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
+zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
 if [ $? -eq 0 ]; then
   echo -e "Generated docs.\n"
   exit 0
