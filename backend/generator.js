@@ -27,7 +27,7 @@ exports.executeScript = function (socket, formData) {
     "-u", uniqueId
   ];
   
-  var process = spawn("./generate.sh", args);
+  var process = spawn("./generate.2.sh", args);
   
   process.stdout.on('data', function (data) {
     console.log(data.toString());

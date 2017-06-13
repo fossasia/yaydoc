@@ -41,9 +41,9 @@ BUILD_DIR=$(pwd)/yaydoctemp
 
 cd $ROOT_DIR
 
-cp -a yaydocclone/scripts/ $BUILD_DIR/
-cp -a yaydocclone/templates/ $BUILD_DIR/
-cp -a yaydocclone/requirements.txt $BUILD_DIR/
+cp -a yaydocclone/modules/scripts/ $BUILD_DIR/
+cp -a yaydocclone/modules/templates/ $BUILD_DIR/
+cp -a yaydocclone/modules/requirements.txt $BUILD_DIR/
 
 cd $BUILD_DIR
 mkdir _themes
@@ -67,7 +67,7 @@ fi
 rm index.rst
 cd $ROOT_DIR
 
-cp -a yaydocclone/fossasia $BUILD_DIR/_themes/
+cp -a yaydocclone/fossasia_theme $BUILD_DIR/_themes/
 rm -rf yaydocclone
 
 # Extract markup files from source repository and extend pre-existing conf.py
