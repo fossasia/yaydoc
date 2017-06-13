@@ -4,6 +4,13 @@ import os
 import argparse
 import yaml
 
+# FileNotFoundError is not available on python 2.
+# To handle that case, defining it on NameError
+# source: https://stackoverflow.com/a/21368622/4127836
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
 
 def update_dict(base, head):
     """Recursively merge dicts"""
@@ -26,7 +33,8 @@ def _get_default_config(username, reponame):
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
-                      'doctheme': 'fossasia',
+                      'doctheme': 'fossasia_theme',
+                      'docpath': 'docs'
                      },
            }
     return conf
