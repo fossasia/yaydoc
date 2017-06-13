@@ -1,6 +1,37 @@
 extends layout
 
 block content
+  script(src="/socket.io/socket.io.js")
+  script.
+    $(function () {
+      var socket = io();
+      $("#btnGenerate").click(function () {
+        var data = {};
+        var formData = $("form").serializeArray();
+        $.each(formData, function (i, field) {
+          if (field.name === "email") { data.email = field.value; }
+          if (field.name === "git_url") { data.gitUrl = field.value; }
+          if (field.name === "author") { data.author = field.value; }
+          if (field.name === "doc_theme") { data.docTheme = field.value; }
+          if (field.name === "doc_path") { data.docPath = field.value; }
+          if (field.name === "project_name") { data.projectName = field.value; }
+          if (field.name === "version") { data.version = field.value; }
+        });
+        socket.emit('execute', data);
+        $(this).attr("disabled", "none");
+      });
+      socket.on('logs', function (data) {
+        $('#messages').append($('<li>').text(data.data));
+        $("#progress").css("width", data.donePercent + "%");
+      });
+      socket.on('err-logs', function (msg) {
+        $('#messages').append($('<li>').text(msg));
+      });
+      socket.on('success', function (data) {
+        $('#btnDownload').css("display", "block");
+        $('#btnDownload').attr("href", "/download/" + data.email +"/" + data.uniqueId);
+      });
+    });
   .container
     .col-md-6.col-md-offset-3
       form.form-horizontal(method='post' action='/generate')
@@ -34,4 +65,11 @@ block content
             input#version.form-control(type='text', placeholder='Enter Version', name='version')
         .form-group
           .col-sm-offset-3.col-sm-9
-            button.btn.btn-default(type='submit') Submit
+            button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
+            a.btn.btn-default(type='button' id='btnDownload') Download as Zip
+      .progress
+        #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
+          span.sr-only
+      .logs.pre-scrollable
+        h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
+        ul#messages
