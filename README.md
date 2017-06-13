@@ -25,6 +25,7 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 | LOGO                 | An image to be used as logo for the Project.      | path relative to DOCPATH. *example* - <i>To use DOCPATH/images/logo.svg as the logo, set LOGO as images/logo.svg</i>.|
 | MARKDOWN_FLAVOUR     | Input file format flavour. The supported flavors are  `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`| markdown_github   |
 | OAUTH_TOKEN          | Github Personal Token. generate it by following this [Guide](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)  | NONE *(Not required If using ssh) |
+| PYTHON_PACKAGE       | Path to any python package for which API docs should be generated. Provide a `requirements.txt` at the root containing all dependencies. | NONE |
 
 ```
    * : The following environment variables must be specified for yaydoc to work. 
