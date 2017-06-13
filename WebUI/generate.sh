@@ -50,7 +50,7 @@ mkdir _themes
 # Install packages required for documentation generation
 echo -e "Installing packages required for documentation generation\n"
 pip install -q -r requirements.txt
-echo -e "Generation successful\n"
+echo -e "Installation successful\n"
 
 URL_SPLIT=(${REPO//// })
 AUTHOR=${AUTHOR:-${URL_SPLIT[2]}}
