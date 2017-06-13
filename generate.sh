@@ -24,6 +24,14 @@ git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
 
 ROOT_DIR=$(pwd)
 
+# Install packages required for documentation generation
+pip install -q -r yaydocclone/requirements.txt
+
+# Reading configuration file
+ENVVARS="$(python ./yaydocclone/scripts/config.py "$USERNAME" "$REPONAME")"
+echo -e "\n$ENVVARS\n"
+eval $ENVVARS
+
 # Setting up build directory
 if [ "$DOCPATH" != "." ]; then
   cd $DOCPATH/../
@@ -40,9 +48,6 @@ cp -a yaydocclone/requirements.txt $BUILD_DIR/
 cd $BUILD_DIR
 mkdir _themes
 
-# Install packages required for documentation generation
-pip install -q -r requirements.txt
-
 # cleanup
 function clean() {
   cd $ROOT_DIR
@@ -52,7 +57,7 @@ function clean() {
 }
 
 # Setting up documentation sources
-sphinx-quickstart --ext-githubpages -q -v "${VERSION:-development}" -a "${AUTHOR:-${USERNAME}}" -p "${PROJECTNAME:-${REPONAME}}" -t templates/ -d html_theme=${DOCTHEME:-alabaster} -d html_logo=${LOGO:-} > /dev/null
+sphinx-quickstart --ext-githubpages -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO > /dev/null
 if [ $? -ne 0 ]; then
   echo -e "Failed to initialize build process.\n"
   clean
