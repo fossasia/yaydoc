@@ -70,7 +70,7 @@ Add the following content to the `.travis.yml` file in the root directory of you
 **If the primary language is Python**
 ```yaml
 script:
-- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
+- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh
 - chmod +x ./generate.sh
 - ./generate.sh
 ```
@@ -80,7 +80,7 @@ script:
 ```yaml
 script:
 - pip install --user virtualenv
-- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh
+- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh
 - chmod +x ./generate.sh
 - ./generate.sh
 ```

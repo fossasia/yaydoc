@@ -8,24 +8,20 @@ exports.executeScript = function (socket, formData) {
   var email = formData.email;
   var gitUrl = formData.gitUrl;
   var docTheme = formData.docTheme;
-  var docPath = "docs/";
-  var projectName = gitUrl.split("/")[4].split(".")[0];
-  var version = new Date();
   var uniqueId = uuidV4();
+  var webUI = "true"
 
   var donePercent = 0;
 
   const args = [
     "-g", gitUrl,
     "-t", docTheme,
-    "-p", docPath,
-    "-o", projectName,
-    "-v", version,
     "-m", email,
-    "-u", uniqueId
+    "-u", uniqueId,
+    "-w", webUI
   ];
 
-  var process = spawn("./generate.2.sh", args);
+  var process = spawn("./generate.sh", args);
 
   process.stdout.on('data', function (data) {
     console.log(data.toString());
