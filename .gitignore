@@ -1,4 +1,3 @@
-WebUI/node_modules/
-WebUI/temp/
-WebUI/.idea/
-WebUI/temp/
+node_modules/
+temp/
+.idea/
