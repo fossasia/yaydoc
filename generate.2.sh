@@ -2,12 +2,11 @@
 
 BASE=$(pwd)
 
-while getopts g:a:t:p:o:v:m:u: option
+while getopts g:t:p:o:v:m:u: option
 do
  case "${option}"
  in
  g) GITURL=${OPTARG};;
- a) AUTHOR=${OPTARG};;
  t) DOCTHEME=${OPTARG};;
  p) DOCPATH=${OPTARG};;
  o) PROJECTNAME=${OPTARG};;
@@ -54,7 +53,7 @@ pip install -q -r requirements.txt
 echo -e "Installation successful\n"
 
 URL_SPLIT=(${REPO//// })
-AUTHOR=${AUTHOR:-${URL_SPLIT[2]}}
+AUTHOR=${URL_SPLIT[2]}
 DEFAULT_NAME=(${URL_SPLIT[3]//./ })
 PROJECTNAME=${PROJECTNAME:-${DEFAULT_NAME}}
 
