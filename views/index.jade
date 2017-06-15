@@ -2,39 +2,39 @@ extends layout
 
 block content
   script(src="/socket.io/socket.io.js")
+  script(src="/scripts/validation.js")
   script(src="/scripts/form.js")
+  #notification-container
+    li.notification Hello
   .container
     .col-md-6.col-md-offset-3
-      form.form-horizontal(method='post' action='/generate')
+      form(method='post' action='/generate')
         .form-group
-          label.control-label.col-sm-3(for='email') Email:
-          .col-sm-9
-            input#email.form-control(type='email', placeholder='Enter Email', name='email')
+          label.control-label(for='email') Email:
+          input#email.form-control(type='email', placeholder='Enter Email', name='email', required='')
         .form-group
-          label.control-label.col-sm-3(for='git_url') GITURL:
-          .col-sm-9
-            input#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
+          label.control-label(for='git_url') GITURL:
+          input#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
         .form-group
-          label.control-label.col-sm-3(for='doc_theme') Doc Theme:
-          .col-sm-9
-            select#doc_theme.form-control(type='text', placeholder='Enter Documentation Theme', name='doc_theme')
-             option(val='fossasia_theme') fossasia_theme
-             option(val='alabaster') alabaster
-             option(val='classic') classic
-             option(val='sphinxdoc') sphinxdoc
-             option(val='scrolls') scrolls
-             option(val='agogo') agogo
-             option(val='traditional') traditional
-             option(val='nature') nature
-             option(val='haiku') haiku
-             option(val='pyramid') pyramid
-             option(val='bizstyle') bizstyle
-             option(value='') custom
-        .form-group
-          .col-sm-offset-3.col-sm-9
+          label.control-label(for='doc_theme') Doc Theme:
+          select#doc_theme.form-control(name='doc_theme')
+            option(value='fossasia_theme') fossasia_theme
+            option(value='alabaster') alabaster
+            option(value='classic') classic
+            option(value='sphinxdoc') sphinxdoc
+            option(value='scrolls') scrolls
+            option(value='agogo') agogo
+            option(value='traditional') traditional
+            option(value='nature') nature
+            option(value='haiku') haiku
+            option(value='pyramid') pyramid
+            option(value='bizstyle') bizstyle
+            option(value='') custom
+        .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
-            a.btn.btn-default(type='button' id='btnDownload') Download as Zip
-            a.btn.btn-default(type='button' id='btnPreview' target='_blank') Preview
+            .row
+              a.btn.btn-default(type='button' id='btnDownload') Download
+              a.btn.btn-default(type='button' id='btnPreview' target='_blank') Preview
       .progress
         #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
           span.sr-only
