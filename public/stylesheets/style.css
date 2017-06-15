@@ -30,3 +30,7 @@ a {
   display: none;
   width: -moz-fit-content;
 }
+#btnPreview {
+  display: none;
+  width: -moz-fit-content;
+}

@@ -18,6 +18,8 @@ $(function () {
   socket.on('success', function (data) {
     $('#btnDownload').css("display", "block");
     $('#btnDownload').attr("href", "/download/" + data.email +"/" + data.uniqueId);
+    $('#btnPreview').css("display", "block");
+    $('#btnPreview').attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
   });
 });
 
@@ -27,12 +29,8 @@ function getData() {
   $.each(formData, function (i, field) {
     if (field.name === "email") { data.email = field.value; }
     if (field.name === "git_url") { data.gitUrl = field.value; }
-    if (field.name === "author") { data.author = field.value; }
     if (field.name === "doc_theme") { data.docTheme = field.value; }
-    if (field.name === "doc_path") { data.docPath = field.value; }
-    if (field.name === "project_name") { data.projectName = field.value; }
-    if (field.name === "version") { data.version = field.value; }
   });
-  
+
   return data;
 }
