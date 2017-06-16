@@ -26,11 +26,59 @@ a {
   margin-bottom: 5px;
 }
 
+#buttons {
+  text-align: center;
+}
+
+#btnGenerate {
+  margin-bottom: 20px;
+}
+
 #btnDownload {
   display: none;
   width: -moz-fit-content;
+  margin-right: 10px;
 }
+
 #btnPreview {
   display: none;
   width: -moz-fit-content;
+  margin-left: 10px;
+}
+
+#notification-container {
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  margin-left: -50px;
+  padding-left: 0;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: opacity 600ms, visibility 600ms;
+  transition: opacity 600ms, visibility 600ms;
+}
+
+.notification {
+  margin: 0 auto;
+  max-width: 60%;
+  z-index: 8000;
+  background-color: #fc4;
+  border: 0;
+  padding: 1px 8px;
+  position: relative;
+  top: 0;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
+  opacity: .9;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 100px;
+  width: -moz-fit-content;
+  display: inline-block;
+}
+
+.error {
+  color: red;
 }
