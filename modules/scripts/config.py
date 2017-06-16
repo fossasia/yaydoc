@@ -4,6 +4,8 @@ import os
 import argparse
 import yaml
 
+from datetime import datetime
+
 # FileNotFoundError is not available on python 2.
 # To handle that case, defining it on NameError
 # source: https://stackoverflow.com/a/21368622/4127836
@@ -27,8 +29,9 @@ def update_dict(base, head):
 
 
 def _get_default_config(username, reponame):
+    utctime = datetime.utcnow().strftime('%b %d, %Y')
     conf = {'metadata': {'projectname': reponame,
-                         'version': 'development',
+                         'version': utctime,
                          'author': username,
                         },
             'build': {'markdown_flavour': 'markdown_github',
@@ -55,7 +58,7 @@ def _export_env(commands, dictionary):
     fmtstr = 'export {key}="{value}"'
     for key, value in dictionary.items():
         envvar = key.upper()
-        if envvar not in os.environ:
+        if os.environ.get(envvar, '') == '':
             commands.append(fmtstr.format(key=envvar, value=str(value)))
 
 
