@@ -1,1 +1,192 @@
-/* This file intentionally left blank. */
+body{
+  font-family: 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #777;
+}
+.navbar-default{
+  background: #333;
+  border-color: inherit;
+}
+.navbar-default .navbar-nav>li>a{
+  color: #fff;
+}
+
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover{
+  background: none;
+}
+
+.navbar-default .navbar-toggle{
+  border:0px;
+}
+.navbar-default .navbar-toggle .icon-bar{
+  background: #fff;
+}
+.navbar-default .navbar-brand{
+  color: #fff;
+}
+.navbar-default .navbar-text{
+  color: #fff;
+}
+.footer .top-border {
+  height: 2px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  margin-bottom: 32px;
+}
+.footer .menu {
+  overflow: visible;
+}
+.footer .menu li {
+  top: 0px;
+}
+.footer .menu li a {
+  padding-bottom: 0px;
+}
+.footer .menu li .btn {
+  min-width: 0px;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.footer .menu li a {
+  diplay: inline-block;
+  position: relative;
+  border: none;
+}
+.footer .menu li a:hover {
+  border: none;
+}
+.footer .back-to-top {
+  padding-right: 42px;
+}
+.footer .menu li a i {
+  font-size: 36px;
+  position: absolute;
+  right: 0px;
+  top: -12px;
+}
+@media all and (max-width: 767px) {
+  .footer .text-right {
+    text-align: left !important;
+  }
+  .footer .menu {
+    margin-top: 24px;
+  }
+  .footer .menu li {
+    float: none;
+    margin-bottom: 12px;
+  }
+}
+footer.classic {
+  padding: 72px 0px 36px 0px;
+  background: #f5f5f5;
+}
+footer.classic .menu li {
+  float: none;
+  margin-bottom: 12px;
+}
+footer.classic .menu li a {
+  color: #333333;
+  padding-bottom: 0px;
+  font-weight: 600;
+}
+footer.classic span.lead {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+footer.short {
+  background: #333333;
+  color: #fff;
+  padding: 72px 0px;
+}
+footer.short .top-border {
+  height: 1px !important;
+}
+@media all and (max-width: 767px) {
+  footer.classic div {
+    margin-bottom: 18px;
+  }
+}
+.contact-methods li {
+  margin-bottom: 12px;
+}
+.contact-methods li:last-child {
+  margin-bottom: 0px;
+}
+.contact-methods i {
+  font-size: 36px;
+  color: #333333;
+}
+.contact-methods span {
+  display: inline-block;
+  position: relative;
+  bottom: 10px;
+  left: 8px;
+  font-size: 16px;
+}
+footer.classic .social-profiles {
+  margin-top: 36px;
+}
+.social-profiles {
+  display: inline-block;
+  overflow: hidden;
+}
+.social-profiles li {
+  float: left;
+  margin-right: 36px;
+}
+.social-profiles li:last-child {
+  margin-right: 0px;
+}
+.social-profiles li a {
+  color: #333333;
+}
+
+
+
+.menu {
+  display: inline-block;
+  text-align: left;
+  line-height: 1;
+}
+.menu li {
+  float: left;
+  margin-right: 32px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  position: relative;
+  top: 4px;
+}
+.menu li:last-child {
+  margin-right: 0px;
+}
+.menu li:nth-las-child(2) {
+  margin-right: 12px;
+}
+.menu li a {
+  color: #fff;
+  display: inline-block;
+  padding-bottom: 24px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+}
+.menu li a:hover {
+  border-bottom: 2px solid #fff;
+}
+.footer {
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  min-height: 185px;
+}
+.body-content{
+  min-height: 70vh;
+}
+@media (max-width:600px) {
+  .menu{
+    display: inline-grid;
+  }
+}
