@@ -11,7 +11,7 @@ function clean() {
 
 # Generate documentation
 alias exit=return
-source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/unify/generate.sh)
+source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/generate.sh)
 GENERATE_STATUS=$?
 unalias exit
 if [ $GENERATE_STATUS -ne 0 ]; then
