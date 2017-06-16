@@ -46,6 +46,12 @@ a {
   margin-left: 10px;
 }
 
+#btnDeploy {
+  display: none;
+  width: -moz-fit-content;
+  margin-left: 10px;
+}
+
 #notification-container {
   position: absolute;
   text-align: center;

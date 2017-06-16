@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  script(src="/socket.io/socket.io.js")
+  script.
+   var socket = io();
+   socket.emit('deploy', {
+   'email': "#{email}",
+   'gitURL': "#{gitURL}",
+   'uniqueId': "#{uniqueId}",
+   'encryptedToken': "#{token}",
+   'username': "#{username}"
+   })
+
+   socket.on('deploy-logs', function (data) {
+   $('#messages').append($('<li>').text(data.data));
+   $("#progress").css("width", data.donePercent + "%");
+   })
+
+   socket.on('deploy-success', function(data) {
+   $("#progress").css("width", "100%");
+    $("#main-content").append('<br><center><a class="btn btn-default" href="'+ data.pagesURL +'" target="_blank">GH-PAGES</a></center>')
+   })
+
+  .container
+   .col-md-6.col-md-offset-3#main-content
+    .progress
+      #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
+        span.sr-only
+    .logs.pre-scrollable
+      h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
+      ul#messages

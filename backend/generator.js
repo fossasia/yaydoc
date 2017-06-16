@@ -2,14 +2,13 @@ var exports = module.exports = {};
 
 var uuidV4 = require("uuid/v4");
 var validation = require("../public/scripts/validation.js");
+var spawn = require('child_process').spawn;
 
 exports.executeScript = function (socket, formData) {
   if (!validation.isValid(formData)) {
     socket.emit('err-logs', "Failed to generated documentation due to an error in input fields");
     return false;
   }
-  var spawn = require('child_process').spawn;
-
   var email = formData.email;
   var gitUrl = formData.gitUrl;
   var docTheme = formData.docTheme;
@@ -41,7 +40,7 @@ exports.executeScript = function (socket, formData) {
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     if (code === 0) {
-      socket.emit('success', {email: email, uniqueId: uniqueId});
+      socket.emit('success', {email: email, uniqueId: uniqueId, gitUrl: gitUrl});
     } else {
       socket.emit('failure', {errorCode: code});
     }
