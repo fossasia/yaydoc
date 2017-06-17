@@ -103,6 +103,12 @@ if [ -n "$PYTHON_PACKAGE" ]; then
   sphinx-apidoc -o source/ $ROOT_DIR/$PYTHON_PACKAGE
 fi
 
+if [ ! -f index.rst ]; then
+  echo -e "No index.rst found. Auto generating...\n"
+  python $BASE/modules/scripts/genindex.py $ROOT_DIR
+  echo -e "Auto generated index.rst\n"
+fi
+
 echo -e "Starting Documentation Generation...\n"
 make html
 if [ $? -ne 0 ]; then
