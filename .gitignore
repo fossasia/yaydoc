@@ -1,3 +1,5 @@
 node_modules/
 temp/
 .idea/
+.env
+npm-debug.log

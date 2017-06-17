@@ -4,11 +4,17 @@ var favicon = require("serve-favicon");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
+var passport = require("passport");
+var githubStrategy = require("passport-github").Strategy;
+var dotenv = require("dotenv");
+var session = require("express-session");
 
+dotenv.config({path: './.env'})
 /**
  * Backend Scripts
  */
 var generator = require("./backend/generator");
+var ghdeploy = require("./backend/ghdeploy")
 
 
 var app = express();
@@ -32,7 +38,32 @@ app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true,
+  store: new session.MemoryStore()
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
+
+passport.use(new githubStrategy({
+  clientID: process.env.CLIENTID,
+  clientSecret: process.env.CLIENTSECRET,
+  callbackURL: process.env.CALLBACKURL
+}, function (accessToken, refreshToken, profile, cb) {
+  profile.token = accessToken;
+  cb(null, profile)
+}))
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
 
 app.use("/preview", express.static(path.join(__dirname, "temp")))
 
@@ -44,6 +75,9 @@ app.use("/", index);
 io.on('connection', function(socket){
   socket.on('execute', function (formData) {
     generator.executeScript(socket, formData);
+  });
+  socket.on('deploy', function (data) {
+    ghdeploy.deployPages(socket, data);
   });
 });
 
