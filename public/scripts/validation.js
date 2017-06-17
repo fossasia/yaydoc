@@ -5,7 +5,7 @@
     isValid: function(formData) {
       var valid = true;
       var regex = '';
-      if (formData.email === "" || formData.gitUrl === "" || formData.docTheme === "") {
+      if (formData.email === "" || formData.gitUrl === "") {
         messages.push("Empty field(s)");
         valid = false;
       }
