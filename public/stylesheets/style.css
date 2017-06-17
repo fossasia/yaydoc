@@ -88,3 +88,11 @@ a {
 .error {
   color: red;
 }
+
+.es-list li[disabled] {
+  background-color: black;
+  color: white;
+  font-size: .7em;
+  opacity: 1;
+  font-weight: 700;
+}
