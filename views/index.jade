@@ -19,6 +19,7 @@ block content
           label.control-label(for='doc_theme') Doc Theme:
           select#doc_theme.form-control(name='doc_theme')
             option(value='fossasia_theme') fossasia_theme
+            option(disabled='') Built-in Themes
             option(value='alabaster') alabaster
             option(value='classic') classic
             option(value='sphinxdoc') sphinxdoc
@@ -29,7 +30,10 @@ block content
             option(value='haiku') haiku
             option(value='pyramid') pyramid
             option(value='bizstyle') bizstyle
-            option(value='') custom
+            option(disabled='') PyPi Custom Themes
+            option(value='editorial_sphinx_theme') editorial_sphinx_theme
+            option(value='sphinx_adc_theme') sphinx_adc_theme
+            option(value='rtcat_sphinx_theme') rtcat_sphinx_theme
         .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
             .row
@@ -42,3 +46,5 @@ block content
       .logs.pre-scrollable
         h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
         ul#messages
+  script.
+    $('#doc_theme').editableSelect();
