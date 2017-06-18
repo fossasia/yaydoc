@@ -10,15 +10,17 @@ exports.executeScript = function (socket, formData) {
     return false;
   }
   var email = formData.email;
-  var gitUrl = formData.gitUrl;
+  var username = formData.username;
+  var reponame = formData.reponame;
   var docTheme = formData.docTheme;
   var uniqueId = uuidV4();
-  var webUI = "true"
+  var webUI = "true";
 
   var donePercent = 0;
 
   const args = [
-    "-g", gitUrl,
+    "-n", username,
+    "-r", reponame,
     "-t", docTheme,
     "-m", email,
     "-u", uniqueId,
@@ -40,7 +42,7 @@ exports.executeScript = function (socket, formData) {
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     if (code === 0) {
-      socket.emit('success', {email: email, uniqueId: uniqueId, gitUrl: gitUrl});
+      socket.emit('success', {email: email, uniqueId: uniqueId, username: username, reponame: reponame});
     } else {
       socket.emit('failure', {errorCode: code});
     }

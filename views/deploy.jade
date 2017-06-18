@@ -6,7 +6,7 @@ block content
    var socket = io();
    socket.emit('deploy', {
    'email': "#{email}",
-   'gitURL': "#{gitURL}",
+   'reponame': "#{reponame}",
    'uniqueId': "#{uniqueId}",
    'encryptedToken': "#{token}",
    'username': "#{username}"
