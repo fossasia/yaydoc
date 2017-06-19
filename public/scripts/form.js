@@ -66,9 +66,9 @@ function getData() {
   var data = {};
   var formData = $("form").serializeArray();
   $.each(formData, function (i, field) {
-    if (field.name === "email") { data.email = field.value; }
-    if (field.name === "git_url") { data.gitUrl = field.value; }
-    if (field.name === "doc_theme") { data.docTheme = field.value; }
+    if (field.name === "email") { data.email = field.value.trim(); }
+    if (field.name === "git_url") { data.gitUrl = field.value.trim(); }
+    if (field.name === "doc_theme") { data.docTheme = field.value.trim(); }
   });
 
   return data;
