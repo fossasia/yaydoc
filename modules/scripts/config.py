@@ -29,6 +29,9 @@ def update_dict(base, head):
 
 
 def _get_default_config(username, reponame):
+    # All supported parameters should be defined here
+    # Any parameter with no default value should have
+    # None as the default set
     utctime = datetime.utcnow().strftime('%b %d, %Y')
     conf = {'metadata': {'projectname': reponame,
                          'version': utctime,
@@ -39,6 +42,9 @@ def _get_default_config(username, reponame):
                       'doctheme': 'fossasia_theme',
                       'docpath': 'docs'
                      },
+            'publish': {'ghpages': {'docurl': None,
+                                   }
+                       },
            }
     return conf
 
@@ -52,14 +58,35 @@ def _get_yaml_config():
     return conf
 
 
-def _export_env(commands, dictionary):
+def _get_env_dict(conf):
+    # Add new environment variables in the returned dict
+    metadata = conf['metadata']
+    build = conf['build']
+    publish = conf['publish']
+    
+    return {'PROJECTNAME': metadata['projectname'],
+            'VERSION': metadata['version'],
+            'AUTHOR': metadata['author'],
+
+            'MARKDOWN_FLAVOUR': build['markdown_flavour'],
+            'LOGO': build['logo'],
+            'DOCTHEME': build['doctheme'],
+            'DOCPATH': build['docpath'],
+
+            'DOCURL': publish['ghpages']['docurl'],
+           }
+
+def _export_env(envdict):
     # appends command to export environment variables from dictionary
     # keys are converted to upper case before creating variables
+    commands = []
     fmtstr = 'export {key}="{value}"'
-    for key, value in dictionary.items():
-        envvar = key.upper()
-        if os.environ.get(envvar, '') == '':
-            commands.append(fmtstr.format(key=envvar, value=str(value)))
+    for key, value in envdict.items():
+        # This also overrides environment variables with empty string as
+        # value so, key not in os.environ would not work here
+        if os.environ.get(key, '') == '' and value is not None:
+            commands.append(fmtstr.format(key=key, value=str(value)))
+    return '\n'.join(commands) + '\n'
 
 
 def main():
@@ -71,16 +98,8 @@ def main():
     conf = _get_default_config(args.username, args.reponame)
     update_dict(conf, _get_yaml_config())
 
-    metadata = conf.get('metadata', {})
-    build = conf.get('build', {})
-    ghpages = conf.get('publish', {}).get('ghpages', {})
-
-    commands = []
-    _export_env(commands, metadata)
-    _export_env(commands, build)
-    _export_env(commands, ghpages)
-
-    sys.stdout.write('\n'.join(commands) + '\n')
+    command = _export_env(_get_env_dict(conf))
+    sys.stdout.write(command)
 
 
 if __name__ == '__main__':
