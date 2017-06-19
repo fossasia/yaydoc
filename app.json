@@ -1,0 +1,45 @@
+{
+  "name": "Yaydoc",
+  "description": "Automatic Documentation Generation and Deployment Project.",
+  "keywords": [
+    "documentation",
+    "fossasia",
+    "node",
+    "sphinx"
+  ],
+  "repository": "https://github.com/fossasia/yaydoc",
+  "env": {
+    "PYPANDOC_PANDOC": {
+      "description": "Set path for pandoc.",
+      "value": "~/vendor/pandoc/bin/pandoc"
+    },
+    "CALLBACKURL": {
+      "value": "/callback"
+    },
+    "SECRET": {
+      "generator": "secret"
+    },
+    "CLIENTID": {
+      "description": "Unique ClientID assigned while registering OAuth App in Github",
+      "required": true
+    },
+    "CLIENTSECRET": {
+      "description": "Unique ClientSecret assigned while registering OAuth App in Github",
+      "required": true
+    },
+    "ON_HEROKU": {
+      "value": "true"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    },
+    {
+      "url": "https://github.com/imujjwal96/heroku-buildpack-pandoc.git"
+    }
+  ]
+}
