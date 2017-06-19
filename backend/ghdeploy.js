@@ -3,10 +3,10 @@ var spawn = require('child_process').spawn;
 
 exports.deployPages = function (socket, data) {
   var donePercent = 0;
-  var repoName = data.gitURL.split("/")[4].split(".")[0];
+  var repoName = data.reponame;
   var webUI = "true";
-  var username = data.username
-  var oauthToken = crypter.decrypt(data.encryptedToken)
+  var username = data.username;
+  var oauthToken = crypter.decrypt(data.encryptedToken);
   const args = [
     "-e", data.email,
     "-i", data.uniqueId,

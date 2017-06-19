@@ -2,6 +2,7 @@ extends layout
 
 block content
   script(src="/socket.io/socket.io.js")
+  script(src="/scripts/styles.js")
   script(src="/scripts/validation.js")
   script(src="/scripts/form.js")
   #notification-container
@@ -9,12 +10,20 @@ block content
   .container
     .col-md-6.col-md-offset-3
       form(method='post' action='/generate')
-        .form-group
+        .form-group.has-feedback#email-group
           label.control-label(for='email') Email:
           input#email.form-control(type='email', placeholder='Enter Email', name='email', required='')
-        .form-group
-          label.control-label(for='git_url') GITURL:
-          input#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
+          span#email-span.glyphicon.form-control-feedback
+        .col-md-6(style='padding:0')
+          .form-group.has-feedback#username-group
+            label.control-label(for='username') Github Username:
+            input#username.form-control(type='text', placeholder='Github Username', name='username')
+            span#username-span.glyphicon.form-control-feedback
+        .col-md-6(style='padding:0')
+          .form-group.has-feedback#reponame-group
+            label.control-label(for='reponame') Repository Name:
+            input#reponame.form-control(type='text', placeholder='Repository Name', name='reponame', disabled='true')
+            span#reponame-span.glyphicon.form-control-feedback
         .form-group
           label.control-label(for='doc_theme') Doc Theme:
           select#doc_theme.form-control(name='doc_theme')

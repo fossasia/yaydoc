@@ -1,10 +1,11 @@
 #!/bin/bash
 
-while getopts g:t:m:u:w: option
+while getopts n:r:t:m:u:w: option
 do
  case "${option}"
  in
- g) GITURL=${OPTARG};;
+ n) USERNAME=${OPTARG};;
+ r) REPONAME=${OPTARG};;
  t) export DOCTHEME=${OPTARG};;
  m) EMAIL=${OPTARG};;
  u) UNIQUEID=${OPTARG};;
@@ -19,18 +20,17 @@ if [ "${WEBUI:-false}" == "true" ]; then
   mkdir -p temp/${EMAIL} && cd $_
 
   echo -e "Cloning Repository...\n"
-  git clone -q ${GITURL} "$UNIQUEID" && cd $_
+  git clone -q https://github.com/${USERNAME}/${REPONAME}.git "$UNIQUEID" && cd $_
   echo -e "Repository Cloned Successfully!\n"
 else
   git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
   BASE=$(pwd)/yaydocclone
+
+  REPO=$(git config remote.origin.url)
+  URL_SPLIT=(${REPO//// })
+  USERNAME=${URL_SPLIT[2]}
+  REPONAME=(${URL_SPLIT[3]//./ })
 fi
-
-REPO=$(git config remote.origin.url)
-URL_SPLIT=(${REPO//// })
-
-USERNAME=${URL_SPLIT[2]}
-REPONAME=(${URL_SPLIT[3]//./ })
 
 ROOT_DIR=$(pwd)
 

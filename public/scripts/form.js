@@ -11,16 +11,27 @@ $(function () {
       socket.emit('execute', formData);
       $(this).attr("disabled", "none");
     } else {
-      $('.notification').append($('<li>')).text(validation.getMessages());
-      $('#notification-container').css("visibility", "visible");
-      $('#notification-container').css("opacity", "1");
+      styles.showNotification(validation.getMessages());
       validation.setMessages([]);
-      setTimeout(function() {
-        $('#notification-container').css("visibility", "hidden");
-        $('#notification-container').css("opacity", "0");
-      }, 5000)
     }
+  });
 
+  $('#username').blur(function () {
+    if (validation.validateUsername($('#username').val()) === true) {
+      styles.validInput('username');
+      $('#reponame').attr("disabled", false);
+    } else {
+      styles.invalidInput('username');
+      $('#reponame').attr("disabled", true);
+    }
+  });
+
+  $('#reponame').blur(function () {
+    if (validation.validateReponame($('#username').val(), $('#reponame').val()) === true) {
+      styles.validInput('reponame');
+    } else {
+      styles.invalidInput('reponame');
+    }
   });
 
   socket.on('logs', function (data) {
@@ -33,29 +44,15 @@ $(function () {
   });
 
   socket.on('success', function (data) {
-    $('#btnDownload').css("display", "inline");
-    $('#btnDownload').attr("href", "/download/" + data.email +"/" + data.uniqueId);
-    $('#btnPreview').css("display", "inline");
-    $('#btnPreview').attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
-    $('.notification').append($('<li>')).text("Documentation Generated Successfully");
-    $('#notification-container').css("visibility", "visible");
-    $('#notification-container').css("opacity", "1");
-    setTimeout(function() {
-      $('#notification-container').css("visibility", "hidden");
-      $('#notification-container').css("opacity", "0");
-    }, 5000)
-    $('#btnDeploy').css("display", "inline");
-    $('#btnDeploy').attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
+    $('#btnDownload').css("display", "inline").attr("href", "/download/" + data.email +"/" + data.uniqueId);
+    $('#btnPreview').css("display", "inline").attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
+    $('#btnDeploy').css("display", "inline").attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+
+      '&username='+data.username+'&reponame='+data.reponame);
+    styles.showNotification("Documentation Generated Successfully");
   });
 
   socket.on('failure', function (data) {
-    $('.notification').append($('<li>')).text("Failed to Generate Documentation: Error " + data.errorCode);
-    $('#notification-container').css("visibility", "visible");
-    $('#notification-container').css("opacity", "1");
-    setTimeout(function() {
-      $('#notification-container').css("visibility", "hidden");
-      $('#notification-container').css("opacity", "0");
-    }, 5000)
+    styles.showNotification("Failed to Generate Documentation: Error " + data.errorCode);
   })
 });
 
@@ -67,7 +64,8 @@ function getData() {
   var formData = $("form").serializeArray();
   $.each(formData, function (i, field) {
     if (field.name === "email") { data.email = field.value.trim(); }
-    if (field.name === "git_url") { data.gitUrl = field.value.trim(); }
+    if (field.name === "username") { data.username = field.value.trim(); }
+    if (field.name === "reponame") { data.reponame = field.value.trim(); }
     if (field.name === "doc_theme") { data.docTheme = field.value.trim(); }
   });
 

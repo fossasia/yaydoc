@@ -9,13 +9,13 @@ var githubStrategy = require("passport-github").Strategy;
 var dotenv = require("dotenv");
 var session = require("express-session");
 
-dotenv.config({path: './.env'})
+dotenv.config({path: './.env'});
+
 /**
  * Backend Scripts
  */
 var generator = require("./backend/generator");
-var ghdeploy = require("./backend/ghdeploy")
-
+var ghdeploy = require("./backend/ghdeploy");
 
 var app = express();
 
@@ -55,7 +55,7 @@ passport.use(new githubStrategy({
 }, function (accessToken, refreshToken, profile, cb) {
   profile.token = accessToken;
   cb(null, profile)
-}))
+}));
 
 passport.serializeUser(function(user, cb) {
   cb(null, user);
@@ -65,7 +65,7 @@ passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
 });
 
-app.use("/preview", express.static(path.join(__dirname, "temp")))
+app.use("/preview", express.static(path.join(__dirname, "temp")));
 
 app.use("/", index);
 
@@ -76,6 +76,7 @@ io.on('connection', function(socket){
   socket.on('execute', function (formData) {
     generator.executeScript(socket, formData);
   });
+
   socket.on('deploy', function (data) {
     ghdeploy.deployPages(socket, data);
   });
