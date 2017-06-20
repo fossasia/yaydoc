@@ -71,6 +71,7 @@ function getData() {
     if (field.name === "email") { data.email = field.value.trim(); }
     if (field.name === "git_url") { data.gitUrl = field.value.trim(); }
     if (field.name === "doc_theme") { data.docTheme = field.value.trim(); }
+    if (field.name === "debug" ) { data.debug = field.value; }
   });
 
   return data;

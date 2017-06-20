@@ -26,6 +26,10 @@ a {
   margin-bottom: 5px;
 }
 
+#debug {
+  margin-left: 5px;
+}
+
 #buttons {
   text-align: center;
 }

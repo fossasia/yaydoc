@@ -1,11 +1,12 @@
 #!/bin/bash
 
-while getopts g:t:m:u:w: option
+while getopts g:t:d:m:u:w: option
 do
  case "${option}"
  in
  g) GITURL=${OPTARG};;
  t) export DOCTHEME=${OPTARG};;
+ d) export DEBUG=${OPTARG};;
  m) EMAIL=${OPTARG};;
  u) UNIQUEID=${OPTARG};;
  w) WEBUI=${OPTARG};;
@@ -106,6 +107,11 @@ fi
 if [ ! -f index.rst ]; then
   echo -e "No index.rst found. Auto generating...\n"
   python $BASE/modules/scripts/genindex.py $ROOT_DIR
+  if [ "${DEBUG:-false}" == "true" ]; then
+    echo -e "\n--------------------------------------\n"
+    cat index.rst
+    echo -e "\n--------------------------------------\n"
+  fi
   echo -e "Auto generated index.rst\n"
 fi
 
