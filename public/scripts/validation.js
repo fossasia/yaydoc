@@ -35,8 +35,12 @@
 
     setMessages: function (val) {
       messages = val;
-    }
+    },
 
+    isGithubHTTPS: function (url) {
+      regex = /^(http|https):\/\/github.com\/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}\/[a-z\d-]{0,38}(\.git)?/
+      return regex.test(url)
+    }
   };
 
   if ((typeof module) === 'undefined') {
@@ -45,4 +49,3 @@
     module.exports = obj;
   }
 })();
-

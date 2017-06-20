@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var passport = require("passport")
 var crypter = require("../util/crypter.js")
+var validation = require("../public/scripts/validation.js");
 /* GET home page. */
 router.get("/", function(req, res, next) {
   res.render("index", { title: "Yaydoc" });
@@ -14,10 +15,17 @@ router.get('/download/:email/:uniqueId', function (req, res, next) {
 });
 
 router.get("/github", function (req, res, next) {
-  req.session.uniqueId = req.query.uniqueId;
-  req.session.email = req.query.email
-  req.session.gitURL = req.query.gitURL
-  next()
+  if (validation.isGithubHTTPS(req.query.gitURL)) {
+    req.session.uniqueId = req.query.uniqueId;
+    req.session.email = req.query.email
+    req.session.gitURL = req.query.gitURL
+    next()
+  } else {
+    next({
+      message: "Invalid github url",
+      status: 400
+    })
+  }
 }, passport.authenticate('github', {
   scope: [
     'public_repo',

@@ -44,8 +44,10 @@ $(function () {
       $('#notification-container').css("visibility", "hidden");
       $('#notification-container').css("opacity", "0");
     }, 5000)
-    $('#btnDeploy').css("display", "inline");
-    $('#btnDeploy').attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
+    if (validation.isGithubHTTPS(data.gitUrl)) {
+      $('#btnDeploy').css("display", "inline");
+      $('#btnDeploy').attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
+    }
   });
 
   socket.on('failure', function (data) {
