@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "./node_modules/.bin/mocha tests"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -13,6 +14,7 @@
     "express": "~4.15.2",
     "express-session": "^1.15.3",
     "jade": "~1.11.0",
+    "mocha": "^3.4.2",
     "morgan": "~1.8.1",
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
