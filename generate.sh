@@ -63,14 +63,13 @@ cd $ROOT_DIR
 
 cp -a ${BASE}/modules/scripts/ $BUILD_DIR/
 cp -a ${BASE}/modules/templates/ $BUILD_DIR/
-cp -a ${BASE}/modules/requirements.txt $BUILD_DIR/
 
 cd ${BUILD_DIR}
 mkdir _themes
 
 # Setting up documentation sources
 echo -e "Setting up documentation sources\n"
-sphinx-quickstart --ext-githubpages -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO > /dev/null
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO > /dev/null
 if [ $? -ne 0 ]; then
   echo -e "Failed to initialize build process.\n"
   exit 1
@@ -84,12 +83,25 @@ cp -a ${BASE}/fossasia_theme $BUILD_DIR/_themes/
 
 # Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then
-    echo >> $BUILD_DIR/conf.py
-    cat $DOCPATH/conf.py >> $BUILD_DIR/conf.py
+  echo >> $BUILD_DIR/conf.py
+  cat $DOCPATH/conf.py >> $BUILD_DIR/conf.py
 fi
 
 rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ $BUILD_DIR/
 cd $BUILD_DIR
+
+# Extracting docstrings if PYTHON_PACKAGE is defined
+if [ -n "$PYTHON_PACKAGE" ]; then
+  # sphinx-build imports the module while building source files. To avoid
+  # ImportError, install any packages in requirements.txt of the project
+  # if available
+  if [ -f $ROOT_DIR/requirements.txt ]; then
+    echo -e "Installing requirements for sphinx-apidoc"
+    pip install -q -r $ROOT_DIR/requirements.txt
+    echo -e "Installed successfully"
+  fi
+  sphinx-apidoc -o source/ $ROOT_DIR/$PYTHON_PACKAGE
+fi
 
 echo -e "Starting Documentation Generation...\n"
 make html

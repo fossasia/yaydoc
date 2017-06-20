@@ -40,7 +40,8 @@ def _get_default_config(username, reponame):
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
                       'doctheme': 'fossasia_theme',
-                      'docpath': 'docs'
+                      'docpath': 'docs',
+                      'python_package': None,
                      },
             'publish': {'ghpages': {'docurl': None,
                                    }
@@ -72,6 +73,7 @@ def _get_env_dict(conf):
             'LOGO': build['logo'],
             'DOCTHEME': build['doctheme'],
             'DOCPATH': build['docpath'],
+            'PYTHON_PACKAGE': build['python_package'],
 
             'DOCURL': publish['ghpages']['docurl'],
            }
