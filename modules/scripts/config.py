@@ -36,6 +36,7 @@ def _get_default_config(username, reponame):
     conf = {'metadata': {'projectname': reponame,
                          'version': utctime,
                          'author': username,
+                         'subproject': [],
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
@@ -64,10 +65,18 @@ def _get_env_dict(conf):
     metadata = conf['metadata']
     build = conf['build']
     publish = conf['publish']
+
+    subproject = metadata['subproject']
+    if not isinstance(subproject, list):
+        subproject = [subproject]
     
     return {'PROJECTNAME': metadata['projectname'],
             'VERSION': metadata['version'],
             'AUTHOR': metadata['author'],
+            'SUBPROJECT_URLS': ','.join(project['url']
+                                        for project in subproject),
+            'SUBPROJECT_DOCPATHS': ','.join(project.get('docpath', 'docs')
+                                            for project in subproject),
 
             'MARKDOWN_FLAVOUR': build['markdown_flavour'],
             'LOGO': build['logo'],
