@@ -1,8 +1,10 @@
-const assert = require('assert')
-const crypter = require('../util/crypter')
-const spawn = require('child_process').spawn
-const uuidV4 = require("uuid/v4")
-const fs = require('fs')
+require('dotenv').config({ path: './.env'});
+
+const assert = require('assert');
+const crypter = require('../util/crypter');
+const spawn = require('child_process').spawn;
+const uuidV4 = require("uuid/v4");
+const fs = require('fs');
 
 describe('crypter test', () => {
   it('decrytion of encrypted value should be same as original value', () =>{
