@@ -34,6 +34,9 @@ block content
             option(value='editorial_sphinx_theme') editorial_sphinx_theme
             option(value='sphinx_adc_theme') sphinx_adc_theme
             option(value='rtcat_sphinx_theme') rtcat_sphinx_theme
+        .form-group
+            label.control-label(for='debug') Debug mode
+            input#debug(type='checkbox', value='true', name='debug', checked=false)
         .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
             .row

@@ -37,6 +37,7 @@ def _get_default_config(username, reponame):
                          'version': utctime,
                          'author': username,
                          'subproject': [],
+                         'debug': False,
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
@@ -77,6 +78,7 @@ def _get_env_dict(conf):
                                         for project in subproject),
             'SUBPROJECT_DOCPATHS': ','.join(project.get('docpath', 'docs')
                                             for project in subproject),
+            'DEBUG': "true" if metadata['debug'] is True else "false",
 
             'MARKDOWN_FLAVOUR': build['markdown_flavour'],
             'LOGO': build['logo'],

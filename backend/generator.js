@@ -13,6 +13,7 @@ exports.executeScript = function (socket, formData) {
   var email = formData.email;
   var gitUrl = formData.gitUrl;
   var docTheme = formData.docTheme;
+  var debug = formData.debug;
   var uniqueId = uuidV4();
   var webUI = "true";
 
@@ -22,6 +23,7 @@ exports.executeScript = function (socket, formData) {
     "-g", gitUrl,
     "-t", docTheme,
     "-m", email,
+    "-d", debug,
     "-u", uniqueId,
     "-w", webUI
   ];
