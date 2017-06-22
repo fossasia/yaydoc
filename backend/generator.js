@@ -1,5 +1,6 @@
 var exports = module.exports = {};
 
+var mailer = require('./mailer');
 var uuidV4 = require("uuid/v4");
 var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
@@ -13,7 +14,7 @@ exports.executeScript = function (socket, formData) {
   var gitUrl = formData.gitUrl;
   var docTheme = formData.docTheme;
   var uniqueId = uuidV4();
-  var webUI = "true"
+  var webUI = "true";
 
   var donePercent = 0;
 
@@ -40,7 +41,9 @@ exports.executeScript = function (socket, formData) {
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     if (code === 0) {
-      socket.emit('success', {email: email, uniqueId: uniqueId, gitUrl: gitUrl});
+      var data = { email: email, uniqueId: uniqueId, gitUrl: gitUrl };
+      mailer.sendEmail(data);
+      socket.emit('success', data);
     } else {
       socket.emit('failure', {errorCode: code});
     }

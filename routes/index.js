@@ -5,6 +5,7 @@ var crypter = require("../util/crypter.js")
 var validation = require("../public/scripts/validation.js");
 /* GET home page. */
 router.get("/", function(req, res, next) {
+  exports.hostname = req.get('host');
   res.render("index", { title: "Yaydoc" });
 });
 
