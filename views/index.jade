@@ -37,14 +37,45 @@ block content
         .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
             .row
-              a.btn.btn-default(type='button' id='btnDownload') Download
-              a.btn.btn-default(type='button' id='btnPreview' target='_blank') Preview
-              a.btn.btn-default(type='button' id='btnDeploy') Deploy
+              a.btn.btn-default(id='btnDownload') Download
+              a.btn.btn-default(id='btnPreview' target='_blank') Preview
+              a.btn.btn-default(id='btnDeploy' data-toggle='modal', data-target='#deployModal') Deploy
       .progress
         #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
           span.sr-only
       .logs.pre-scrollable
         h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
         ul#messages
+  #deployModal.modal.fade(role='dialog')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal') ×
+          h5.modal-title Github Deployment
+        .modal-body
+          p
+            | In order to enable continuous deployment of Documentation, add the following content to your &nbsp;
+            code .travis.yml
+            | , making necessary changes
+          pre
+            | # Add environment variable following description in http://yaydoc.fossasia.org/#usage
+            | env:
+            |   global:
+            |     - DOCPATH=&lt;doc-path&gt;
+            | # Add SSH Key following description in http://yaydoc.fossasia.org/#using-ssh
+            | before_deploy:
+            | - openssl aes-256-cbc -K $encrypted_37510afbd506_key -iv $encrypted_37510afbd506_iv -in .utility/deploy_key.enc -out .utility/deploy_key -d
+            | - eval "$(ssh-agent -s)"
+            | - chmod 600 .utility/deploy_key
+            | - ssh-add .utility/deploy_key
+            | deploy:
+            | - provider: script
+            |   skip_cleanup: true
+            |   script: wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
+          p
+            | For more details, refer&nbsp;
+            a(href='yaydoc.fossasia.org' target='_blank') yaydoc Documentation
+        .modal-footer
+          button.btn.btn-default(type='button', id='onetimeDeploy') Proceed with One-time Deployment
   script.
     $('#doc_theme').editableSelect();

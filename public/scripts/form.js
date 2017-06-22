@@ -46,7 +46,7 @@ $(function () {
     }, 5000)
     if (validation.isGithubHTTPS(data.gitUrl)) {
       $('#btnDeploy').css("display", "inline");
-      $('#btnDeploy').attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
+      $('#onetimeDeploy').attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
     }
   });
 
