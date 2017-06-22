@@ -1,5 +1,0 @@
-sphinx==1.5.5
-recommonmark
-pypandoc
-pandocfilters
-PyYaml

@@ -43,7 +43,7 @@ if [ -z "$ON_HEROKU" ]; then
 
   # Install packages required for documentation generation
   echo -e "Installing packages required for documentation generation\n"
-  pip install -q -r $BASE/modules/requirements.txt
+  pip install -q -r $BASE/requirements.txt
   echo -e "Installation successful\n"
 fi
 
