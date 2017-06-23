@@ -6,7 +6,6 @@ function clean() {
   rm -rf $BUILD_DIR
   rm -rf $BASE
   deactivate
-  rm -- "$0"
 }
 
 # Generate documentation
