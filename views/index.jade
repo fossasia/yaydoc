@@ -4,6 +4,7 @@ block content
   script(src="/socket.io/socket.io.js")
   script(src="/scripts/validation.js")
   script(src="/scripts/form.js")
+  script(src="/scripts/suggestion.js")
   #notification-container
     li.notification Hello
   .container
@@ -14,7 +15,7 @@ block content
           input#email.form-control(type='email', placeholder='Enter Email', name='email', required='')
         .form-group
           label.control-label(for='git_url') GITURL:
-          input#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
+          select#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
         .form-group
           label.control-label(for='doc_theme') Doc Theme:
           select#doc_theme.form-control(name='doc_theme')
