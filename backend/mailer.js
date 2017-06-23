@@ -2,8 +2,9 @@ var exports = module.exports = {};
 
 var nodemailer = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
-var hostname =require('../routes/index').hostname;
-var jade = require('jade')
+var jade = require('jade');
+var hostname =process.env.HOSTNAME || 'yaydoc.herokuapp.com';
+
 exports.sendEmail = function (data) {
   var options = {
     service: 'SendGrid',
@@ -21,7 +22,7 @@ exports.sendEmail = function (data) {
 
   var textContent = 'Hey! Your documentation generated successfully. Preview it here: ' + previewURL +
                     '. Download it here: ' + downloadURL + '. Deploy it here: ' + deployURL;
-  var emailTemplate = jade.compileFile(`${__dirname}/../views/template/email.jade`)
+  var emailTemplate = jade.compileFile(`${__dirname}/../views/template/email.jade`);
   var htmlContent = emailTemplate({
       previewURL: previewURL,
       downloadURL: downloadURL,
