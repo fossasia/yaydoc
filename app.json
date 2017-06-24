@@ -10,11 +10,12 @@
   "repository": "https://github.com/fossasia/yaydoc",
   "env": {
     "PYPANDOC_PANDOC": {
-      "description": "Set path for pandoc.",
+      "description": "PATH for pandoc. DO NOT CHANGE",
       "value": "~/vendor/pandoc/bin/pandoc"
     },
     "CALLBACKURL": {
-      "value": "/callback"
+      "value": "https://<app-name>.herokuapp.com/callback",
+      "required": true
     },
     "SECRET": {
       "generator": "secret"
@@ -29,6 +30,11 @@
     },
     "ON_HEROKU": {
       "value": "true"
+    },
+    "ENCRYPTION_KEY": {
+      "value": "ABCGDHEUSHFKIRMJSDFIUTEHFNGOWPOR",
+      "description": "A 32 character string for encrypting variables.",
+      "required": true
     }
   },
   "buildpacks": [

@@ -4,6 +4,9 @@
 
 > Docs! Yay!
 
+## Deployment
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Prerequisites
 - Create a directory in your repository containing all the markup files along with an `index.rst` file which contains [toctrees](http://www.sphinx-doc.org/en/stable/markup/toctree.html) to link the various documents.
 - Register your repository with [Travis CI](https://travis-ci.org).
