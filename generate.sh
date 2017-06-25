@@ -126,7 +126,7 @@ echo -e "Documentation Generated Successfully!\n"
 if [ "${WEBUI:-false}" == "true" ]; then
   echo -e "Setting up documentation for Download and Preview\n"
   mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
-  rm -r $BASE/temp/$EMAIL/$UNIQUEID
+  rm -rf $BASE/temp/$EMAIL/$UNIQUEID
   zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
   if [ $? -ne 0 ]; then
     echo -e "Failed setting up.\n"
