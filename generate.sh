@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts g:t:d:m:u:w: option
+while getopts g:t:d:m:u:w:s: option
 do
  case "${option}"
  in
@@ -10,6 +10,7 @@ do
  m) EMAIL=${OPTARG};;
  u) UNIQUEID=${OPTARG};;
  w) WEBUI=${OPTARG};;
+ s) SUBPROJECT=${OPTARG};;
  esac
 done
 
@@ -17,11 +18,15 @@ done
 # and change current directory to git repository.
 if [ "${WEBUI:-false}" == "true" ]; then
   BASE=$(pwd)
-  mkdir -p temp/${EMAIL} && cd $_
-
-  echo -e "Cloning Repository...\n"
-  git clone -q ${GITURL} "$UNIQUEID" && cd $_
-  echo -e "Repository Cloned Successfully!\n"
+  if ! [ "${SUBPROJECT}" == "" ]; then
+    . ./multiple_generate.sh
+    exit 0
+  else
+    mkdir -p temp/${EMAIL} && cd $_
+    echo -e "Cloning Repository...\n"
+    git clone -q ${GITURL} "$UNIQUEID" && cd $_
+    echo -e "Repository Cloned Successfully!\n"
+  fi
 else
   git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
   BASE=$(pwd)/yaydocclone
