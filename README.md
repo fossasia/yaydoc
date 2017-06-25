@@ -73,22 +73,11 @@ Currently Yaydoc only supports publishing to ghpages. More publishers to be adde
 ## Travis Configuration
 Add the following content to the `.travis.yml` file in the root directory of your repository.
 
-**If the primary language is Python**
-
 ```yaml
 deploy:
   - provider: script
     skip_cleanup: true
     script: wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
-```
-
-**For Languages other than Python**
-
-```yaml
-deploy:
-  - provider: script
-    skip_cleanup: true
-    script: pip install --user virtualenv && wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
 ```
 
 ## Using SSH

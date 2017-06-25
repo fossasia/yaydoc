@@ -13,6 +13,9 @@ do
  esac
 done
 
+# https://stackoverflow.com/a/15454916/4127836
+INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") else "false")')
+
 # Ensures that BASE has contents of yaydoc repository
 # and change current directory to git repository.
 if [ "${WEBUI:-false}" == "true" ]; then
@@ -37,10 +40,16 @@ ROOT_DIR=$(pwd)
 
 if [ -z "$ON_HEROKU" ]; then
   # Create an isolated Python environment
-  echo -e "Creating an isolated Python environment\n"
-  virtualenv -q --python=python $HOME/yaydocvenv
-  source $HOME/yaydocvenv/bin/activate
-  echo -e "Python environment created successfully!\n"
+  if [ "$INVENV" == "false" ]; then
+    echo -e "Installing virtualenv\n"
+    pip install -q --user virtualenv
+    echo -e "Installation successful\n"
+
+    echo -e "Creating an isolated Python environment\n"
+    virtualenv -q --python=python $HOME/yaydocvenv
+    source $HOME/yaydocvenv/bin/activate
+    echo -e "Python environment created successfully!\n"
+  fi
 
   # Install packages required for documentation generation
   echo -e "Installing packages required for documentation generation\n"
