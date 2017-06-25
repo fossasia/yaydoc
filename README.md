@@ -71,21 +71,21 @@ Currently Yaydoc only supports publishing to ghpages. More publishers to be adde
 Add the following content to the `.travis.yml` file in the root directory of your repository.
 
 **If the primary language is Python**
+
 ```yaml
-script:
-- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh
-- chmod +x ./generate.sh
-- ./generate.sh
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
 ```
 
 **For Languages other than Python**
 
 ```yaml
-script:
-- pip install --user virtualenv
-- wget https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh
-- chmod +x ./generate.sh
-- ./generate.sh
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: pip install --user virtualenv && wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
 ```
 
 ## Using SSH
@@ -94,12 +94,12 @@ Additionally If you have ssh setup on your repository, yaydoc prioritizes it ove
 - Generate a new ssh key following this [Guide](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#generating-a-new-ssh-key)
 - Encrypt the generated keys by following this [Guide](https://docs.travis-ci.com/user/encrypting-files/#Automated-Encryption)
 - Add public key to github by following this [Guide](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/)
-- Add the following to your `.travis.yml` making appropriate changes where necessary
+- Add the following to your `.travis.yml` making **appropriate changes** where necessary
 
 ```yaml
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_cab6203e105e_key -iv $encrypted_cab6203e105e_iv -in .utility/yaydoc_deploy.enc -out .utility/yaydoc_deploy -d
+- openssl aes-256-cbc -K $encrypted_<hash>_key -iv $encrypted_<hash>_iv -in <encrypted-file-name> -out <decrypted-file-name> -d
 - eval "$(ssh-agent -s)"
-- chmod 600 .utility/yaydoc_deploy
-- ssh-add .utility/yaydoc_deploy
+- chmod 600 <decrypted-file-name>
+- ssh-add <decryted-file-name>
 ```
