@@ -3,7 +3,7 @@ var exports = module.exports = {};
 var nodemailer = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
 var hostname =require('../routes/index').hostname;
-
+var jade = require('jade')
 exports.sendEmail = function (data) {
   var options = {
     service: 'SendGrid',
@@ -12,22 +12,22 @@ exports.sendEmail = function (data) {
       api_key: process.env.SENDGRID_PASSWORD
     }
   };
-  
+
   var client = nodemailer.createTransport(sgTransport(options));
-  
+
   var previewURL = 'http://' + hostname + '/preview/' + data.email + '/' + data.uniqueId + '_preview';
   var downloadURL = 'http://' + hostname + '/download/' + data.email + '/' + data.uniqueId;
   var deployURL = 'http://' + hostname + '/github?email=' + data.email + '&uniqueId=' + data.uniqueId + '&gitURL=' + data.gitUrl;
-  
+
   var textContent = 'Hey! Your documentation generated successfully. Preview it here: ' + previewURL +
                     '. Download it here: ' + downloadURL + '. Deploy it here: ' + deployURL;
-  var htmlContent = 'Hey!<br />' +
-                    'Your documentation generated successfully.<br />' +
-                    'Preview it <a href="' + previewURL +'" target="_blank">here</a><br />' +
-                    'Download it <a href="' + downloadURL +'" target="_blank">here</a><br />' +
-                    'Deploy it <a href="' + deployURL +'" target="_blank">here</a><br /><br />' +
-                    'Thank you for using Yaydoc!';
-  
+  var emailTemplate = jade.compileFile(`${__dirname}/../views/template/email.jade`)
+  var htmlContent = emailTemplate({
+      previewURL: previewURL,
+      downloadURL: downloadURL,
+      deployURL: deployURL
+  })
+
   client.sendMail({
     from: 'info@yaydoc.com',
     to: data.email,
@@ -41,5 +41,5 @@ exports.sendEmail = function (data) {
       console.log('Message sent: ' + info.response);
     }
   });
-  
+
 };
