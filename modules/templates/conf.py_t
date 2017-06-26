@@ -34,9 +34,10 @@ sys.path.insert(0, u'{{ module_path }}')
 {% endif -%}
 {% endif %}
 
-from recommonmark.parser import CommonMarkParser
 import os
 import sys
+import pkg_resources
+from recommonmark.parser import CommonMarkParser
 
 # Adding scripts directory to path
 sys.path.insert(0, os.path.abspath('scripts'))
@@ -133,22 +134,30 @@ else:
         # Non-zero exit code
         print("""{0} is not available on pypi. Please ensure the theme can be installed
         using pip.""".format('{{ html_theme }}'), file=sys.stderr)
+        html_theme = 'fossasia_theme'
+        html_theme_path = ['_themes']
     else:
-        import {{ html_theme }}
-
-        def get_path_to_theme():
-            package_path = os.path.dirname({{ html_theme }}.__file__)
-            for root, dirs, files in os.walk(package_path):
-                if 'theme.conf' in files:
-                    return root
-
-        path_to_theme = get_path_to_theme()
-        if path_to_theme is None:
-            print("\n{0} does not appear to be a sphinx theme.".format('{{ html_theme }}'), file=sys.stderr)
-            html_theme = 'alabaster'
+        try:
+            dist = pkg_resources.get_distribution('{{ html_theme }}')
+            dist_path = os.path.join(dist.location, list(dist._get_metadata('top_level.txt'))[0])
+        except (pkg_resources.DistributionNotFound, IndexError):
+            print("\nError with distribution {0}".format('{{ html_theme }}'))
+            html_theme = 'fossasia_theme'
+            html_theme_path = ['_themes']
         else:
-            html_theme = os.path.basename(path_to_theme)
-            html_theme_path = [os.path.abspath(os.path.join(path_to_theme, os.pardir))]
+            theme_path = None
+            for root, dirs, files in os.walk(dist_path):
+                if 'theme.conf' in files:
+                    theme_path = root
+                    break
+
+            if theme_path is None:
+                print("\n{0} does not appear to be a sphinx theme.".format('{{ html_theme }}'), file=sys.stderr)
+                html_theme = 'fossasia_theme'
+                html_theme_path = ['_themes']
+            else:
+                html_theme = os.path.basename(theme_path)
+                html_theme_path = [os.path.abspath(os.path.join(theme_path, os.pardir))]
 {% endif %}
 
 # Theme options are theme-specific and customize the look and feel of a theme
