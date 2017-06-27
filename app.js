@@ -14,7 +14,7 @@ dotenv.config({path: './.env'})
  * Backend Scripts
  */
 var generator = require("./backend/generator");
-var ghdeploy = require("./backend/ghdeploy")
+var deploy = require("./backend/deploy");
 
 
 var app = express();
@@ -76,8 +76,13 @@ io.on('connection', function(socket){
   socket.on('execute', function (formData) {
     generator.executeScript(socket, formData);
   });
-  socket.on('deploy', function (data) {
-    ghdeploy.deployPages(socket, data);
+
+  socket.on('ghpages-deploy', function (data) {
+    deploy.deployPages(socket, data);
+  });
+
+  socket.on('heroku-deploy', function (formData) {
+    deploy.deployHeroku(socket, formData);
   });
 });
 

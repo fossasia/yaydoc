@@ -50,7 +50,13 @@ a {
   margin-left: 10px;
 }
 
-#btnDeploy {
+#btnDeployGithub {
+  display: none;
+  width: -moz-fit-content;
+  margin-left: 10px;
+}
+
+#btnDeployHeroku {
   display: none;
   width: -moz-fit-content;
   margin-left: 10px;

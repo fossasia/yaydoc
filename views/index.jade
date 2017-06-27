@@ -42,17 +42,19 @@ block content
             input#debug(type='checkbox', value='true', name='debug', checked=false)
         .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
-            .row
+            .row(style='padding-bottom: 25px;')
               a.btn.btn-default(id='btnDownload') Download
               a.btn.btn-default(id='btnPreview' target='_blank') Preview
-              a.btn.btn-default(id='btnDeploy' data-toggle='modal', data-target='#deployModal') Deploy
+            .row
+              a.btn.btn-default(id='btnDeployGithub' data-toggle='modal', data-target='#githubModal') Deploy to Github
+              a.btn.btn-default(id='btnDeployHeroku' data-toggle='modal', data-target='#herokuModal') Deploy to Heroku
       .progress
         #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
           span.sr-only
       .logs.pre-scrollable
         h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
         ul#messages
-  #deployModal.modal.fade(role='dialog')
+  #githubModal.modal.fade(role='dialog')
     .modal-dialog
       .modal-content
         .modal-header
@@ -83,5 +85,21 @@ block content
             a(href='http://yaydoc.fossasia.org' target='_blank') yaydoc Documentation
         .modal-footer
           a.btn.btn-default(id='onetimeDeploy') Proceed with One-time Deployment
+  #herokuModal.modal.fade(role='dialog')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal') ×
+          h5.modal-title Heroku Deployment
+        .modal-body
+          form(method='post')
+            .form-group
+              label.control-label(for='heroku_api_key') Heroku API Key:
+              input#heroku_api_key.form-control(type='password', placeholder='Enter Heroku API Key', name='heroku_api_key', required='')
+            .form-group
+              label.control-label(for='heroku_app_name') Heroku App Name:
+              input#heroku_app_name.form-control(type='text', placeholder='Enter Heroku App Name', name='heroku_app_name')
+            .form-group
+              button.btn.btn-default(type='button' id='btnHerokuDeploy') Deploy
   script.
     $('#doc_theme').editableSelect();
