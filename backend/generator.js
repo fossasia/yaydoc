@@ -16,6 +16,10 @@ exports.executeScript = function (socket, formData) {
   var debug = formData.debug;
   var uniqueId = uuidV4();
   var webUI = "true";
+  var subProject = ""
+  if (formData.subProject != undefined) {
+    subProject = formData.subProject.join(",")
+  }
 
   var donePercent = 0;
 
@@ -25,7 +29,8 @@ exports.executeScript = function (socket, formData) {
     "-m", email,
     "-d", debug,
     "-u", uniqueId,
-    "-w", webUI
+    "-w", webUI,
+    "-s", subProject
   ];
 
   var process = spawn("./generate.sh", args);
