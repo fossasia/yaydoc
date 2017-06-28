@@ -50,20 +50,10 @@ $(function () {
     }, 5000)
     if (validation.isGithubHTTPS(data.gitUrl)) {
       $('#btnDeployGithub').css("display", "inline");
-      $('#onetimeDeploy').attr("href", '/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
+      $('#onetimeDeploy').attr("href", '/auth/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
     }
     $('#btnDeployHeroku').css("display", "inline");
-
-    /**
-     * Handling Heroku Deployment
-     */
-    $("#btnHerokuDeploy").click(function () {
-      $("#herokuModal").modal('hide');
-      $("#messages").innerHTML = '';
-      var formData = getData();
-      formData.uniqueId = data.uniqueId;
-      socket.emit('heroku-deploy', formData);
-    });
+    $('#btnDeployHeroku').attr("href", '/auth/heroku?email='+data.email+'&uniqueId='+data.uniqueId);
   });
 
   socket.on('failure', function (data) {

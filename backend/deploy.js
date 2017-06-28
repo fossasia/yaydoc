@@ -37,13 +37,14 @@ exports.deployPages = function (socket, data) {
 };
 
 exports.deployHeroku = function (socket, data) {
+  var donePercent = 0;
   var spawn = require('child_process').spawn;
 
   var email = data.email;
-  var herokuAPIKey = data.herokuAPIKey;
   var herokuAppName = data.herokuAppName;
+  var herokuAPIKey = crypter.decrypt(data.herokuAPIKey);
   var uniqueId = data.uniqueId;
-
+  
   const args = [
     "heroku_deploy.sh",
     "-e", email,
@@ -55,11 +56,12 @@ exports.deployHeroku = function (socket, data) {
   var process = spawn('bash', args);
 
   process.stdout.on('data', function (data) {
-    socket.emit('logs', data.toString());
+    socket.emit('heroku-deploy-logs', {donePercent: donePercent, data: data.toString()});
+    donePercent += 7;
   });
 
   process.stderr.on('data', function (data) {
-    socket.emit('err-logs', data.toString());
+    socket.emit('heroku-error-logs', data.toString());
   });
 
   process.on('exit', function (code) {

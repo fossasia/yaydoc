@@ -35,7 +35,7 @@ Arr=($(curl -u ":$API_KEY" -X POST \
 -H 'Accept: application/vnd.heroku+json; version=3' \
 -d '{"process_types": {"web":"node-v6.11.0-linux-x64/bin/node web.js"}}' \
 -n https://api.heroku.com/apps/${APP_NAME}/slugs | \
-python3 -c "import sys, json; obj=json.load(sys.stdin); print(obj['blob']['url'] + '\n' +obj['id'])"))
+python -c "import sys, json; obj=json.load(sys.stdin); print(obj['blob']['url'] + '\n' +obj['id'])"))
 
 curl -X PUT \
 -H "Content-Type:" \

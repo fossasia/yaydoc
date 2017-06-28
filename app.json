@@ -13,19 +13,31 @@
       "description": "PATH for pandoc. DO NOT CHANGE",
       "value": "~/vendor/pandoc/bin/pandoc"
     },
-    "CALLBACKURL": {
-      "value": "https://<app-name>.herokuapp.com/callback",
-      "required": true
-    },
     "SECRET": {
       "generator": "secret"
     },
-    "CLIENTID": {
+    "GITHUB_CLIENT_ID": {
       "description": "Unique ClientID assigned while registering OAuth App in Github",
       "required": true
     },
-    "CLIENTSECRET": {
+    "GITHUB_CLIENT_SECRET": {
       "description": "Unique ClientSecret assigned while registering OAuth App in Github",
+      "required": true
+    },
+    "GITHUB_CALLBACK_URL": {
+      "value": "https://<app-name>.herokuapp.com/auth/github/callback",
+      "required": true
+    },
+    "HEROKU_CLIENT_ID": {
+      "description": "Unique ClientID assigned while registering OAuth App in Heroku",
+      "required": true
+    },
+    "HEROKU_CLIENT_SECRET": {
+      "description": "Unique ClientSecret assigned while registering OAuth App in Heroku",
+      "required": true
+    },
+    "HEROKU_CALLBACK_URL": {
+      "value": "https://<app-name>.herokuapp.com/auth/heroku/callback",
       "required": true
     },
     "ON_HEROKU": {
