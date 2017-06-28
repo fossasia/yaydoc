@@ -35,6 +35,9 @@
       "value": "ABCGDHEUSHFKIRMJSDFIUTEHFNGOWPOR",
       "description": "A 32 character string for encrypting variables.",
       "required": true
+    },
+    "HOSTNAME": {
+      "description": "Hostname of your web application.",
     }
   },
   "buildpacks": [
