@@ -3,6 +3,10 @@ import sys
 import argparse
 
 
+def _is_samepath(path1, path2):
+    return os.path.normpath(path1) == os.path.normpath(path2)
+
+
 def get_include(dirpath, filename):
     ext = os.path.splitext(filename)[1]
     if ext == '.md':
@@ -55,6 +59,8 @@ def get_index(root):
     
     # Add toctrees as per the directory structure
     for (dirpath, dirnames, filenames) in os.walk(os.curdir):
+        if 'source' in dirnames and _is_samepath(dirpath, os.curdir):
+            dirnames.remove('source')
         if filenames:
             toctree = get_toctree(dirpath, filenames)
             if toctree:

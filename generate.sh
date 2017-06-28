@@ -75,7 +75,7 @@ mkdir _themes
 
 # Setting up documentation sources
 echo -e "Setting up documentation sources\n"
-sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO > /dev/null
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d python_package=$PYTHON_PACKAGE > /dev/null
 if [ $? -ne 0 ]; then
   echo -e "Failed to initialize build process.\n"
   exit 1

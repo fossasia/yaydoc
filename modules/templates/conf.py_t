@@ -41,6 +41,13 @@ import sys
 # Adding scripts directory to path
 sys.path.insert(0, os.path.abspath('scripts'))
 
+# Adding python_package to path
+# Need to strip slashes from end else os.path.dirname would not give proper result
+python_package = '{{ python_package }}'.rstrip('/\\')
+if python_package:
+    package_path = os.path.join('{{ root_dir }}', os.path.dirname(python_package))
+    sys.path.insert(0, os.path.abspath(package_path))
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -51,7 +58,8 @@ sys.path.insert(0, os.path.abspath('scripts'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.githubpages',
-    'sphinx.ext.autodoc']
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['{{ dot }}templates']
