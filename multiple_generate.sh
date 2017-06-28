@@ -65,7 +65,7 @@ USERNAME=${URL_SPLIT[2]}
 REPONAME=(${URL_SPLIT[3]//./ })
 
 pip install -r $BASE/requirements.txt
-sphinx-quickstart -q -v "($(date +%Y-%m-%d.%H:%M:%S))" -a $USERNAME -p $REPONAME -t templates/ -d html_theme=alabaster -d html_logo=$LOGO
+sphinx-quickstart -q -v "($(date +%Y-%m-%d.%H:%M:%S))" -a $USERNAME -p $REPONAME -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO
 
 rm index.rst
 
