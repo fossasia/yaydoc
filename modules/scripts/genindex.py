@@ -19,7 +19,7 @@ def get_toctree(dirpath, filenames):
     toctree = ['.. toctree::', '   :maxdepth: 1']
     caption_template = '   :caption: {caption}'
     content_template = '   {document}'
-    
+
     caption = os.path.basename(dirpath).replace('_', ' ').title()
     if caption == os.curdir:
         caption = 'Contents'
@@ -52,7 +52,7 @@ def get_index(root):
         index.append(get_include(root, 'README.rst'))
     elif 'README.md' in root_files:
         index.append(get_include(root, 'README.md'))
-    
+
     # Add toctrees as per the directory structure
     for (dirpath, dirnames, filenames) in os.walk(os.curdir):
         if filenames:

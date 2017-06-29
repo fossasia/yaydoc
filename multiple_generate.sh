@@ -7,18 +7,17 @@ function clean() {
 function cloner() {
   URL_SPLIT=(${1//// })
   REPONAME=(${URL_SPLIT[3]//./ })
-  git clone $1 ${REPONAME}_temp &
+  git clone $1 ${REPONAME} &
 }
 
-function repoCleaner() {
+function genSubIndex() {
   URL_SPLIT=(${1//// })
   REPONAME=(${URL_SPLIT[3]//./ })
-  cd ${REPONAME}_temp
-  mkdir ../$REPONAME
-  cp -a docs/. ../$REPONAME/.
-  cd ..
-  rm -rf ${REPONAME}_temp
+  cd $REPONAME/docs
+  python $BASE/modules/scripts/genindex.py $BUILD_DIR/$REPONAME
+  cd ../../
 }
+
 
 BASE=$(pwd)
 
@@ -36,6 +35,13 @@ else
   cd $BUILD_DIR
 fi
 
+cp -a ${BASE}/modules/scripts/ $BUILD_DIR/
+cp -a ${BASE}/modules/templates/ $BUILD_DIR/
+
+mkdir _themes
+
+cp -a ${BASE}/fossasia_theme $BUILD_DIR/_themes/
+
 cloner $GITURL
 
 IFS=', ' read -r -a SUBPROJECTS <<< "$SUBPROJECT"
@@ -47,29 +53,25 @@ done
 
 wait
 
-repoCleaner $GITURL
+genSubIndex $GITURL
 for element in "${SUBPROJECTS[@]}"
 do
-  repoCleaner $element
+ genSubIndex $element
 done
 
-cp -a ${BASE}/modules/scripts/ $BUILD_DIR/
-cp -a ${BASE}/modules/templates/ $BUILD_DIR/
 
-mkdir _themes
-
-cp -a ${BASE}/fossasia_theme $BUILD_DIR/_themes/
 
 URL_SPLIT=(${GITURL//// })
 USERNAME=${URL_SPLIT[2]}
 REPONAME=(${URL_SPLIT[3]//./ })
 
 pip install -r $BASE/requirements.txt
-sphinx-quickstart -q -v "($(date +%Y-%m-%d.%H:%M:%S))" -a $USERNAME -p $REPONAME -t templates/ -d html_theme=alabaster -d html_logo=$LOGO
+sphinx-quickstart -q -v "($(date +%Y-%m-%d.%H:%M:%S))" -a $USERNAME -p $REPONAME -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO
 
 rm index.rst
 
-python $BASE/modules/scripts/genindex.py ./
+python $BASE/modules/scripts/genmainindex.py
+
 make html
 shopt -s extglob
 if [ "${WEBUI:-false}" == "true" ]; then
