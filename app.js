@@ -8,8 +8,8 @@ var passport = require("passport");
 var dotenv = require("dotenv");
 var session = require("express-session");
 
-require('./util/passport')(passport);
 dotenv.config({path: './.env'});
+require('./util/passport')(passport);
 /**
  * Backend Scripts
  */

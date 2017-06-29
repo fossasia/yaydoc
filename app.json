@@ -49,7 +49,7 @@
       "required": true
     },
     "HOSTNAME": {
-      "description": "Hostname of your web application.",
+      "description": "Hostname of your web application."
     }
   },
   "buildpacks": [

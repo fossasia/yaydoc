@@ -19,19 +19,21 @@ exports.deployPages = function (socket, data) {
 
   process.stdout.on('data', function (data) {
     console.log(data.toString());
-    socket.emit('deploy-logs', {donePercent: donePercent, data: data.toString()});
+    socket.emit('github-deploy-logs', {donePercent: donePercent, data: data.toString()});
     donePercent += 18;
   });
 
   process.stderr.on('data', function (data) {
     console.log(data.toString());
-    socket.emit('err-logs', data.toString());
+    socket.emit('github-error-logs', data.toString());
   });
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     if (code === 0) {
-      socket.emit('deploy-success', {pagesURL: "https://" + data.username + ".github.io/" + repoName});
+      socket.emit('github-success', {pagesURL: "https://" + data.username + ".github.io/" + repoName});
+    } else {
+      socket.emit('github-failure', {errorCode: code});
     }
   });
 };
