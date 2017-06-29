@@ -5,16 +5,16 @@ var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 var passport = require("passport");
-var githubStrategy = require("passport-github").Strategy;
 var dotenv = require("dotenv");
 var session = require("express-session");
 
-dotenv.config({path: './.env'})
+require('./util/passport')(passport);
+dotenv.config({path: './.env'});
 /**
  * Backend Scripts
  */
 var generator = require("./backend/generator");
-var ghdeploy = require("./backend/ghdeploy")
+var deploy = require("./backend/deploy");
 
 
 var app = express();
@@ -25,8 +25,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 app.io = io;
-
-var index = require("./routes/index");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -48,26 +46,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 
-passport.use(new githubStrategy({
-  clientID: process.env.CLIENTID,
-  clientSecret: process.env.CLIENTSECRET,
-  callbackURL: process.env.CALLBACKURL
-}, function (accessToken, refreshToken, profile, cb) {
-  profile.token = accessToken;
-  cb(null, profile)
-}))
-
-passport.serializeUser(function(user, cb) {
-  cb(null, user);
-});
-
-passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
-});
-
 app.use("/preview", express.static(path.join(__dirname, "temp")))
 
-app.use("/", index);
+app.use("/", require("./routes/index"));
+app.use("/auth", require("./routes/auth"));
+app.use("/deploy", require("./routes/deploy"));
 
 /**
  * Server-side Event Handling
@@ -76,8 +59,13 @@ io.on('connection', function(socket){
   socket.on('execute', function (formData) {
     generator.executeScript(socket, formData);
   });
-  socket.on('deploy', function (data) {
-    ghdeploy.deployPages(socket, data);
+
+  socket.on('ghpages-deploy', function (data) {
+    deploy.deployPages(socket, data);
+  });
+
+  socket.on('heroku-deploy', function (formData) {
+    deploy.deployHeroku(socket, formData);
   });
 });
 

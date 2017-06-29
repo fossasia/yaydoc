@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+  script(src="/socket.io/socket.io.js")
+  script.
+    $(function () {
+      var socket = io();
+
+      $("#btnRun").click(function () {
+        $(this).attr("disabled", "none");
+        var herokuAppName = '';
+        var formData = $("form").serializeArray();
+        $.each(formData, function (i, field) {
+          if (field.name === "herokuAppName") {
+            herokuAppName = field.value.trim();
+          }
+        });
+
+        data = {
+          'email': "#{email}",
+          'herokuAPIKey': "#{herokuAPIKey}",
+          'herokuAppName': herokuAppName,
+          'uniqueId': "#{uniqueId}"
+        };
+        socket.emit('heroku-deploy', data);
+      });
+
+      socket.on('heroku-deploy-logs', function (data) {
+        $('#messages').append($('<li>').text(data.data));
+        $("#progress").css("width", data.donePercent + "%");
+      });
+
+      socket.on('heroku-error-logs', function (data) {
+        $('#messages').append($('<li style="color:red">').text(data));
+      });
+
+      socket.on('heroku-success', function (data) {
+        $("#progress").css("width", "100%");
+        $("#main-content").append('<br><center><a class="btn btn-default" href="' + data.url + '" target="_blank">Website Link</a></center>')
+      });
+    });
+  .container
+    .col-md-6.col-md-offset-3#main-content
+      form
+        .form-group
+          label.control-label(for='email') Heroku App Name:
+          input#email.form-control(type='text', placeholder='Enter Heroku App Name', name='herokuAppName', required='')
+        .form-group(style="text-align: center")
+          button.btn.btn-default(type='button' id='btnRun') Run Deployment
+      .progress
+        #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
+          span.sr-only
+      .logs.pre-scrollable
+        h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
+        ul#messages

@@ -34,4 +34,43 @@ exports.deployPages = function (socket, data) {
       socket.emit('deploy-success', {pagesURL: "https://" + data.username + ".github.io/" + repoName});
     }
   });
-}
+};
+
+exports.deployHeroku = function (socket, data) {
+  var donePercent = 0;
+  var spawn = require('child_process').spawn;
+
+  var email = data.email;
+  var herokuAppName = data.herokuAppName;
+  var herokuAPIKey = crypter.decrypt(data.herokuAPIKey);
+  var uniqueId = data.uniqueId;
+  
+  const args = [
+    "heroku_deploy.sh",
+    "-e", email,
+    "-h", herokuAPIKey,
+    "-n", herokuAppName,
+    "-u", uniqueId
+  ];
+
+  var process = spawn('bash', args);
+
+  process.stdout.on('data', function (data) {
+    socket.emit('heroku-deploy-logs', {donePercent: donePercent, data: data.toString()});
+    donePercent += 7;
+  });
+
+  process.stderr.on('data', function (data) {
+    socket.emit('heroku-error-logs', data.toString());
+  });
+
+  process.on('exit', function (code) {
+    console.log('child process exited with code ' + code);
+    if (code === 0) {
+      socket.emit('heroku-success', {url: 'https://' + herokuAppName + '.herokuapp.com'});
+    } else {
+      socket.emit('heroku-failure', {errorCode: code});
+    }
+  });
+
+};
