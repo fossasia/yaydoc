@@ -5,7 +5,9 @@ function clean() {
   cd $ROOT_DIR
   rm -rf $BUILD_DIR
   rm -rf $BASE
-  deactivate
+  if [ "$INVENV" == "false" ]; then
+    deactivate
+  fi
 }
 
 # Generate documentation
