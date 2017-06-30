@@ -299,18 +299,10 @@ be added soon.</p>
 <h2>Travis Configuration<a class="headerlink" href="#travis-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Add the following content to the <code class="docutils literal"><span class="pre">.travis.yml</span></code> file in the root
 directory of your repository.</p>
-<p><strong>If the primary language is Python</strong></p>
 <div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">deploy</span><span class="p">:</span>
   <span class="o">-</span> <span class="n">provider</span><span class="p">:</span> <span class="n">script</span>
     <span class="n">skip_cleanup</span><span class="p">:</span> <span class="n">true</span>
     <span class="n">script</span><span class="p">:</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fossasia</span><span class="o">/</span><span class="n">yaydoc</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">generate_ci</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
-</pre></div>
-</div>
-<p><strong>For Languages other than Python</strong></p>
-<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">deploy</span><span class="p">:</span>
-  <span class="o">-</span> <span class="n">provider</span><span class="p">:</span> <span class="n">script</span>
-    <span class="n">skip_cleanup</span><span class="p">:</span> <span class="n">true</span>
-    <span class="n">script</span><span class="p">:</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">virtualenv</span> <span class="o">&amp;&amp;</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fossasia</span><span class="o">/</span><span class="n">yaydoc</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">generate_ci</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
 </pre></div>
 </div>
 </div>
