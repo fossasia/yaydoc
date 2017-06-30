@@ -7,6 +7,7 @@ exports.deployPages = function (socket, data) {
   var webUI = "true";
   var username = data.username
   var oauthToken = crypter.decrypt(data.encryptedToken)
+
   const args = [
     "-e", data.email,
     "-i", data.uniqueId,
@@ -15,7 +16,8 @@ exports.deployPages = function (socket, data) {
     "-o", oauthToken,
     "-r", repoName
   ];
-  var process = spawn("./publish_docs.sh", args);
+
+  var process = spawn("./ghpages_deploy.sh", args);
 
   process.stdout.on('data', function (data) {
     console.log(data.toString());
@@ -38,22 +40,21 @@ exports.deployPages = function (socket, data) {
 
 exports.deployHeroku = function (socket, data) {
   var donePercent = 0;
-  var spawn = require('child_process').spawn;
-
   var email = data.email;
   var herokuAppName = data.herokuAppName;
+  var webUI = "true";
   var herokuAPIKey = crypter.decrypt(data.herokuAPIKey);
   var uniqueId = data.uniqueId;
   
   const args = [
-    "heroku_deploy.sh",
     "-e", email,
+    "-u", uniqueID,
+    "-w", webUI,
     "-h", herokuAPIKey,
     "-n", herokuAppName,
-    "-u", uniqueId
   ];
 
-  var process = spawn('bash', args);
+  var process = spawn('./heroku_deploy.sh', args);
 
   process.stdout.on('data', function (data) {
     socket.emit('heroku-deploy-logs', {donePercent: donePercent, data: data.toString()});

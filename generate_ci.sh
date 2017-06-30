@@ -21,4 +21,11 @@ if [ $GENERATE_STATUS -ne 0 ]; then
 fi
 
 # Publish generated documentation to ghpages branch
-source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/publish_docs.sh)
+source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/ghpages_deploy.sh)
+
+# Publish generated documentation to heroku
+if [ -n "$HEROKU_APP_NAME" ]; then
+  source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/heroku_deploy.sh)
+fi
+
+clean
