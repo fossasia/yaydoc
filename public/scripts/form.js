@@ -14,6 +14,7 @@ $(function () {
     if (validation.isValid(formData)) {
       socket.emit('execute', formData);
       $(this).attr("disabled", "none");
+      $("#subProject").attr("disabled", "none");
     } else {
       $('.notification').append($('<li>')).text(validation.getMessages());
       $('#notification-container').css("visibility", "visible");
@@ -29,7 +30,12 @@ $(function () {
 
   socket.on('logs', function (data) {
     $('#messages').append($('<li class="info">').text(data.data));
-    $("#progress").css("width", data.donePercent + "%");
+    if (data.donePercent >= 90) {
+      $("#progress").css("width", "90%");
+    } else {
+      $("#progress").css("width", data.donePercent + "%");
+    }
+
   });
 
   socket.on('err-logs', function (msg) {
@@ -37,6 +43,7 @@ $(function () {
   });
 
   socket.on('success', function (data) {
+    $("#progress").css("width", "100%");
     $('#btnDownload').css("display", "inline");
     $('#btnDownload').attr("href", "/download/" + data.email +"/" + data.uniqueId);
     $('#btnPreview').css("display", "inline");
@@ -90,7 +97,21 @@ function getData() {
     if (field.name === "debug" ) { data.debug = field.value; }
     if (field.name === "heroku_api_key" ) { data.herokuAPIKey = field.value.trim(); }
     if (field.name === "heroku_app_name" ) { data.herokuAppName = field.value.trim(); }
+    if (field.name === "subproject_url[]") {
+      if (data.subProject == undefined) {
+        data.subProject = [field.value];
+      } else {
+        data.subProject.push(field.value);
+      }
+    }
   });
 
   return data;
+}
+
+var tempSubProjectId = 1
+function addSubProject() {
+  $("#subproject").append(`<select id="subproject_${tempSubProjectId}" placeholder="Enter URL for Sub Project" name="subproject_url[]" class="form-control subproject" type="text"></select>`)
+  addSuggestion(`#subproject_${tempSubProjectId}`)
+  tempSubProjectId += 1;
 }

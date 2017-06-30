@@ -16,6 +16,7 @@ block content
         .form-group
           label.control-label(for='git_url') GITURL:
           select#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
+        .div#subproject
         .form-group
           label.control-label(for='doc_theme') Doc Theme:
           select#doc_theme.form-control(name='doc_theme')
@@ -44,6 +45,7 @@ block content
             input#debug(type='checkbox', value='true', name='debug', checked=false)
         .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
+            button.btn.btn-default(type='button' id='subProject' onclick="addSubProject()") Add Sub Project
             .row(style='padding-bottom: 25px;')
               a.btn.btn-default(id='btnDownload') Download
               a.btn.btn-default(id='btnPreview' target='_blank') Preview

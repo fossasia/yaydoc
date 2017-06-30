@@ -22,6 +22,10 @@ a {
   text-align: left;
 }
 
+.subproject {
+  margin-bottom: 8px;
+}
+
 #messages li {
   margin-bottom: 5px;
 }
@@ -36,6 +40,11 @@ a {
 
 #btnGenerate {
   margin-bottom: 20px;
+}
+
+#subProject {
+  margin-bottom: 20px;
+  margin-left: 10px;
 }
 
 #btnDownload {

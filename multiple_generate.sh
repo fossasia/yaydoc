@@ -84,6 +84,7 @@ if [ "${WEBUI:-false}" == "true" ]; then
   cd ..
   mv ${UNIQUEID} ${UNIQUEID}_preview
   zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
+  exit 0
 else
   source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/publish_docs.sh)
 fi
