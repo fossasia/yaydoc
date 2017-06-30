@@ -6,7 +6,7 @@ var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
 
 exports.executeScript = function (socket, formData) {
-  if (!validation.isValid(formData)) {
+  if (!validation.isValidForm(formData)) {
     socket.emit('err-logs', "Failed to generated documentation due to an error in input fields");
     return false;
   }

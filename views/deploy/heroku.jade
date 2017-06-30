@@ -6,19 +6,20 @@ block content
     $(function () {
       var socket = io();
 
-      $("#btnRun").click(function () {
-        var herokuAppName = '';
-        var formData = $("form").serializeArray();
-        $.each(formData, function (i, field) {
-          if (field.name === "herokuAppName") {
-            herokuAppName = field.value.trim();
-          }
-        });
+      $("#herokuAppName").keyup(function () {
+        validation.validateHerokuAppName($("#herokuAppName").val());
+      });
 
-        if (!validation.isValidHerokuAppName(herokuAppName)) {
+      $("#btnRun").click(function () {
+        var herokuAppName = $("#herokuAppName").val().trim();
+
+        validation.setMessages([]);
+        var status = validation.validateHerokuAppName(herokuAppName);
+        if (status !== "valid") {
           styles.showNotification(validation.getMessages());
           validation.setMessages([]);
-        } else {
+        }
+        if (status !== "invalid") {
           $(this).attr("disabled", "none");
           data = {
             'email': "#{email}",
@@ -52,9 +53,10 @@ block content
   .container
     .col-md-6.col-md-offset-3#main-content
       form
-        .form-group
-          label.control-label(for='email') Heroku App Name:
-          input#email.form-control(type='text', placeholder='Enter Heroku App Name', name='herokuAppName', required='')
+        .form-group.has-feedback#herokuAppName-group
+          label.control-label(for='herokuAppName') Heroku App Name:
+          input#herokuAppName.form-control(type='text', placeholder='Enter Heroku App Name', name='herokuAppName', required='')
+          span#herokuAppName-span.glyphicon.form-control-feedback
         .form-group(style="text-align: center")
           button.btn.btn-default(type='button' id='btnRun') Run Deployment
       .progress

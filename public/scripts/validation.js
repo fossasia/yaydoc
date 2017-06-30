@@ -53,12 +53,42 @@
       return regex.test(url)
     },
 
-    isValidHerokuAppName: function (name) {
+    validateHerokuAppName: function (name) {
+      styles.invalidInput('herokuAppName');
+
       if (name === "") {
         messages.push("Empty Heroku App Name");
-        return false;
+        return "invalid";
       }
-      return true;
+
+      if (name.length < 3) {
+        messages.push("Heroku app name must be of length greater than or equal to 3");
+        return "invalid";
+      }
+
+      if (name.search(/^[a-z0-9-]+$/) === -1) {
+        messages.push("Heroku app name must be of length greater than or equal to 3");
+        return "invalid";
+      }
+
+      $.ajax({
+        url: 'https://api.heroku.com/apps/' + name,
+        headers: {
+          Accept: "application/vnd.heroku+json; version=3"
+        }
+      }).complete(function (xhr) {
+        if (xhr.status === 200) {
+          messages.push("Heroku application with the inputted name already exist. If you are not the owner, you cannot deploy!");
+          styles.warningInput('herokuAppName');
+          return "existent";
+        } else if (xhr.status === 404) {
+          styles.validInput('herokuAppName');
+          return "valid";
+        } else {
+          messages.push("Invalid heroku app name.");
+          return "invalid";
+        }
+      });
     }
   };
 
