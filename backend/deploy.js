@@ -1,12 +1,12 @@
-var crypter = require("../util/crypter.js")
+var crypter = require("../util/crypter.js");
 var spawn = require('child_process').spawn;
+var output = require('../util/output');
 
 exports.deployPages = function (socket, data) {
-  var donePercent = 0;
   var repoName = data.gitURL.split("/")[4].split(".")[0];
   var webUI = "true";
-  var username = data.username
-  var oauthToken = crypter.decrypt(data.encryptedToken)
+  var username = data.username;
+  var oauthToken = crypter.decrypt(data.encryptedToken);
 
   const args = [
     "-e", data.email,
@@ -19,16 +19,8 @@ exports.deployPages = function (socket, data) {
 
   var process = spawn("./ghpages_deploy.sh", args);
 
-  process.stdout.on('data', function (data) {
-    console.log(data.toString());
-    socket.emit('github-deploy-logs', {donePercent: donePercent, data: data.toString()});
-    donePercent += 18;
-  });
-
-  process.stderr.on('data', function (data) {
-    console.log(data.toString());
-    socket.emit('github-error-logs', data.toString());
-  });
+  output.lineOutput(socket, process, 'deploy-logs', 18);
+  output.lineError(socket, process, 'err-logs');
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
@@ -41,7 +33,6 @@ exports.deployPages = function (socket, data) {
 };
 
 exports.deployHeroku = function (socket, data) {
-  var donePercent = 0;
   var email = data.email;
   var herokuAppName = data.herokuAppName;
   var webUI = "true";
@@ -58,14 +49,8 @@ exports.deployHeroku = function (socket, data) {
 
   var process = spawn('./heroku_deploy.sh', args);
 
-  process.stdout.on('data', function (data) {
-    socket.emit('heroku-deploy-logs', {donePercent: donePercent, data: data.toString()});
-    donePercent += 7;
-  });
-
-  process.stderr.on('data', function (data) {
-    socket.emit('heroku-error-logs', data.toString());
-  });
+  output.lineOutput(socket, process, 'heroku-deploy-logs', 7);
+  output.lineError(socket, process, 'heroku-error-logs');
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
