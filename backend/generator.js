@@ -16,8 +16,8 @@ exports.executeScript = function (socket, formData) {
   var debug = formData.debug;
   var uniqueId = uuidV4();
   var webUI = "true";
-  var subProject = ""
-  if (formData.subProject != undefined) {
+  var subProject = "";
+  if (formData.subProject !== undefined) {
     subProject = formData.subProject.join(",")
   }
 

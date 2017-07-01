@@ -14,6 +14,13 @@ do
  esac
 done
 
+REPO=${GITURL:-$(git config remote.origin.url)}
+URL_SPLIT=(${REPO//// })
+
+PLATFORM=${URL_SPLIT[1]}
+USERNAME=${URL_SPLIT[2]}
+REPONAME=(${URL_SPLIT[3]//./ })
+
 # https://stackoverflow.com/a/15454916/4127836
 INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") else "false")')
 
@@ -27,19 +34,18 @@ if [ "${WEBUI:-false}" == "true" ]; then
   else
     mkdir -p temp/${EMAIL} && cd $_
     echo -e "Cloning Repository...\n"
-    git clone -q ${GITURL} "$UNIQUEID" && cd $_
+    git clone -q https://:@${PLATFORM}/${USERNAME}/${REPONAME} "$UNIQUEID" >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      >&2 echo -e "Failed to Clone. Repository does not exist.\n"
+      exit 4
+    fi
+    cd ${UNIQUEID}
     echo -e "Repository Cloned Successfully!\n"
   fi
 else
   git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
   BASE=$(pwd)/yaydocclone
 fi
-
-REPO=$(git config remote.origin.url)
-URL_SPLIT=(${REPO//// })
-
-USERNAME=${URL_SPLIT[2]}
-REPONAME=(${URL_SPLIT[3]//./ })
 
 ROOT_DIR=$(pwd)
 
@@ -86,7 +92,7 @@ mkdir _themes
 echo -e "Setting up documentation sources\n"
 sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO > /dev/null
 if [ $? -ne 0 ]; then
-  echo -e "Failed to initialize build process.\n"
+  >&2 echo -e "Failed to initialize build process.\n"
   exit 1
 fi
 echo -e "Documentation setup successful!\n"
@@ -132,7 +138,7 @@ fi
 echo -e "Starting Documentation Generation...\n"
 make html
 if [ $? -ne 0 ]; then
-  echo -e "Failed to generate documentation.\n"
+  >&2 echo -e "Failed to generate documentation.\n"
   exit 2
 fi
 echo -e "Documentation Generated Successfully!\n"
@@ -143,7 +149,7 @@ if [ "${WEBUI:-false}" == "true" ]; then
   rm -rf $BASE/temp/$EMAIL/$UNIQUEID
   zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
   if [ $? -ne 0 ]; then
-    echo -e "Failed setting up.\n"
+    >&2 echo -e "Failed setting up.\n"
     exit 3
   fi
 fi
