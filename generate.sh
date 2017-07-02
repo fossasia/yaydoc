@@ -90,7 +90,7 @@ mkdir _themes
 
 # Setting up documentation sources
 echo -e "Setting up documentation sources\n"
-sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d python_package=$PYTHON_PACKAGE > /dev/null
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES > /dev/null
 if [ $? -ne 0 ]; then
   >&2 echo -e "Failed to initialize build process.\n"
   exit 1
@@ -111,17 +111,20 @@ fi
 rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ $BUILD_DIR/
 cd $BUILD_DIR
 
-# Extracting docstrings if PYTHON_PACKAGE is defined
-if [ -n "$PYTHON_PACKAGE" ]; then
-  # sphinx-build imports the module while building source files. To avoid
+if [ "${AUTOAPI_PYTHON:-false}" == "true" ]; then
+  # autodoc imports the module while building source files. To avoid
   # ImportError, install any packages in requirements.txt of the project
   # if available
-  if [ -f $ROOT_DIR/requirements.txt ]; then
-    echo -e "Installing requirements for sphinx-apidoc"
+  if [ -f $ROOT_DIR/setup.py ]; then
+    pip install $ROOT_DIR/
+  elif [ -f $ROOT_DIR/requirements.txt ]; then
     pip install -q -r $ROOT_DIR/requirements.txt
-    echo -e "Installed successfully"
   fi
-  sphinx-apidoc -o source/ $ROOT_DIR/$PYTHON_PACKAGE
+  sphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_PYTHON_PATH/
+fi
+
+if [ "${AUTOAPI_JAVA:-false}" == "true" ]; then
+  javasphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_JAVA_PATH/
 fi
 
 if [ ! -f index.rst ]; then

@@ -4,3 +4,4 @@ pypandoc
 pandocfilters
 PyYaml
 mock
+javasphinx

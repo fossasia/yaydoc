@@ -28,10 +28,13 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 | LOGO                 | An image to be used as logo for the Project.      | path relative to DOCPATH. *example* - <i>To use DOCPATH/images/logo.svg as the logo, set LOGO as images/logo.svg</i>.|
 | MARKDOWN_FLAVOUR     | Input file format flavour. The supported flavors are  `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`| markdown_github   |
 | OAUTH_TOKEN          | Github Personal Token. generate it by following this [Guide](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)  | NONE *(Not required If using ssh) |
-| PYTHON_PACKAGE       | Path to any python package for which API docs should be generated. Provide a `requirements.txt` at the root containing all dependencies. | NONE |
-| DEBUG                | Enable detailed logging                           | false |
+| DEBUG                | Enable detailed logging                           | **false** |
 | HEROKU_APP_NAME      | Name of the heroku app. Your docs would be deployed at <HEROKU_APP_NAME>.herokuapp.com | NONE |
 | HEROKU_API_KEY       | You can find the key in the [Account](https://dashboard.heroku.com/account) page (in the **API Key** section) on your heroku dashboard | NONE *(Not required if not deploying to Heroku) |
+| AUTOAPI_PYTHON       | If this is **true**, Yaydoc will crawl your repository and try to extract API documentation for all python packages | **false** |
+| AUTOAPI_PYTHON_PATH  | Relative path from the root of the repository, where autoapi will search for Python packages | By default The entire repository is searched |
+| AUTOAPI_JAVA         | If this is **true**, Yaydoc will crawl your repository and try to extract API documentation for all java packages | | **false** |
+| AUTOAPI_JAVA_PATH    | Relative path from the root of the repository, where autoapi will search for Java packages | By default The entire repository is searched |
 
 ```
    * : The following environment variables must be specified for yaydoc to work. 
@@ -60,6 +63,9 @@ build:
   docpath: docs/
   logo: images/logo.svg
   markdown_flavour: markdown_github
+  autoapi:
+    - language: python
+    - language: java
 ```
 
 - Configuring publishers
@@ -68,6 +74,8 @@ build:
 publish:
   ghpages:
     docurl: yaydoc.fossasia.org
+  heroku:
+    app_name: yaydoc
 ```
 
 Currently Yaydoc supports publishing to ghpages and heroku.
