@@ -4,11 +4,11 @@ var mailer = require('./mailer');
 var uuidV4 = require("uuid/v4");
 var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
-var output = require('../util/output');
+var socketHandler = require('../util/socketHandler.js');
 
-exports.executeScript = function (socket, formData) {
+exports.executeScript = function (socket, formData, callback) {
   if (!validation.isValidForm(formData)) {
-    socket.emit('err-logs', "Failed to generated documentation due to an error in input fields");
+    socketHandler.handleSocket(socket, 'err-logs', "Failed to generated documentation due to an error in input fields");
     return false;
   }
   var email = formData.email;
@@ -39,17 +39,25 @@ exports.executeScript = function (socket, formData) {
 
   var process = spawn("./generate.sh", args);
 
-  output.lineOutput(socket, process, 'logs', 4);
-  output.lineError(socket, process, 'err-logs');
+  socketHandler.handleLineOutput(socket, process, 'logs', 4);
+  socketHandler.handleLineError(socket, process, 'err-logs');
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     if (code === 0) {
       var data = { email: email, uniqueId: uniqueId, gitUrl: gitUrl };
       mailer.sendEmail(data);
-      socket.emit('success', data);
+      socketHandler.handleSocket(socket, 'success', data);
+      if (callback != undefined) {
+        callback(null, data)
+      }
     } else {
-      socket.emit('failure', {errorCode: code});
+      socketHandler.handleSocket(socket, 'failure', {errorCode: code});
+      if (callback != undefined) {
+        callback({
+          message: `Process exited with code : ${code}`
+        })
+      }
     }
   });
   return true;

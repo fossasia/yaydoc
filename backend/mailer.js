@@ -30,7 +30,7 @@ exports.sendEmail = function (data) {
     textContent += '. Deploy to Github Pages: ' + githubDeployURL;
   }
 
-  textContent += '.Deploy to Heroku: ' + herokuDeployURL '.';
+  textContent += '.Deploy to Heroku: ' + herokuDeployURL + '.';
 
   var emailTemplate = jade.compileFile(`${__dirname}/../views/template/email.jade`);
   var htmlContent = emailTemplate({
