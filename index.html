@@ -83,7 +83,10 @@
 <li><a class="reference internal" href="#deployment">Deployment</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#travis-configuration">Travis Configuration</a></li>
+<li><a class="reference internal" href="#travis-configuration">Travis Configuration</a><ul>
+<li><a class="reference internal" href="#deploying-to-heroku">Deploying to Heroku</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#using-ssh">Using SSH</a></li>
 </ul>
 </li>
@@ -252,6 +255,21 @@ containing all dependencies.</td>
 <td>Enable detailed logging</td>
 <td>false</td>
 </tr>
+<tr class="row-odd"><td>HEROKU_APP_NAME</td>
+<td>Name of the heroku app. Your docs
+would be deployed at .herokuapp.com</td>
+<td>NONE</td>
+</tr>
+<tr class="row-even"><td>HEROKU_API_KEY</td>
+<td>You can find the key in the
+<a class="reference external" href="https://dashboard.heroku.com/account">Account</a>
+page (in the <strong>API Key</strong> section) on
+your heroku dashboard</td>
+<td>NONE *(Not
+required if not
+deploying to
+Heroku)</td>
+</tr>
 </tbody>
 </table>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="p">:</span> <span class="n">The</span> <span class="n">following</span> <span class="n">environment</span> <span class="n">variables</span> <span class="n">must</span> <span class="n">be</span> <span class="n">specified</span> <span class="k">for</span> <span class="n">yaydoc</span> <span class="n">to</span> <span class="n">work</span><span class="o">.</span>
@@ -292,8 +310,7 @@ in the root of the repository.</div>
     <span class="n">docurl</span><span class="p">:</span> <span class="n">yaydoc</span><span class="o">.</span><span class="n">fossasia</span><span class="o">.</span><span class="n">org</span>
 </pre></div>
 </div>
-<p>Currently Yaydoc only supports publishing to ghpages. More publishers to
-be added soon.</p>
+<p>Currently Yaydoc supports publishing to ghpages and heroku.</p>
 </div>
 <div class="section" id="travis-configuration">
 <h2>Travis Configuration<a class="headerlink" href="#travis-configuration" title="Permalink to this headline">¶</a></h2>
@@ -304,6 +321,21 @@ directory of your repository.</p>
     <span class="n">skip_cleanup</span><span class="p">:</span> <span class="n">true</span>
     <span class="n">script</span><span class="p">:</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fossasia</span><span class="o">/</span><span class="n">yaydoc</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">generate_ci</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
 </pre></div>
+</div>
+<div class="section" id="deploying-to-heroku">
+<h3>Deploying to Heroku<a class="headerlink" href="#deploying-to-heroku" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">If you are deploying to Heroku, you also need to install the <strong>Heroku
+CLI</strong>.</div>
+<div class="line">To install it, you can add the following content to the
+<code class="docutils literal"><span class="pre">.travis.yml</span></code> file</div>
+</div>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span><span class="p">:</span> <span class="n">required</span>
+
+<span class="n">before_deploy</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">wget</span> <span class="o">-</span><span class="n">qO</span><span class="o">-</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">toolbelt</span><span class="o">.</span><span class="n">heroku</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">ubuntu</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">sh</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="using-ssh">
