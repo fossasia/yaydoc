@@ -10,18 +10,26 @@ block content
       'uniqueId': "#{uniqueId}",
       'encryptedToken': "#{token}",
       'username': "#{username}"
-    })
+    });
 
-    socket.on('deploy-logs', function (data) {
+    socket.on('github-deploy-logs', function (data) {
       $('#messages').append($('<li>').text(data.data));
       $("#progress").css("width", data.donePercent + "%");
-    })
+    });
 
-    socket.on('deploy-success', function(data) {
+    socket.on('github-error-logs', function (data) {
+      $('#messages').append($('<li style="color:red">').text(data));
+    });
+
+    socket.on('github-success', function(data) {
+      styles.showNotification("Documentation deployed successfully to Github Pages!");
       $("#progress").css("width", "100%");
       $("#main-content").append('<br><center><a class="btn btn-default" href="'+ data.pagesURL +'" target="_blank">GH-PAGES</a></center>')
-    })
+    });
 
+    socket.on('github-failure', function (data) {
+      styles.showNotification("Failed to deploy documentation: Error " + data.errorCode);
+    });
   .container
     .col-md-6.col-md-offset-3#main-content
       .progress

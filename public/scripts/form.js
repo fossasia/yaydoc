@@ -11,21 +11,14 @@ $(function () {
   $("#btnGenerate").click(function () {
     var formData = getData();
 
-    if (validation.isValid(formData)) {
+    if (validation.isValidForm(formData)) {
       socket.emit('execute', formData);
       $(this).attr("disabled", "none");
       $("#subProject").attr("disabled", "none");
     } else {
-      $('.notification').append($('<li>')).text(validation.getMessages());
-      $('#notification-container').css("visibility", "visible");
-      $('#notification-container').css("opacity", "1");
+      styles.showNotification(validation.getMessages());
       validation.setMessages([]);
-      setTimeout(function() {
-        $('#notification-container').css("visibility", "hidden");
-        $('#notification-container').css("opacity", "0");
-      }, 5000)
     }
-
   });
 
   socket.on('logs', function (data) {
@@ -48,13 +41,7 @@ $(function () {
     $('#btnDownload').attr("href", "/download/" + data.email +"/" + data.uniqueId);
     $('#btnPreview').css("display", "inline");
     $('#btnPreview').attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
-    $('.notification').append($('<li>')).text("Documentation Generated Successfully");
-    $('#notification-container').css("visibility", "visible");
-    $('#notification-container').css("opacity", "1");
-    setTimeout(function() {
-      $('#notification-container').css("visibility", "hidden");
-      $('#notification-container').css("opacity", "0");
-    }, 5000)
+    styles.showNotification("Documentation Generated Successfully");
     if (validation.isGithubHTTPS(data.gitUrl)) {
       $('#btnDeployGithub').css("display", "inline");
       $('#onetimeDeploy').attr("href", '/auth/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
@@ -64,24 +51,8 @@ $(function () {
   });
 
   socket.on('failure', function (data) {
-    $('.notification').append($('<li>')).text("Failed to Generate Documentation: Error " + data.errorCode);
-    $('#notification-container').css("visibility", "visible");
-    $('#notification-container').css("opacity", "1");
-    setTimeout(function() {
-      $('#notification-container').css("visibility", "hidden");
-      $('#notification-container').css("opacity", "0");
-    }, 5000)
+    styles.showNotification("Failed to Generate Documentation: Error " + data.errorCode);
   })
-
-  socket.on('heroku-success', function (data) {
-    $('.notification').append($('<li>')).text("Documentation deployed successfully to Heroku at: " + data.url);
-    $('#notification-container').css("visibility", "visible");
-    $('#notification-container').css("opacity", "1");
-    setTimeout(function() {
-      $('#notification-container').css("visibility", "hidden");
-      $('#notification-container').css("opacity", "0");
-    }, 5000)
-  });
 });
 
 /**

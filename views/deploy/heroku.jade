@@ -7,7 +7,6 @@ block content
       var socket = io();
 
       $("#btnRun").click(function () {
-        $(this).attr("disabled", "none");
         var herokuAppName = '';
         var formData = $("form").serializeArray();
         $.each(formData, function (i, field) {
@@ -16,13 +15,19 @@ block content
           }
         });
 
-        data = {
-          'email': "#{email}",
-          'herokuAPIKey': "#{herokuAPIKey}",
-          'herokuAppName': herokuAppName,
-          'uniqueId': "#{uniqueId}"
-        };
-        socket.emit('heroku-deploy', data);
+        if (!validation.isValidHerokuAppName(herokuAppName)) {
+          styles.showNotification(validation.getMessages());
+          validation.setMessages([]);
+        } else {
+          $(this).attr("disabled", "none");
+          data = {
+            'email': "#{email}",
+            'herokuAPIKey': "#{herokuAPIKey}",
+            'herokuAppName': herokuAppName,
+            'uniqueId': "#{uniqueId}"
+          };
+          socket.emit('heroku-deploy', data);
+        }
       });
 
       socket.on('heroku-deploy-logs', function (data) {
@@ -35,9 +40,14 @@ block content
       });
 
       socket.on('heroku-success', function (data) {
+        styles.showNotification("Documentation deployed successfully to Heroku!");
         $("#progress").css("width", "100%");
         $("#main-content").append('<br><center><a class="btn btn-default" href="' + data.url + '" target="_blank">Website Link</a></center>')
       });
+
+      socket.on('heroku-failure', function (data) {
+        styles.showNotification("Failed to deploy documentation: Error " + data.errorCode);
+      })
     });
   .container
     .col-md-6.col-md-offset-3#main-content
