@@ -4,7 +4,7 @@ var nodemailer = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
 var jade = require('jade');
 var hostname =process.env.HOSTNAME || 'yaydoc.herokuapp.com';
-
+var validation = require('../public/scripts/validation.js');
 exports.sendEmail = function (data) {
   var options = {
     service: 'SendGrid',
@@ -18,10 +18,16 @@ exports.sendEmail = function (data) {
 
   var previewURL = 'http://' + hostname + '/preview/' + data.email + '/' + data.uniqueId + '_preview';
   var downloadURL = 'http://' + hostname + '/download/' + data.email + '/' + data.uniqueId;
-  var deployURL = 'http://' + hostname + '/github?email=' + data.email + '&uniqueId=' + data.uniqueId + '&gitURL=' + data.gitUrl;
+  var deployURL = "";
+  if (validation.isGithubHTTPS(data.gitUrl)) {
+    deployURL = 'http://' + hostname + '/github?email=' + data.email + '&uniqueId=' + data.uniqueId + '&gitURL=' + data.gitUrl;
+  }
 
   var textContent = 'Hey! Your documentation generated successfully. Preview it here: ' + previewURL +
-                    '. Download it here: ' + downloadURL + '. Deploy it here: ' + deployURL;
+                    '. Download it here: ' + downloadURL ;
+  if (deployURL !== "") {
+    textContent += '. Deploy it here: ' + deployURL;
+  }
   var emailTemplate = jade.compileFile(`${__dirname}/../views/template/email.jade`);
   var htmlContent = emailTemplate({
       previewURL: previewURL,
