@@ -10,7 +10,7 @@ do
   case "${option}"
   in
   e) EMAIL=${OPTARG};;
-  i) UNIQUEID=${OPTARG};;
+  i) UNIQUE_ID=${OPTARG};;
   w) WEBUI=${OPTARG};;
   n) USERNAME=${OPTARG};;
   o) OAUTH_TOKEN=${OPTARG};;
@@ -28,7 +28,7 @@ if [ $? -ne 0 ]; then
   GIT_HTTPS_URL=https://$USERNAME:$OAUTH_TOKEN@github.com/$USERNAME/$REPONAME.git
   if [ "${WEBUI:-false}" == "true" ]; then
     cd temp/${EMAIL}
-    git clone --quiet $GIT_HTTPS_URL ${UNIQUEID}_pages
+    git clone --quiet $GIT_HTTPS_URL ${UNIQUE_ID}_pages
   else
     git clone --quiet $GIT_HTTPS_URL gh-pages
   fi
@@ -43,7 +43,7 @@ fi
 echo -e "Cloned successfully! \n"
 
 if [ "${WEBUI:-false}" == "true" ]; then
-  cd ${UNIQUEID}_pages
+  cd ${UNIQUE_ID}_pages
 else
   cd gh-pages
 fi
@@ -58,7 +58,7 @@ fi
 # Overwrite files in the branch
 git rm -rfq ./*
 if [ "${WEBUI:-false}" == "true" ]; then
-  cp -a ../${UNIQUEID}_preview/. ./
+  cp -a ../${UNIQUE_ID}_preview/. ./
 else
   cp -a ../_build/html/. ./
 fi
@@ -82,7 +82,5 @@ echo -e "github pages pushed successfully!\n"
 # Cleanup
 if [ "${WEBUI:-false}" == "true" ]; then
   cd ..
-  rm -r ${UNIQUEID}_pages
-else
-  clean
+  rm -r ${UNIQUE_ID}_pages
 fi

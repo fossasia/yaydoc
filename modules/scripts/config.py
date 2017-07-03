@@ -45,8 +45,8 @@ def _get_default_config(username, reponame):
                       'docpath': 'docs',
                       'python_package': None,
                      },
-            'publish': {'ghpages': {'docurl': None,
-                                   }
+            'publish': {'ghpages': {'docurl': None,},
+                        'heroku': {'app_name': None,},
                        },
            }
     return conf
@@ -87,6 +87,7 @@ def _get_env_dict(conf):
             'PYTHON_PACKAGE': build['python_package'],
 
             'DOCURL': publish['ghpages']['docurl'],
+            'HEROKU_APP_NAME': publish['heroku']['app_name'],
            }
 
 def _export_env(envdict):

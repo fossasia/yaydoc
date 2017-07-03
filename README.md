@@ -30,6 +30,8 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 | OAUTH_TOKEN          | Github Personal Token. generate it by following this [Guide](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)  | NONE *(Not required If using ssh) |
 | PYTHON_PACKAGE       | Path to any python package for which API docs should be generated. Provide a `requirements.txt` at the root containing all dependencies. | NONE |
 | DEBUG                | Enable detailed logging                           | false |
+| HEROKU_APP_NAME      | Name of the heroku app. Your docs would be deployed at <HEROKU_APP_NAME>.herokuapp.com | NONE |
+| HEROKU_API_KEY       | You can find the key in the [Account](https://dashboard.heroku.com/account) page (in the **API Key** section) on your heroku dashboard | NONE *(Not required if not deploying to Heroku) |
 
 ```
    * : The following environment variables must be specified for yaydoc to work. 
@@ -68,7 +70,7 @@ publish:
     docurl: yaydoc.fossasia.org
 ```
 
-Currently Yaydoc only supports publishing to ghpages. More publishers to be added soon.
+Currently Yaydoc supports publishing to ghpages and heroku.
 
 ## Travis Configuration
 Add the following content to the `.travis.yml` file in the root directory of your repository.
@@ -78,6 +80,17 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
+```
+
+### Deploying to Heroku
+If you are deploying to Heroku, you also need to install the **Heroku CLI**.
+To install it, you can add the following content to the `.travis.yml` file
+
+```yaml
+sudo: required
+
+before_deploy:
+  - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 ```
 
 ## Using SSH
