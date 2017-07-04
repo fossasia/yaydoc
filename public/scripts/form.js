@@ -23,12 +23,7 @@ $(function () {
 
   socket.on('logs', function (data) {
     $('#messages').append($('<li class="info">').text(data.data));
-    if (data.donePercent >= 90) {
-      $("#progress").css("width", "90%");
-    } else {
-      $("#progress").css("width", data.donePercent + "%");
-    }
-
+    $("#progress").css("width", data.donePercent + "%");
   });
 
   socket.on('err-logs', function (msg) {
