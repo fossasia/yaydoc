@@ -4,6 +4,7 @@ var mailer = require('./mailer');
 var uuidV4 = require("uuid/v4");
 var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
+var output = require('../util/output');
 
 exports.executeScript = function (socket, formData) {
   if (!validation.isValidForm(formData)) {
@@ -21,8 +22,6 @@ exports.executeScript = function (socket, formData) {
     subProject = formData.subProject.join(",")
   }
 
-  var donePercent = 0;
-
   const args = [
     "-g", gitUrl,
     "-t", docTheme,
@@ -35,15 +34,8 @@ exports.executeScript = function (socket, formData) {
 
   var process = spawn("./generate.sh", args);
 
-  process.stdout.on('data', function (data) {
-    console.log(data.toString());
-    socket.emit('logs', {donePercent: (donePercent = donePercent + 4), data: data.toString()});
-  });
-
-  process.stderr.on('data', function (data) {
-    console.log(data.toString());
-    socket.emit('err-logs', data.toString());
-  });
+  output.lineOutput(socket, process, 'logs', 4);
+  output.lineError(socket, process, 'err-logs');
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
