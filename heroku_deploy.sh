@@ -12,6 +12,12 @@ do
  esac
 done
 
+STATUS_CODE=$(curl -s -o /dev/null -w '%{http_code}' -u ":$HEROKU_API_KEY" -n https://api.heroku.com/apps/${HEROKU_APP_NAME} -H "Accept: application/vnd.heroku+json; version=3");
+if [ ${STATUS_CODE} -eq 403 ]; then
+  echo "You do not have access to this Heroku Application"
+  exit 1
+fi
+
 if [ "${WEBUI:-false}" == "true" ]; then
   BASE=$(pwd)
   cd temp/$EMAIL/${UNIQUE_ID}_preview
@@ -30,7 +36,9 @@ rsync -av --progress ../ . --exclude app
 cd ..
 tar czfv slug.tgz ./app > /dev/null
 
-heroku create $HEROKU_APP_NAME
+if [ ${STATUS_CODE} -eq 404 ]; then
+  heroku create $HEROKU_APP_NAME
+fi
 
 Arr=($(curl -u ":$HEROKU_API_KEY" -X POST \
 -H 'Content-Type:application/json' \
