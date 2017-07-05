@@ -244,23 +244,16 @@ following this
 required If
 using ssh)</td>
 </tr>
-<tr class="row-odd"><td>PYTHON_PACKAGE</td>
-<td>Path to any python package for which
-API docs should be generated. Provide
-a <code class="docutils literal"><span class="pre">requirements.txt</span></code> at the root
-containing all dependencies.</td>
-<td>NONE</td>
-</tr>
-<tr class="row-even"><td>DEBUG</td>
+<tr class="row-odd"><td>DEBUG</td>
 <td>Enable detailed logging</td>
-<td>false</td>
+<td><strong>false</strong></td>
 </tr>
-<tr class="row-odd"><td>HEROKU_APP_NAME</td>
+<tr class="row-even"><td>HEROKU_APP_NAME</td>
 <td>Name of the heroku app. Your docs
 would be deployed at .herokuapp.com</td>
 <td>NONE</td>
 </tr>
-<tr class="row-even"><td>HEROKU_API_KEY</td>
+<tr class="row-odd"><td>HEROKU_API_KEY</td>
 <td>You can find the key in the
 <a class="reference external" href="https://dashboard.heroku.com/account">Account</a>
 page (in the <strong>API Key</strong> section) on
@@ -269,6 +262,38 @@ your heroku dashboard</td>
 required if not
 deploying to
 Heroku)</td>
+</tr>
+<tr class="row-even"><td>AUTOAPI_PYTHON</td>
+<td>If this is <strong>true</strong>, Yaydoc will crawl
+your repository and try to extract API
+documentation for all python packages</td>
+<td><strong>false</strong></td>
+</tr>
+<tr class="row-odd"><td>AUTOAPI_PYTHON_
+PATH</td>
+<td>Relative path from the root of the
+repository, where autoapi will search
+for Python packages</td>
+<td>By default The
+entire
+repository is
+searched</td>
+</tr>
+<tr class="row-even"><td>AUTOAPI_JAVA</td>
+<td>If this is <strong>true</strong>, Yaydoc will crawl
+your repository and try to extract API
+documentation for all java packages</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AUTOAPI_JAVA_PA
+TH</td>
+<td>Relative path from the root of the
+repository, where autoapi will search
+for Java packages</td>
+<td>By default The
+entire
+repository is
+searched</td>
 </tr>
 </tbody>
 </table>
@@ -300,6 +325,9 @@ in the root of the repository.</div>
   <span class="n">docpath</span><span class="p">:</span> <span class="n">docs</span><span class="o">/</span>
   <span class="n">logo</span><span class="p">:</span> <span class="n">images</span><span class="o">/</span><span class="n">logo</span><span class="o">.</span><span class="n">svg</span>
   <span class="n">markdown_flavour</span><span class="p">:</span> <span class="n">markdown_github</span>
+  <span class="n">autoapi</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">language</span><span class="p">:</span> <span class="n">python</span>
+    <span class="o">-</span> <span class="n">language</span><span class="p">:</span> <span class="n">java</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -308,6 +336,8 @@ in the root of the repository.</div>
 <div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">publish</span><span class="p">:</span>
   <span class="n">ghpages</span><span class="p">:</span>
     <span class="n">docurl</span><span class="p">:</span> <span class="n">yaydoc</span><span class="o">.</span><span class="n">fossasia</span><span class="o">.</span><span class="n">org</span>
+  <span class="n">heroku</span><span class="p">:</span>
+    <span class="n">app_name</span><span class="p">:</span> <span class="n">yaydoc</span>
 </pre></div>
 </div>
 <p>Currently Yaydoc supports publishing to ghpages and heroku.</p>
