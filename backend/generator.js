@@ -18,8 +18,12 @@ exports.executeScript = function (socket, formData) {
   var uniqueId = uuidV4();
   var webUI = "true";
   var subProject = "";
+  var subDocpath = [];
   if (formData.subProject !== undefined) {
-    subProject = formData.subProject.join(",")
+    subProject = formData.subProject.join(",");
+    for(i=0; i<formData.subProject.length; i++){
+        subDocpath.push('docs');
+    }
   }
 
   const args = [
@@ -29,7 +33,8 @@ exports.executeScript = function (socket, formData) {
     "-d", debug,
     "-u", uniqueId,
     "-w", webUI,
-    "-s", subProject
+    "-s", subProject,
+    "-p", subDocpath.join(",")
   ];
 
   var process = spawn("./generate.sh", args);

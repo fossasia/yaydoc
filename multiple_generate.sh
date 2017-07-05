@@ -1,92 +1,37 @@
 #!/bin/bash
 
-function clean() {
-  rm -rf $BUILD_DIR
+function cloneSubProject() {
+  git clone $1 $2 && cd $_
+  rm -rf .git
+  SUB_ROOT_DIR=$(pwd)
+  cd $3
+  if [ ! -f index.rst ]; then
+    echo -e "No index.rst found at $2/$3. Auto generating...\n"
+    python $BASE/modules/scripts/genindex.py $SUB_ROOT_DIR
+    if [ "${DEBUG:-false}" == "true" ]; then
+      echo -e "\n--------------------------------------\n"
+      cat index.rst
+      echo -e "\n--------------------------------------\n"
+    fi
+    echo -e "Auto generated index.rst\n"
+  fi
 }
 
-function cloner() {
-  URL_SPLIT=(${1//// })
-  REPONAME=(${URL_SPLIT[3]//./ })
-  git clone $1 ${REPONAME} &
-}
+IFS=',' read -ra SUBPROJECT_URLS_ARRAY <<< "$SUBPROJECT_URLS"
+IFS=',' read -ra SUBPROJECT_DOCPATHS_ARRAY <<< "$SUBPROJECT_DOCPATHS"
 
-function genSubIndex() {
-  URL_SPLIT=(${1//// })
-  REPONAME=(${URL_SPLIT[3]//./ })
-  cd $REPONAME/docs
-  python $BASE/modules/scripts/genindex.py $BUILD_DIR/$REPONAME
-  cd ../../
-}
+SUBPROJECT_DIRS_ARRAY=()
 
-
-BASE=$(pwd)
-
-if [ "${WEBUI:-false}" == "true" ]; then
-  BUILD_DIR=$(pwd)/temp/$EMAIL/$UNIQUEID
-  mkdir -p $BUILD_DIR
-  cd $BUILD_DIR
-else
-  git clone https://github.com/fossasia/yaydoc.git yaydocclone
-  BASE=$(pwd)/yaydocclone
-  BUILD_DIR=$(pwd)/temp
-  echo -e "build dir"
-  echo -e $BUILD_DIR
-  mkdir -p $BUILD_DIR
-  cd $BUILD_DIR
-fi
-
-cp -a ${BASE}/modules/scripts/ $BUILD_DIR/
-cp -a ${BASE}/modules/templates/ $BUILD_DIR/
-
-mkdir _themes
-
-cp -a ${BASE}/fossasia_theme $BUILD_DIR/_themes/
-
-cloner $GITURL
-
-IFS=', ' read -r -a SUBPROJECTS <<< "$SUBPROJECT"
-
-for element in "${SUBPROJECTS[@]}"
-do
-  cloner $element
+for ((i=0;i<${#SUBPROJECT_URLS_ARRAY[@]};i++)); do
+  SUB_URL="${SUBPROJECT_URLS_ARRAY[$i]}"
+  SUB_DOCPATH="${SUBPROJECT_DOCPATHS_ARRAY[$i]}"
+  SUB_URL_SPLIT=(${SUB_URL//// })
+  SUB_REPONAME=(${SUB_URL_SPLIT[3]//./ })
+  SUBPROJECT_DIRS_ARRAY+=("${SUB_REPONAME}")
+  cloneSubProject $SUB_URL $SUB_REPONAME $SUB_DOCPATH &
 done
 
 wait
 
-genSubIndex $GITURL
-for element in "${SUBPROJECTS[@]}"
-do
- genSubIndex $element
-done
-
-
-
-URL_SPLIT=(${GITURL//// })
-USERNAME=${URL_SPLIT[2]}
-REPONAME=(${URL_SPLIT[3]//./ })
-
-pip install -r $BASE/requirements.txt
-sphinx-quickstart -q -v "($(date +%Y-%m-%d.%H:%M:%S))" -a $USERNAME -p $REPONAME -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO
-
-rm index.rst
-
-python $BASE/modules/scripts/genmainindex.py
-
-make html
-shopt -s extglob
-if [ "${WEBUI:-false}" == "true" ]; then
-
-
-  rm -r !(_build)
-
-  cp -a _build/html/. ./
-
-  rm -r _build
-
-  cd ..
-  mv ${UNIQUEID} ${UNIQUEID}_preview
-  zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
-  exit 0
-else
-  source <(curl -s https://raw.githubusercontent.com/fossasia/yaydoc/master/publish_docs.sh)
-fi
+# shellcheck disable=SC2034
+SUBPROJECT_DIRS=$(IFS=, ; echo "${SUBPROJECT_DIRS_ARRAY[*]}")

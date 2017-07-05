@@ -33,8 +33,10 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 | HEROKU_API_KEY       | You can find the key in the [Account](https://dashboard.heroku.com/account) page (in the **API Key** section) on your heroku dashboard | NONE *(Not required if not deploying to Heroku) |
 | AUTOAPI_PYTHON       | If this is **true**, Yaydoc will crawl your repository and try to extract API documentation for all python packages | **false** |
 | AUTOAPI_PYTHON_PATH  | Relative path from the root of the repository, where autoapi will search for Python packages | By default The entire repository is searched |
-| AUTOAPI_JAVA         | If this is **true**, Yaydoc will crawl your repository and try to extract API documentation for all java packages | | **false** |
+| AUTOAPI_JAVA         | If this is **true**, Yaydoc will crawl your repository and try to extract API documentation for all java packages | **false** |
 | AUTOAPI_JAVA_PATH    | Relative path from the root of the repository, where autoapi will search for Java packages | By default The entire repository is searched |
+| SUBPROJECT_URLS      | Comma seperated URLs of all repositories which should be included when building documentation | NONE |
+| SUBPROJECT_DOCPATHS  | Comma seperated `DOCPATHs` for all subprojects     | By default It is assumed `DOCPATH` is `docs` |
 
 ```
    * : The following environment variables must be specified for yaydoc to work. 
@@ -53,6 +55,10 @@ metadata:
   projectname: Yaydoc
   version: development
   debug: true
+  subproject:
+    - url: <URL of Subproject 1>
+      docpath: doc
+    - url: <URL of subproject 2>
 ```
 
 - Configuring build options
