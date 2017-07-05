@@ -90,12 +90,13 @@ html(xmlns='http://www.w3.org/1999/xhtml', xmlns:v='urn:schemas-microsoft-com:vm
                             tbody
                               tr
                                 td(style='width:85px;')
-                                  img(alt='', title='', height='auto', src='http://res.cloudinary.com/template-gdg/image/upload/v1498552339/play_cuqe89.png', style='border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;', width='85')
+                                  a(href="#{previewURL}" target="_blank")
+                                    img(alt='', title='', height='auto', src='http://res.cloudinary.com/template-gdg/image/upload/v1498552339/play_cuqe89.png', style='border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;', width='85')
                       tr
                         td(style='word-wrap:break-word;font-size:0px;padding:20px 25px;', align='center')
                           div(style='cursor:auto;color:#EC652D;font-family:Lato, Helvetica, Arial, sans-serif;font-size:20px;line-height:22px;text-align:center;')
                             strong
-                              a(style='text-decoration: none; color: inherit;' href="#{previewURL}") Preview it
+                              a(style='text-decoration: none; color: inherit;' href="#{previewURL}" target="_blank") Preview it
                             br
                 //if mso | IE
                   td(style='vertical-align:top;width:200px;')
@@ -108,32 +109,34 @@ html(xmlns='http://www.w3.org/1999/xhtml', xmlns:v='urn:schemas-microsoft-com:vm
                             tbody
                               tr
                                 td(style='width:100px;')
-                                  img(alt='', title='', height='auto', src='http://res.cloudinary.com/template-gdg/image/upload/v1498552331/download_ktlqee.png', style='border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;', width='100')
+                                  a(href="#{downloadURL}" target="_blank")
+                                    img(alt='', title='', height='auto', src='http://res.cloudinary.com/template-gdg/image/upload/v1498552331/download_ktlqee.png', style='border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;', width='100')
                       tr
                         td(style='word-wrap:break-word;font-size:0px;padding:20px 25px;', align='center')
                           div(style='cursor:auto;color:#EC652D;font-family:Lato, Helvetica, Arial, sans-serif;font-size:20px;line-height:22px;text-align:center;')
                             strong
-                              a(style='text-decoration: none; color: inherit;' href="#{downloadURL}") Download it
+                              a(style='text-decoration: none; color: inherit;' href="#{downloadURL}" target="_blank") Download it
                             br
                 //if mso | IE
                   td(style='vertical-align:top;width:200px;')
-            if deployURL !== ""
-                .mj-column-per-33.outlook-group-fix(style='vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;')
-                  table(role='presentation', cellpadding='0', cellspacing='0', width='100%', border='0')
-                    tbody
-                      tr
-                        td(style='word-wrap:break-word;font-size:0px;padding:0px 25px;', align='center')
-                          table(role='presentation', cellpadding='0', cellspacing='0', style='border-collapse:collapse;border-spacing:0px;', align='center', border='0')
-                            tbody
-                              tr
-                                td(style='width:100px;')
-                                  img(alt='', title='', height='auto', src='http://res.cloudinary.com/template-gdg/image/upload/v1498552325/deploy_yy3oqw.png', style='border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;', width='100')
-                      tr
-                        td(style='word-wrap:break-word;font-size:0px;padding:20px 25px;', align='center')
-                          div(style='cursor:auto;color:#EC652D;font-family:Lato, Helvetica, Arial, sans-serif;font-size:20px;line-height:22px;text-align:center;')
-                            strong
-                              a(style='text-decoration: none; color: inherit;' href="#{deployURL}") Deploy it
-                            br
+                if deployURL !== ""
+                    .mj-column-per-33.outlook-group-fix(style='vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;')
+                      table(role='presentation', cellpadding='0', cellspacing='0', width='100%', border='0')
+                        tbody
+                          tr
+                            td(style='word-wrap:break-word;font-size:0px;padding:0px 25px;', align='center')
+                              table(role='presentation', cellpadding='0', cellspacing='0', style='border-collapse:collapse;border-spacing:0px;', align='center', border='0')
+                                tbody
+                                  tr
+                                    td(style='width:100px;')
+                                      a(href="#{deployURL}" target="_blank")
+                                        img(alt='', title='', height='auto', src='http://res.cloudinary.com/template-gdg/image/upload/v1498552325/deploy_yy3oqw.png', style='border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;', width='100')
+                          tr
+                            td(style='word-wrap:break-word;font-size:0px;padding:20px 25px;', align='center')
+                              div(style='cursor:auto;color:#EC652D;font-family:Lato, Helvetica, Arial, sans-serif;font-size:20px;line-height:22px;text-align:center;')
+                                strong
+                                  a(style='text-decoration: none; color: inherit;' href="#{deployURL}" target="_blank") Deploy it
+                                br
                 //if mso | IE
       //if mso | IE
       //if mso | IE
