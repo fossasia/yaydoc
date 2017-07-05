@@ -43,7 +43,8 @@ def _get_default_config(username, reponame):
                       'logo': '',
                       'doctheme': 'fossasia_theme',
                       'docpath': 'docs',
-                      'python_package': None,
+                      'autoapi': [],
+                      'mock': [],
                      },
             'publish': {'ghpages': {'docurl': None,},
                         'heroku': {'app_name': None,},
@@ -70,6 +71,17 @@ def _get_env_dict(conf):
     subproject = metadata['subproject']
     if not isinstance(subproject, list):
         subproject = [subproject]
+
+    autoapi = build['autoapi']
+    if not isinstance(autoapi, list):
+        autoapi = [autoapi]
+
+    autoapi_paths = {section['language']: section.get('path', '.')
+                     for section in autoapi}
+
+    mock_modules = build['mock']
+    if not isinstance(mock_modules, list):
+        mock_modules = [mock_modules]
     
     return {'PROJECTNAME': metadata['projectname'],
             'VERSION': metadata['version'],
@@ -78,13 +90,19 @@ def _get_env_dict(conf):
                                         for project in subproject),
             'SUBPROJECT_DOCPATHS': ','.join(project.get('docpath', 'docs')
                                             for project in subproject),
-            'DEBUG': "true" if metadata['debug'] is True else "false",
+            'DEBUG': 'true' if metadata['debug'] is True else 'false',
 
             'MARKDOWN_FLAVOUR': build['markdown_flavour'],
             'LOGO': build['logo'],
             'DOCTHEME': build['doctheme'],
             'DOCPATH': build['docpath'],
-            'PYTHON_PACKAGE': build['python_package'],
+
+            'AUTOAPI_PYTHON': 'true' if 'python' in autoapi_paths else 'false',
+            'AUTOAPI_PYTHON_PATH': autoapi_paths.get('python', '.'),
+
+            'AUTOAPI_JAVA': 'true' if 'java' in autoapi_paths else 'false',
+            'AUTOAPI_JAVA_PATH': autoapi_paths.get('java', '.'),
+            'MOCK_MODULES': ','.join(mock_modules),
 
             'DOCURL': publish['ghpages']['docurl'],
             'HEROKU_APP_NAME': publish['heroku']['app_name'],

@@ -22,7 +22,7 @@ git config --global user.name "Yaydoc Bot"
 git config --global user.email "noreply+bot@example.com"
 
 GIT_SSH_URL=git@github.com:$USERNAME/$REPONAME.git
-git clone --quiet $GIT_SSH_URL gh-pages
+git clone --quiet $GIT_SSH_URL gh_pages
 if [ $? -ne 0 ]; then
   echo -e "Cloning using SSH failed. Trying with Github token instead\n"
   GIT_HTTPS_URL=https://$USERNAME:$OAUTH_TOKEN@github.com/$USERNAME/$REPONAME.git
@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
     cd temp/${EMAIL}
     git clone --quiet $GIT_HTTPS_URL ${UNIQUE_ID}_pages
   else
-    git clone --quiet $GIT_HTTPS_URL gh-pages
+    git clone --quiet $GIT_HTTPS_URL gh_pages
   fi
 
   if [[ $? -ne 0 ]]; then
@@ -45,7 +45,7 @@ echo -e "Cloned successfully! \n"
 if [ "${WEBUI:-false}" == "true" ]; then
   cd ${UNIQUE_ID}_pages
 else
-  cd gh-pages
+  cd gh_pages
 fi
 
 
@@ -79,8 +79,11 @@ git commit -q -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
 git push origin gh-pages
 
 echo -e "github pages pushed successfully!\n"
+
+cd ..
 # Cleanup
 if [ "${WEBUI:-false}" == "true" ]; then
-  cd ..
-  rm -r ${UNIQUE_ID}_pages
+  rm -rf ${UNIQUE_ID}_pages
+else
+  rm -rf gh_pages
 fi

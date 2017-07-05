@@ -36,18 +36,26 @@ sys.path.insert(0, u'{{ module_path }}')
 
 import os
 import sys
+import mock
 import pkg_resources
 from recommonmark.parser import CommonMarkParser
 
 # Adding scripts directory to path
 sys.path.insert(0, os.path.abspath('scripts'))
 
-# Adding python_package to path
-# Need to strip slashes from end else os.path.dirname would not give proper result
-python_package = '{{ python_package }}'.rstrip('/\\')
-if python_package:
-    package_path = os.path.join('{{ root_dir }}', os.path.dirname(python_package))
-    sys.path.insert(0, os.path.abspath(package_path))
+{% if autoapi_python == 'true' %}
+for (dirpath, dirnames, filenames) in os.walk('{{ root_dir }}'):
+    # Directory contains __init__.py. It should be a python package
+    if '__init__.py' in filenames:
+        # appending instad of inserting at front so that user cannot overwrite
+        # some of our own modules.
+        sys.path.append(os.path.abspath(os.path.dirname(dirpath)))
+{% endif %}
+
+{% if mock_modules %}
+mock_modules = [name.strip() for name in '{{ mock_modules }}'.split(',')]
+sys.modules.update((mod_name, mock.Mock()) for mod_name in mock_modules)
+{% endif %}
 
 # -- General configuration ------------------------------------------------
 
@@ -60,7 +68,8 @@ if python_package:
 # ones.
 extensions = ['sphinx.ext.githubpages',
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon']
+    'sphinx.ext.napoleon',
+    'javasphinx',]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['{{ dot }}templates']
