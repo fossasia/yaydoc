@@ -41,7 +41,7 @@ exports.deployHeroku = function (socket, data) {
   
   const args = [
     "-e", email,
-    "-u", uniqueID,
+    "-u", uniqueId,
     "-w", webUI,
     "-h", herokuAPIKey,
     "-n", herokuAppName,
@@ -49,7 +49,7 @@ exports.deployHeroku = function (socket, data) {
 
   var process = spawn('./heroku_deploy.sh', args);
 
-  output.lineOutput(socket, process, 'heroku-deploy-logs', 7);
+  output.lineOutput(socket, process, 'heroku-deploy-logs', 11);
   output.lineError(socket, process, 'heroku-error-logs');
 
   process.on('exit', function (code) {
