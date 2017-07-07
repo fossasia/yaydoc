@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts g:t:d:m:u:w:s: option
+while getopts g:t:d:m:u:w:s:p: option
 do
  case "${option}"
  in
@@ -10,8 +10,8 @@ do
  m) EMAIL=${OPTARG};;
  u) UNIQUEID=${OPTARG};;
  w) WEBUI=${OPTARG};;
- s) SUBPROJECT_URLS=${OPTARG};;
- p) SUBPROJECT_DOCPATHS=${OPTARG};;
+ s) export SUBPROJECT_URLS=${OPTARG};;
+ p) export SUBPROJECT_DOCPATHS=${OPTARG};;
  esac
 done
 
@@ -73,6 +73,7 @@ eval $ENVVARS
 if [ "$DOCPATH" != "." ]; then
   cd $DOCPATH/../
 fi
+
 mkdir yaydoctemp
 BUILD_DIR=$(pwd)/yaydoctemp
 
@@ -104,7 +105,7 @@ if [ -f $DOCPATH/conf.py ]; then
   cat $DOCPATH/conf.py >> $BUILD_DIR/conf.py
 fi
 
-rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ $BUILD_DIR/
+rsync -a --exclude=conf.py --exclude=yaydoctemp --exclude=yaydocclone $DOCPATH/ $BUILD_DIR/
 cd $BUILD_DIR
 
 if [ "${AUTOAPI_PYTHON:-false}" == "true" ]; then
@@ -129,7 +130,11 @@ fi
 
 if [ ! -f index.rst ]; then
   echo -e "No index.rst found. Auto generating...\n"
-  python $BASE/modules/scripts/genindex.py -s $SUBPROJECT_DIRS -d $SUBPROJECT_DOCPATHS $ROOT_DIR
+  GENINDEX_PARAM=$ROOT_DIR
+  if [ "$DOCPATH" == "." ]; then
+    GENINDEX_PARAM=$ROOT_DIR/yaydoctemp
+  fi
+  python $BASE/modules/scripts/genindex.py -s "$SUBPROJECT_DIRS" -d "$SUBPROJECT_DOCPATHS" "$GENINDEX_PARAM"
   if [ "${DEBUG:-false}" == "true" ]; then
     echo -e "\n--------------------------------------\n"
     cat index.rst
