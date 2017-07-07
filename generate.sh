@@ -15,6 +15,22 @@ do
  esac
 done
 
+function print_log {
+  if [ -n "$LOGFILE" ]; then
+    echo -e $1 | tee -a ${LOGFILE}
+  else
+    echo -e $1
+  fi
+}
+
+function print_danger {
+  if [ -n "$LOGFILE" ]; then
+    >&2 echo -e $1 | tee -a ${LOGFILE}
+  else
+    >&2 echo -e $1
+  fi
+}
+
 REPO=${GITURL:-$(git config remote.origin.url)}
 URL_SPLIT=(${REPO//// })
 
@@ -29,15 +45,16 @@ INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") els
 # and change current directory to git repository.
 if [ "${WEBUI:-false}" == "true" ]; then
   BASE=$(pwd)
+  LOGFILE=${BASE}/temp/${EMAIL}/${UNIQUEID}.txt
   mkdir -p temp/${EMAIL} && cd $_
-  echo -e "Cloning Repository...\n"
+  print_log "Cloning Repository...\n"
   git clone -q https://:@${PLATFORM}/${USERNAME}/${REPONAME} "$UNIQUEID" >/dev/null 2>&1
   if [ $? -ne 0 ]; then
-    >&2 echo -e "Failed to Clone. Repository does not exist.\n"
+    print_danger "Failed to Clone. Repository does not exist.\n"
     exit 4
   fi
   cd ${UNIQUEID}
-  echo -e "Repository Cloned Successfully!\n"
+  print_log "Repository Cloned Successfully!\n"
 else
   git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
   BASE=$(pwd)/yaydocclone
@@ -48,30 +65,30 @@ ROOT_DIR=$(pwd)
 if [ -z "$ON_HEROKU" ]; then
   # Create an isolated Python environment
   if [ "$INVENV" == "false" ]; then
-    echo -e "Installing virtualenv\n"
+    print_log "Installing virtualenv\n"
     pip install -q --user virtualenv
-    echo -e "Installation successful\n"
+    print_log "Installation successful\n"
 
-    echo -e "Creating an isolated Python environment\n"
+    print_log "Creating an isolated Python environment\n"
     virtualenv -q --python=python $HOME/yaydocvenv
     source $HOME/yaydocvenv/bin/activate
-    echo -e "Python environment created successfully!\n"
+    print_log "Python environment created successfully!\n"
   fi
 
   # Install packages required for documentation generation
-  echo -e "Installing packages required for documentation generation\n"
+  print_log "Installing packages required for documentation generation\n"
   pip install -q -r $BASE/requirements.txt
-  echo -e "Installation successful\n"
+  print_log "Installation successful\n"
 fi
 
 # Setting environment variables
 ENVVARS="$(python ${BASE}/modules/scripts/config.py "${USERNAME}" "${REPONAME}")"
-echo -e "\n${ENVVARS}\n"
+echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
 eval $ENVVARS
 
 # Setting up build directory
 if [ "$DOCPATH" != "." ]; then
-  cd $DOCPATH/../
+  cd $DOCPATH/../ 2>>${LOGFILE}
 fi
 
 mkdir yaydoctemp
@@ -86,13 +103,13 @@ cd ${BUILD_DIR}
 mkdir _themes
 
 # Setting up documentation sources
-echo -e "Setting up documentation sources\n"
-sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES > /dev/null
+print_log "Setting up documentation sources\n"
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES >> ${LOGFILE}
 if [ $? -ne 0 ]; then
-  >&2 echo -e "Failed to initialize build process.\n"
+  print_danger "Failed to initialize build process.\n"
   exit 1
 fi
-echo -e "Documentation setup successful!\n"
+print_log "Documentation setup successful!\n"
 
 rm index.rst
 cd $ROOT_DIR
@@ -105,7 +122,7 @@ if [ -f $DOCPATH/conf.py ]; then
   cat $DOCPATH/conf.py >> $BUILD_DIR/conf.py
 fi
 
-rsync -a --exclude=conf.py --exclude=yaydoctemp --exclude=yaydocclone $DOCPATH/ $BUILD_DIR/
+rsync -a --exclude=conf.py --exclude=yaydoctemp --exclude=yaydocclone $DOCPATH/ $BUILD_DIR/ 2>>${LOGFILE}
 cd $BUILD_DIR
 
 if [ "${AUTOAPI_PYTHON:-false}" == "true" ]; then
@@ -129,37 +146,37 @@ if [ -n "$SUBPROJECT_URLS" ]; then
 fi
 
 if [ ! -f index.rst ]; then
-  echo -e "No index.rst found. Auto generating...\n"
+  print_danger "No index.rst found. Auto generating...\n"
   GENINDEX_PARAM=$ROOT_DIR
   if [ "$DOCPATH" == "." ]; then
     GENINDEX_PARAM=$ROOT_DIR/yaydoctemp
   fi
   python $BASE/modules/scripts/genindex.py -s "$SUBPROJECT_DIRS" -d "$SUBPROJECT_DOCPATHS" "$GENINDEX_PARAM"
   if [ "${DEBUG:-false}" == "true" ]; then
-    echo -e "\n--------------------------------------\n"
-    cat index.rst
-    echo -e "\n--------------------------------------\n"
+    print_log "\n--------------------------------------\n"
+    cat index.rst | tee -a ${LOGFILE}
+    print_log "\n--------------------------------------\n"
   fi
-  echo -e "Auto generated index.rst\n"
+  print_log "Auto generated index.rst\n"
 fi
 
-echo -e "Starting Documentation Generation...\n"
-make html
+print_log "Starting Documentation Generation...\n"
+make html >> ${LOGFILE} 2>>${LOGFILE}
 if [ $? -ne 0 ]; then
-  >&2 echo -e "Failed to generate documentation.\n"
+  print_danger "Failed to generate documentation.\n"
   exit 2
 fi
-echo -e "Documentation Generated Successfully!\n"
+print_log "Documentation Generated Successfully!\n"
 
 if [ "${WEBUI:-false}" == "true" ]; then
-  echo -e "Setting up documentation for Download and Preview\n"
+  print_log "Setting up documentation for Download and Preview\n"
   mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
   rm -rf $BASE/temp/$EMAIL/$UNIQUEID
   zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
   if [ $? -ne 0 ]; then
-    >&2 echo -e "Failed setting up.\n"
+    print_danger "Failed setting up.\n"
     exit 3
   fi
 fi
 
-echo -e "Documentation setup successful!\n"
+print_log "Documentation setup successful!\n"

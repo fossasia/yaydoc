@@ -44,15 +44,15 @@ exports.executeScript = function (socket, formData, callback) {
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
+    var data = { code: code, email: email, uniqueId: uniqueId, gitUrl: gitUrl };
     if (code === 0) {
-      var data = { email: email, uniqueId: uniqueId, gitUrl: gitUrl };
       mailer.sendEmail(data);
       socketHandler.handleSocket(socket, 'success', data);
       if (callback != undefined) {
         callback(null, data)
       }
     } else {
-      socketHandler.handleSocket(socket, 'failure', {errorCode: code});
+      socketHandler.handleSocket(socket, 'failure', data);
       if (callback != undefined) {
         callback({
           message: `Process exited with code : ${code}`
@@ -61,4 +61,13 @@ exports.executeScript = function (socket, formData, callback) {
     }
   });
   return true;
+};
+
+exports.retrieveLogs = function (socket, data) {
+  var process = spawn('cat', [ 'temp/' + data.email + '/' + data.uniqueId + '.txt' ]);
+
+  process.stdout.setEncoding('utf-8');
+  process.stdout.on('data', function (data) {
+    socket.emit('file-content', data);
+  });
 };

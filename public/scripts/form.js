@@ -43,11 +43,33 @@ $(function () {
     }
     $('#btnDeployHeroku').css("display", "inline");
     $('#btnDeployHeroku').attr("href", '/auth/heroku?email='+data.email+'&uniqueId='+data.uniqueId);
+    $('#btnLogs').css("display", "inline");
+    $("#btnLogs").click(function () {
+      socket.emit('retrieve-detailed-logs', {email: data.email, uniqueId: data.uniqueId});
+      $('#downloadDetailedLogs').attr('href', '/logs/' + data.email + '/' + data.uniqueId);
+    });
   });
 
   socket.on('failure', function (data) {
-    styles.showNotification("Failed to Generate Documentation: Error " + data.errorCode);
+    $('#btnLogs').css("display", "inline");
+    styles.showNotification("Failed to Generate Documentation: Error " + data.code);
+
+    $("#btnLogs").click(function () {
+      socket.emit('retrieve-detailed-logs', {email: data.email, uniqueId: data.uniqueId});
+      $('#downloadDetailedLogs').attr('href', '/logs/' + data.email + '/' + data.uniqueId);
+    });
+  });
+
+  socket.on('file-content', function(data){
+    new Clipboard('#copy-button');
+    $('#detailed-logs').html(data);
+    $('#detailed-logs-modal').modal('show');
+  });
+
+  $('#copy-button').click(function () {
+    styles.showNotification('Logs copied to clipboard!');
   })
+
 });
 
 /**
@@ -64,7 +86,7 @@ function getData() {
     if (field.name === "heroku_api_key" ) { data.herokuAPIKey = field.value.trim(); }
     if (field.name === "heroku_app_name" ) { data.herokuAppName = field.value.trim(); }
     if (field.name === "subproject_url[]") {
-      if (data.subProject == undefined) {
+      if (data.subProject === undefined) {
         data.subProject = [field.value];
       } else {
         data.subProject.push(field.value);
