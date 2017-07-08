@@ -20,19 +20,24 @@ exports.sendEmail = function (data) {
   var downloadURL = 'http://' + hostname + '/download/' + data.email + '/' + data.uniqueId;
   var deployURL = "";
   if (validation.isGithubHTTPS(data.gitUrl)) {
-    deployURL = 'http://' + hostname + '/github?email=' + data.email + '&uniqueId=' + data.uniqueId + '&gitURL=' + data.gitUrl;
+    githubDeployURL = 'http://' + hostname + '/auth/github?email=' + data.email + '&uniqueId=' + data.uniqueId + '&gitURL=' + data.gitUrl;
   }
+  var herokuDeployURL = 'http://' + hostname + '/auth/heroku?email='+data.email+'&uniqueId='+data.uniqueId;
 
   var textContent = 'Hey! Your documentation generated successfully. Preview it here: ' + previewURL +
                     '. Download it here: ' + downloadURL ;
   if (deployURL !== "") {
-    textContent += '. Deploy it here: ' + deployURL;
+    textContent += '. Deploy to Github Pages: ' + githubDeployURL;
   }
+
+  textContent += '.Deploy to Heroku: ' + herokuDeployURL '.';
+
   var emailTemplate = jade.compileFile(`${__dirname}/../views/template/email.jade`);
   var htmlContent = emailTemplate({
       previewURL: previewURL,
       downloadURL: downloadURL,
-      deployURL: deployURL
+      githubDeployURL: githubDeployURL,
+      herokuDeployURL: herokuDeployURL
   })
 
   client.sendMail({
