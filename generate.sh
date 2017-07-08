@@ -10,7 +10,8 @@ do
  m) EMAIL=${OPTARG};;
  u) UNIQUEID=${OPTARG};;
  w) WEBUI=${OPTARG};;
- s) SUBPROJECT=${OPTARG};;
+ s) SUBPROJECT_URLS=${OPTARG};;
+ p) SUBPROJECT_DOCPATHS=${OPTARG};;
  esac
 done
 
@@ -28,20 +29,15 @@ INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") els
 # and change current directory to git repository.
 if [ "${WEBUI:-false}" == "true" ]; then
   BASE=$(pwd)
-  if ! [ "${SUBPROJECT}" == "" ]; then
-    . ./multiple_generate.sh
-    exit 0
-  else
-    mkdir -p temp/${EMAIL} && cd $_
-    echo -e "Cloning Repository...\n"
-    git clone -q https://:@${PLATFORM}/${USERNAME}/${REPONAME} "$UNIQUEID" >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-      >&2 echo -e "Failed to Clone. Repository does not exist.\n"
-      exit 4
-    fi
-    cd ${UNIQUEID}
-    echo -e "Repository Cloned Successfully!\n"
+  mkdir -p temp/${EMAIL} && cd $_
+  echo -e "Cloning Repository...\n"
+  git clone -q https://:@${PLATFORM}/${USERNAME}/${REPONAME} "$UNIQUEID" >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    >&2 echo -e "Failed to Clone. Repository does not exist.\n"
+    exit 4
   fi
+  cd ${UNIQUEID}
+  echo -e "Repository Cloned Successfully!\n"
 else
   git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
   BASE=$(pwd)/yaydocclone
@@ -127,9 +123,13 @@ if [ "${AUTOAPI_JAVA:-false}" == "true" ]; then
   javasphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_JAVA_PATH/
 fi
 
+if [ -n "$SUBPROJECT_URLS" ]; then
+  source $BASE/multiple_generate.sh
+fi
+
 if [ ! -f index.rst ]; then
   echo -e "No index.rst found. Auto generating...\n"
-  python $BASE/modules/scripts/genindex.py $ROOT_DIR
+  python $BASE/modules/scripts/genindex.py -s $SUBPROJECT_DIRS -d $SUBPROJECT_DOCPATHS $ROOT_DIR
   if [ "${DEBUG:-false}" == "true" ]; then
     echo -e "\n--------------------------------------\n"
     cat index.rst

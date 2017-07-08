@@ -7,6 +7,10 @@ def _is_samepath(path1, path2):
     return os.path.normpath(path1) == os.path.normpath(path2)
 
 
+def _title(value):
+    return value.replace('_', ' ').title()
+
+
 def get_include(dirpath, filename):
     ext = os.path.splitext(filename)[1]
     if ext == '.md':
@@ -19,14 +23,14 @@ def get_include(dirpath, filename):
     return template.format(directive=directive, document=document)
 
 
-def get_toctree(dirpath, filenames):
+def get_toctree(dirpath, filenames, caption=''):
     toctree = ['.. toctree::', '   :maxdepth: 1']
     caption_template = '   :caption: {caption}'
     content_template = '   {document}'
-
-    caption = os.path.basename(dirpath).replace('_', ' ').title()
-    if caption == os.curdir:
-        caption = 'Contents'
+    if not caption:
+        caption = _title(os.path.basename(dirpath))
+        if caption == os.curdir:
+            caption = 'Contents'
     toctree.append(caption_template.format(caption=caption))
     # Inserting a blank line
     toctree.append('')
@@ -47,7 +51,7 @@ def get_toctree(dirpath, filenames):
         return ''
 
 
-def get_index(root):
+def get_index(root, subprojects, sub_docpaths):
     index = []
 
     # Include README from root
@@ -59,12 +63,22 @@ def get_index(root):
 
     # Add toctrees as per the directory structure
     for (dirpath, dirnames, filenames) in os.walk(os.curdir):
-        if 'source' in dirnames and _is_samepath(dirpath, os.curdir):
-            dirnames.remove('source')
+        if _is_samepath(dirpath, os.curdir):
+            if 'source' in dirnames:
+                dirnames.remove('source')
+            for subproject in subprojects:
+                dirnames.remove(subproject.split(os.path.sep)[0])
         if filenames:
             toctree = get_toctree(dirpath, filenames)
             if toctree:
                 index.append(toctree)
+
+    for subproject, sub_docpath in zip(subprojects, sub_docpaths):
+        sub_index_path = os.path.join(os.path.join(subproject, sub_docpath),
+                                      'index.rst')
+        toctree = get_toctree(os.curdir, [sub_index_path],
+                              _title(subproject.split(os.path.sep)[0]))
+        index.append(toctree)
 
     return '\n\n'.join(index) + '\n'
 
@@ -72,10 +86,24 @@ def get_index(root):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='Path to the root of the Repository')
+    parser.add_argument('-s', '--subprojects', default='',
+                        help='Comma seperated subprojects')
+    parser.add_argument('-d', '--sub-docpaths', default='',
+                        help='Comma seperated docpaths for subprojects')
     args = parser.parse_args()
-    content = get_index(args.root)
+    subprojects, sub_docpaths = [], []
+    if args.subprojects:
+        subprojects = [name.strip().replace('/', os.path.sep)
+                       for name in args.subprojects.split(',')]
+    if args.sub_docpaths:
+        sub_docpaths = [name.strip().replace('/', os.path.sep)
+                        for name in args.sub_docpaths.split(',')]
+    if len(subprojects) != len(sub_docpaths):
+        raise ValueError("Invalid arguments")
+    content = get_index(args.root, subprojects, sub_docpaths)
     with open('index.rst', 'w') as file:
         file.write(content)
+
 
 if __name__ == '__main__':
     main()
