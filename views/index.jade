@@ -53,7 +53,7 @@ block content
             input#debug(type='checkbox', value='true', name='debug', checked=false)
         .form-group#buttons
             button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
-            button.btn.btn-default(type='button' id='subProject' onclick="addSubProject()") Add Sub Project
+            button.btn.btn-default(type='button' id='btnSubProject' onclick="addSubProject()") Add Sub Project
             .row(style='padding-bottom: 25px;')
               a.btn.btn-default(id='btnDownload') Download
               a.btn.btn-default(id='btnPreview' target='_blank') Preview
@@ -64,7 +64,7 @@ block content
         #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
           span.sr-only
       .logs.pre-scrollable
-        h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
+        h4.console-output-header Console Output
         ul#messages
       .row(style='text-align: center;margin-top: 20px;')
         a.btn.btn-default(id='btnLogs') Detailed Logs

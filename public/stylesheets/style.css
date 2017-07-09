@@ -42,38 +42,20 @@ a {
   margin-bottom: 20px;
 }
 
-#subProject {
+#btnSubProject {
   margin-bottom: 20px;
   margin-left: 10px;
 }
 
-#btnDownload {
-  display: none;
-  width: -moz-fit-content;
-  margin-right: 10px;
-}
-
-#btnPreview {
+#btnDeployHeroku, #btnDeployGithub, #btnPreview, #btnDownload {
   display: none;
   width: -moz-fit-content;
   margin-left: 10px;
 }
 
-#btnLogs {
+#btnWebsiteLink, #btnGithubPages, #btnLogs {
   display: none;
   width: -moz-fit-content;
-}
-
-#btnDeployGithub {
-  display: none;
-  width: -moz-fit-content;
-  margin-left: 10px;
-}
-
-#btnDeployHeroku {
-  display: none;
-  width: -moz-fit-content;
-  margin-left: 10px;
 }
 
 #notification-container {
@@ -124,4 +106,14 @@ a {
 #detailed-logs {
   max-height: 600px;
   overflow-y: scroll;
+}
+
+.danger-logs {
+  color:red;
+}
+
+.console-output-header {
+  text-align: center;
+  padding-top: 5px;
+  color: #ffffff
 }
