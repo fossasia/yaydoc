@@ -65,5 +65,8 @@
     {
       "url": "https://github.com/heroku/heroku-buildpack-cli"
     }
+  ],
+  "addons": [
+    "mongolab"
   ]
 }

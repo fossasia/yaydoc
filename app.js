@@ -8,9 +8,14 @@ var passport = require("passport");
 var dotenv = require("dotenv");
 var session = require("express-session");
 var mongoose = require("mongoose");
+
 dotenv.config({path: './.env'});
 require('./util/passport')(passport);
-mongoose.connect(process.env.MLAB);
+
+mongoose.connect(process.env.MONGODB_URI, {
+  useMongoClient: true
+});
+
 /**
  * Backend Scripts
  */
