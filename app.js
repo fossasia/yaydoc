@@ -69,6 +69,10 @@ io.on('connection', function(socket){
   socket.on('heroku-deploy', function (formData) {
     deploy.deployHeroku(socket, formData);
   });
+
+  socket.on('retrieve-detailed-logs', function (data) {
+    generator.retrieveLogs(socket, data);
+  })
 });
 
 // catch 404 and forward to error handler

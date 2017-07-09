@@ -59,6 +59,11 @@ a {
   margin-left: 10px;
 }
 
+#btnLogs {
+  display: none;
+  width: -moz-fit-content;
+}
+
 #btnDeployGithub {
   display: none;
   width: -moz-fit-content;
@@ -114,4 +119,9 @@ a {
   font-size: .7em;
   opacity: 1;
   font-weight: 700;
+}
+
+#detailed-logs {
+  max-height: 600px;
+  overflow-y: scroll;
 }

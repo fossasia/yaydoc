@@ -2,7 +2,7 @@ extends layout
 
 block content
   script(src="/socket.io/socket.io.js")
-  script(src="/scripts/validation.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.1/clipboard.min.js")
   script(src="/scripts/form.js")
   script(src="/scripts/suggestion.js")
   #notification-container
@@ -65,6 +65,8 @@ block content
       .logs.pre-scrollable
         h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
         ul#messages
+      .row(style='text-align: center;margin-top: 20px;')
+        a.btn.btn-default(id='btnLogs') Detailed Logs
   #githubModal.modal.fade(role='dialog')
     .modal-dialog
       .modal-content
@@ -96,6 +98,17 @@ block content
             a(href='http://yaydoc.fossasia.org' target='_blank') yaydoc Documentation
         .modal-footer
           a.btn.btn-default(id='onetimeDeploy') Proceed with One-time Deployment
+  #detailed-logs-modal.modal.fade(role='dialog')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal') ×
+          h5.modal-title Detailed Logs
+        .modal-body
+          pre#detailed-logs.pre-scrollable
+        .modal-footer
+          button.btn.btn-default#copy-button(data-clipboard-action='copy' data-clipboard-target='#detailed-logs' style='float: left') Copy to Clipboard
+          a#downloadDetailedLogs.btn.btn-default Download
   #ciModal.modal.fade(role='dialog')
     .modal-dialog
       .modal-content
@@ -105,18 +118,17 @@ block content
         .modal-body
           h4 Select the repository
           form(action="/ci/register", method="POST")
-           if repos !== undefined
-            select.form-control(name="repository")
-             each repo in repos
-               option #{repo} 
-           .modal-footer  
-             button.btn.btn-default(type="submit") Register  
+            if repos !== undefined
+              select.form-control(name="repository")
+                each repo in repos
+                  option #{repo}
+            .modal-footer
+              button.btn.btn-default(type="submit") Register
   if repos !== undefined
-   script.
-    $("#ciModal").modal('show');
+    script.
+      $("#ciModal").modal('show');
   if showMessage === true
-   script.
-     styles.showNotification("#{message}");         
+    script.
+      styles.showNotification("#{message}");
   script.
     $('#doc_theme').editableSelect();
-     
