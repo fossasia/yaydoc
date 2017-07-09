@@ -21,7 +21,7 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 |----------------------| ------------------------------------------------- |-------------------|
 | AUTHOR               | Author of the repository.                         | Github username or organization |
 | DOCPATH              | Path of the documentation.                        | NONE * (eg. `docs/`) |
-| DOCTHEME             | Name of the theme.                                | alabaster ([built-in themes](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes)) / <i>(Custom themes available in PyPi are also supported)</i>| 
+| DOCTHEME             | Name of the theme.                                | alabaster ([built-in themes](http://www.sphinx-doc.org/en/stable/theming.html#builtin-themes)) / <i>(Custom themes available in PyPi are also supported)</i>|
 | DOCURL               | Custom URL at which the site should be published. | <i>\<username or organization>.github.io/\<reponame></i> ([Reference](https://help.github.com/articles/using-a-custom-domain-with-github-pages/)) |
 | PROJECTNAME          | Name of the Project.                              | Name of the repository |
 | VERSION              | Version of the Project.                           | development |
@@ -39,7 +39,7 @@ Set the following Environment Variables in Travis CI. [Guide](https://docs.travi
 | SUBPROJECT_DOCPATHS  | Comma seperated `DOCPATHs` for all subprojects     | By default It is assumed `DOCPATH` is `docs` |
 
 ```
-   * : The following environment variables must be specified for yaydoc to work. 
+   * : The following environment variables must be specified for yaydoc to work.
 ```
 
 **With a configuration file**
@@ -108,7 +108,7 @@ before_deploy:
 ```
 
 ## Using SSH
-Additionally If you have ssh setup on your repository, yaydoc prioritizes it over Github Personal token. To setup ssh follow these steps. 
+Additionally If you have ssh setup on your repository, yaydoc prioritizes it over Github Personal token. To setup ssh follow these steps.
 
 - Generate a new ssh key following this [Guide](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#generating-a-new-ssh-key)
 - Encrypt the generated keys by following this [Guide](https://docs.travis-ci.com/user/encrypting-files/#Automated-Encryption)
@@ -122,3 +122,20 @@ before_deploy:
 - chmod 600 <decrypted-file-name>
 - ssh-add <decryted-file-name>
 ```
+
+## Accessing the Yaydoc CI
+![step 1](docs/screenshots/ci-step-1.png)
+
+ - Click the `CI Deploy` button
+
+![step 2](docs/screenshots/ci-step-2.png)
+
+ - Select the repository in which you want to integrate Yaydoc CI
+
+![step 3](docs/screenshots/ci-step-3.png)
+
+- After successful registration Yaydoc will push the documentation to gh-pages on every commit the user makes.
+
+- Sphinx's alabaster theme will be used for documentation
+
+- You can see the generated documentation at `https://<username>.github.io/<project name>`

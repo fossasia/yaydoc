@@ -7,9 +7,10 @@ var bodyParser = require("body-parser");
 var passport = require("passport");
 var dotenv = require("dotenv");
 var session = require("express-session");
-
+var mongoose = require("mongoose");
 dotenv.config({path: './.env'});
 require('./util/passport')(passport);
+mongoose.connect(process.env.MLAB);
 /**
  * Backend Scripts
  */
@@ -51,6 +52,7 @@ app.use("/preview", express.static(path.join(__dirname, "temp")))
 app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
 app.use("/deploy", require("./routes/deploy"));
+app.use("/ci", require("./routes/ci"));
 
 /**
  * Server-side Event Handling

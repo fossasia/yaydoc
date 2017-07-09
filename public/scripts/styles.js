@@ -1,5 +1,5 @@
 (function(){
-
+  window.history.pushState("", "", location.pathname);
   window.styles = {
     showNotification: function (message) {
       $('.notification').append($('<li>')).text(message);
@@ -25,4 +25,3 @@
     }
   };
 })();
-

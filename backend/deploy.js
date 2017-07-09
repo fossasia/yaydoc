@@ -1,6 +1,7 @@
 var crypter = require("../util/crypter.js");
 var spawn = require('child_process').spawn;
 var output = require('../util/output');
+var socketHandler = require('../util/socketHandler.js');
 
 exports.deployPages = function (socket, data) {
   var repoName = data.gitURL.split("/")[4].split(".")[0];
@@ -19,15 +20,15 @@ exports.deployPages = function (socket, data) {
 
   var process = spawn("./ghpages_deploy.sh", args);
 
-  output.lineOutput(socket, process, 'deploy-logs', 18);
-  output.lineError(socket, process, 'err-logs');
+  socketHandler.handleLineOutput(socket, process, 'github-deploy-logs', 18);
+  socketHandler.handleLineError(socket, process, 'github-err-logs');
 
   process.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     if (code === 0) {
-      socket.emit('github-success', {pagesURL: "https://" + data.username + ".github.io/" + repoName});
+      socketHandler.handleSocket(socket, 'github-success', {pagesURL: "https://" + data.username + ".github.io/" + repoName});
     } else {
-      socket.emit('github-failure', {errorCode: code});
+      socketHandler.handleSocket(socket, 'github-failure', {errorCode: code});
     }
   });
 };
@@ -38,7 +39,7 @@ exports.deployHeroku = function (socket, data) {
   var webUI = "true";
   var herokuAPIKey = crypter.decrypt(data.herokuAPIKey);
   var uniqueId = data.uniqueId;
-  
+
   const args = [
     "-e", email,
     "-u", uniqueId,
