@@ -1,10 +1,5 @@
 import os
-import sys
 import argparse
-
-
-def _is_samepath(path1, path2):
-    return os.path.normpath(path1) == os.path.normpath(path2)
 
 
 def _title(value):
@@ -51,8 +46,28 @@ def get_toctree(dirpath, filenames, caption=''):
         return ''
 
 
+# Any files ignored will not be included in a toctree
+def _ignore_files(dirpath, filenames, ignored_filenames, path=None):
+    if path is None or os.path.samefile(dirpath, path):
+        for filename in ignored_filenames:
+            if filename in filenames:
+                filenames.remove(filename)
+
+
+
+# Any directories ignored will not be walked through to find source files
+def _ignore_dirs(dirpath, dirnames, ignored_dirnames, path=None):
+    if path is None or os.path.samefile(dirpath, path):
+        for dirname in ignored_dirnames:
+            if dirname in dirnames:
+                dirnames.remove(dirname)
+
+
 def get_index(root, subprojects, sub_docpaths):
     index = []
+
+    subproject_dirs = [subproject.split(os.path.sep)[0]
+                       for subproject in subprojects]
 
     # Include README from root
     root_files = next(os.walk(root))[2]
@@ -63,19 +78,18 @@ def get_index(root, subprojects, sub_docpaths):
 
     # Add toctrees as per the directory structure
     for (dirpath, dirnames, filenames) in os.walk(os.curdir):
-        if _is_samepath(dirpath, os.curdir):
-            if 'source' in dirnames:
-                dirnames.remove('source')
-            for subproject in subprojects:
-                dirnames.remove(subproject.split(os.path.sep)[0])
+        _ignore_files(dirpath, filenames, ['README.rst', 'README.md'], root)
+        _ignore_dirs(dirpath, dirnames, ['yaydoctemp', 'yaydocclone', '.git'])
+        _ignore_dirs(dirpath, dirnames, ['source'] + subproject_dirs, os.curdir)
+
         if filenames:
             toctree = get_toctree(dirpath, filenames)
             if toctree:
                 index.append(toctree)
 
     for subproject, sub_docpath in zip(subprojects, sub_docpaths):
-        sub_index_path = os.path.join(os.path.join(subproject, sub_docpath),
-                                      'index.rst')
+        sub_index_path = os.path.normpath(os.path.join(subproject, sub_docpath,
+                                                       'index.rst'))
         toctree = get_toctree(os.curdir, [sub_index_path],
                               _title(subproject.split(os.path.sep)[0]))
         index.append(toctree)
