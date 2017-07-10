@@ -62,47 +62,68 @@ def _get_yaml_config():
     return conf
 
 
+def boolean_field(value):
+    # This should be used for parameters which are boolean in nature
+    # and in the bash script needs a value `true` or `false`
+    return "true" if value is True else "false"
+
+
+def multi_field(value, attr=None, default=None):
+    # This should be used for fields which can take multiple values.
+    # `value` should be a list. If it is not a list, a list will be created
+    # with `value` as it's only element. `attr` can be used if the list is
+    # comprised of dictionaries and you only need values for one of the keys.
+    # `default` can be used for handling missing keys.
+    if not isinstance(value, list):
+        value = [value]
+    if attr is not None:
+        value_ = []
+        for _ in value:
+            try:
+                value_.append(_[attr])
+            except (IndexError, KeyError):
+                if default is None:
+                    raise
+                else:
+                    value_.append(default)
+        return ','.join(value_)
+    return ','.join(value)
+
+
 def _get_env_dict(conf):
     # Add new environment variables in the returned dict
     metadata = conf['metadata']
     build = conf['build']
     publish = conf['publish']
 
-    subproject = metadata['subproject']
-    if not isinstance(subproject, list):
-        subproject = [subproject]
-
+    # TODO autoapi should also be handled using some kind of fields.
     autoapi = build['autoapi']
     if not isinstance(autoapi, list):
         autoapi = [autoapi]
 
     autoapi_paths = {section['language']: section.get('path', '.')
                      for section in autoapi}
-
-    mock_modules = build['mock']
-    if not isinstance(mock_modules, list):
-        mock_modules = [mock_modules]
     
     return {'PROJECTNAME': metadata['projectname'],
             'VERSION': metadata['version'],
             'AUTHOR': metadata['author'],
-            'SUBPROJECT_URLS': ','.join(project['url']
-                                        for project in subproject),
-            'SUBPROJECT_DOCPATHS': ','.join(project.get('docpath', 'docs')
-                                            for project in subproject),
-            'DEBUG': 'true' if metadata['debug'] is True else 'false',
+            'SUBPROJECT_URLS': multi_field(metadata['subproject'], 'url'),
+            'SUBPROJECT_DOCPATHS': multi_field(metadata['subproject'],
+                                               'docpath', 'docs'),
+            'DEBUG': boolean_field(metadata['debug']),
 
             'MARKDOWN_FLAVOUR': build['markdown_flavour'],
             'LOGO': build['logo'],
             'DOCTHEME': build['doctheme'],
             'DOCPATH': build['docpath'],
 
-            'AUTOAPI_PYTHON': 'true' if 'python' in autoapi_paths else 'false',
+            'AUTOAPI_PYTHON': boolean_field('python' in autoapi_paths),
             'AUTOAPI_PYTHON_PATH': autoapi_paths.get('python', '.'),
 
-            'AUTOAPI_JAVA': 'true' if 'java' in autoapi_paths else 'false',
+            'AUTOAPI_JAVA': boolean_field('java' in autoapi_paths),
             'AUTOAPI_JAVA_PATH': autoapi_paths.get('java', '.'),
-            'MOCK_MODULES': ','.join(mock_modules),
+
+            'MOCK_MODULES': multi_field(build['mock']),
 
             'DOCURL': publish['ghpages']['docurl'],
             'HEROKU_APP_NAME': publish['heroku']['app_name'],
