@@ -15,6 +15,8 @@ do
  esac
 done
 
+LOGFILE='/dev/stdout'
+
 function print_log {
   if [ -n "$LOGFILE" ]; then
     echo -e $1 | tee -a ${LOGFILE}
