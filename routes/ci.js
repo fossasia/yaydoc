@@ -6,18 +6,8 @@ var crypter = require("../util/crypter.js");
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
 router.get('/register', function (req, res, next) {
-  request({
-    url: `https://api.github.com/users/${req.session.username}/repos?per_page=100`,
-    headers: {
-      'User-Agent': 'request'
-    }
-  },
-  function (error, response, body) {
-    var repos = JSON.parse(body);
-    var query = repos.map(x => `repos=${x.name}`);
-    query = query.join("&");
-    res.redirect(`/?${query}`)
-  })
+  var query = `ci=true&username=${req.session.username}`;
+  res.redirect(`/?${query}`);
 })
 
 router.post('/register', function (req, res, next) {

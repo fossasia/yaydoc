@@ -17,9 +17,9 @@ router.get("/", function(req, res, next) {
     data.showMessage = true;
     data.message = messages[req.query.message];
   }
-  if (req.query.repos != undefined) {
-    data.ciModal = true;
-    data.repos = req.query.repos;
+  if (req.query.ci == "true") {
+    data.ci = true
+    data.username = req.query.username;
   }
   res.render("index", data);
 });
