@@ -102,7 +102,7 @@ cp -a ${BASE}/modules/scripts/ $BUILD_DIR/
 cp -a ${BASE}/modules/templates/ $BUILD_DIR/
 
 cd ${BUILD_DIR}
-mkdir _themes
+mkdir -p _themes
 
 # Setting up documentation sources
 print_log "Setting up documentation sources\n"
@@ -115,8 +115,6 @@ print_log "Documentation setup successful!\n"
 
 rm index.rst
 cd $ROOT_DIR
-
-cp -a ${BASE}/fossasia_theme $BUILD_DIR/_themes/
 
 # Extract markup files from source repository and extend pre-existing conf.py
 if [ -f $DOCPATH/conf.py ]; then

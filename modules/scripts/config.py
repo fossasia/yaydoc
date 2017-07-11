@@ -41,7 +41,7 @@ def _get_default_config(username, reponame):
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
-                      'doctheme': 'fossasia_theme',
+                      'doctheme': 'sphinx_fossasia_theme',
                       'docpath': 'docs',
                       'autoapi': [],
                       'mock': [],
