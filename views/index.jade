@@ -5,6 +5,7 @@ block content
   script(src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.1/clipboard.min.js")
   script(src="/scripts/form.js")
   script(src="/scripts/suggestion.js")
+  script(src="/scripts/ci.js")
   #notification-container
     li.notification Hello
   .container
@@ -117,16 +118,19 @@ block content
           h5.modal-title CI Deployment
         .modal-body
           h4 Select the repository
-          form(action="/ci/register", method="POST")
-            if repos !== undefined
-              select.form-control(name="repository")
-                each repo in repos
-                  option #{repo}
-            .modal-footer
-              button.btn.btn-default(type="submit") Register
-  if repos !== undefined
+          form#ci_register(action="/ci/register", method="POST")
+            div.input-group
+              input.form-control#search_bar(placeholder="Enter project name")
+              span.input-group-btn
+                button.btn.btn-default#search(type="button") Search
+            br
+            div#search_result                         
+           .modal-footer
+              button.btn.btn-default.disabled#register_btn(type="submit") Register
+  if ci === true
     script.
       $("#ciModal").modal('show');
+      var username = "#{username}";      
   if showMessage === true
     script.
       styles.showNotification("#{message}");
