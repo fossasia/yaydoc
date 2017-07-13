@@ -68,47 +68,55 @@ router.post('/register', function (req, res, next) {
 })
 
 router.post('/webhook', function(req, res, next) {
-  var event = req.get('X-GitHub-Event')
-  switch (event) {
-    case "push":
-      repositoryModel.findOneRepository(
-        {
-          githubId: req.body.repository.owner.id,
-          name: req.body.repository.name
-        }
-      ).
-      then(function(result) {
-        var data = {
-          email: result.email,
-          gitUrl: req.body.repository.clone_url,
-          docTheme: "",
-        }
-        generator.executeScript({}, data, function(err, generatedData) {
-          if (err) {
-            console.log(err);
-          } else {
-            deploy.deployPages({}, {
-              email: result.email,
-              gitURL: req.body.repository.clone_url,
-              username: result.username,
-              uniqueId: generatedData.uniqueId,
-              encryptedToken: result.accessToken
-            })
+  var event = req.get('X-GitHub-Event');
+  var branch = req.body.ref.split("/")[2];
+  if (branch !== "gh-pages") {
+    switch (event) {
+      case "push":
+        repositoryModel.findOneRepository(
+          {
+            githubId: req.body.repository.owner.id,
+            name: req.body.repository.name
           }
+        ).
+        then(function(result) {
+          var data = {
+            email: result.email,
+            gitUrl: req.body.repository.clone_url,
+            docTheme: "",
+          }
+          generator.executeScript({}, data, function(err, generatedData) {
+            if (err) {
+              console.log(err);
+            } else {
+              deploy.deployPages({}, {
+                email: result.email,
+                gitURL: req.body.repository.clone_url,
+                username: result.username,
+                uniqueId: generatedData.uniqueId,
+                encryptedToken: result.accessToken
+              })
+            }
+          })
         })
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      res.json({
-        status: true
-      })
-      break;
-    default:
-      res.json({
-        status: false,
-        description: 'undefined event'
-      })
+        .catch((err) => {
+          console.log(err);
+        })
+        res.json({
+          status: true
+        })
+        break;
+      default:
+        res.json({
+          status: false,
+          description: 'undefined event'
+        })
+    }
+  } else {
+    res.json({
+      status: false,
+      description: "invalid branch"
+    })
   }
 })
 
