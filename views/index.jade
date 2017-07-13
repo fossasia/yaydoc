@@ -76,25 +76,7 @@ block content
           h5.modal-title Github Deployment
         .modal-body
           p
-            | In order to enable continuous deployment of Documentation, add the following content to your &nbsp;
-            code .travis.yml
-            | , making necessary changes
-          pre
-            | # Add environment variable following description in http://yaydoc.fossasia.org/#usage
-            | env:
-            |   global:
-            |     - DOCPATH=&lt;doc-path&gt;
-            | # Add SSH Key following description in http://yaydoc.fossasia.org/#using-ssh
-            | before_deploy:
-            | - openssl aes-256-cbc -K $encrypted_37510afbd506_key -iv $encrypted_37510afbd506_iv -in .utility/deploy_key.enc -out .utility/deploy_key -d
-            | - eval "$(ssh-agent -s)"
-            | - chmod 600 .utility/deploy_key
-            | - ssh-add .utility/deploy_key
-            | deploy:
-            | - provider: script
-            |   skip_cleanup: true
-            |   script: wget -O - https://raw.githubusercontent.com/fossasia/yaydoc/master/generate_ci.sh | bash
-          p
+            | In order to enable continuous deployment of Documentation, use the CI Deploy button &nbsp;
             | For more details, refer&nbsp;
             a(href='http://yaydoc.fossasia.org' target='_blank') yaydoc Documentation
         .modal-footer

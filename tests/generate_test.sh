@@ -3,7 +3,6 @@
 
 clean() {
   rm -rf yaydoctemp
-  rm -rf yaydocclone
   rm -rf temp
 }
 
@@ -35,16 +34,15 @@ testErrorOnMake() (
 
 testErrorOnZip() (
   zip() { return 1; }
-  # shellcheck disable=SC2034
-  {
-  WEBUI="true"
-  GITURL="https://github.com/fossasia/yaydoc.git"
-  EMAIL="fossasia@gmail.com"
-  UNIQUEID="qwertyuiopasdfghjklzxcvbnm"
-  }
   source ./generate.sh > /dev/null 2>&1
   assertEquals 3 $?
 )
 
+# shellcheck disable=SC2034
+{
+export GITURL="https://github.com/fossasia/yaydoc.git"
+export EMAIL="fossasia@gmail.com"
+export UNIQUEID="qwertyuiopasdfghjklzxcvbnm"
+}
 
 . shunit2-2.1.6/src/shunit2
