@@ -41,6 +41,21 @@
     warningInput: function (id) {
       $('#' + id + '-group').addClass("has-warning").removeClass("has-success has-error");
       $('#' + id +'-span').addClass("glyphicon-warning-sign").removeClass("glyphicon-ok glyphicon-remove");
+    },
+
+    /**
+     * Toggle Enabling/Disabling an input tag of the form
+     * @param id: `id` attribute of input tag
+     */
+    toggleEditing: function (id) {
+      const input = $('#' + id);
+      if(input.attr("disabled")) {
+        input.removeAttr("disabled");
+        $('#checkbox_' + id).removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+      } else {
+        input.attr("disabled", "disabled");
+        $('#checkbox_' + id).removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+      }
     }
   };
 })();

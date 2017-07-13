@@ -5,7 +5,7 @@ const repositorySchema = new mongoose.Schema({
   githubId: String,
   accessToken: String,
   email: String
-})
+});
 
 const model = mongoose.model('repository', repositorySchema);
 
@@ -27,7 +27,7 @@ exports.newRepository = function (name, username, githubId, accessToken, email) 
       }
     })
   })
-}
+};
 
 exports.findOneRepository = function(query) {
   return new Promise(function (resolve, reject) {
@@ -39,4 +39,4 @@ exports.findOneRepository = function(query) {
       }
     })
   })
-}
+};

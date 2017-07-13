@@ -31,6 +31,41 @@ $(function () {
   });
 
   /**
+   * View/Hide Inputs for Advanced Configurations
+   */
+  $("#advanced").change(function () {
+    if (this.checked) {
+      $("#configs").css({"opacity": "1", "visibility": "visible", "height": "auto"});
+    } else {
+      $("#configs").css({"opacity": "0", "visibility": "hidden", "height": "0"});
+    }
+  });
+
+  /**
+   * Toggle editing of Branch Name input
+   */
+  $("#btnEditBranch").click(function () {
+    styles.toggleEditing("target_branch");
+    if ($("#target_branch").attr("disabled")) {
+      $("#target_branch").val('');
+    } else {
+      defaults.setDefaultBranchName($("#git_url").val());
+    }
+  });
+
+  /**
+   * Toggle editing of Docpath input
+   */
+  $("#btnEditPath").click(function () {
+    styles.toggleEditing("doc_path");
+    if ($("#doc_path").attr("disabled")) {
+      $("#doc_path").val('');
+    } else {
+      $("#doc_path").val(defaults.getDefaultDocPath());
+    }
+  });
+
+  /**
    * Retrieving standard logs from documentation generation
    */
   socket.on('logs', function (data) {
@@ -120,6 +155,8 @@ function getData() {
         data.subProject.push(field.value);
       }
     }
+    if (field.name === "target_branch") { data.targetBranch = field.value.trim(); }
+    if (field.name === "doc_path") { data.docPath = field.value.trim(); }
   });
 
   return data;
