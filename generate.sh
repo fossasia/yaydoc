@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts g:t:d:m:u:w:s:p: option
+while getopts g:t:d:m:u:w:s:p:b: option
 do
  case "${option}"
  in
@@ -12,6 +12,7 @@ do
  w) WEBUI=${OPTARG};;
  s) export SUBPROJECT_URLS=${OPTARG};;
  p) export SUBPROJECT_DOCPATHS=${OPTARG};;
+ b) TARGET_BRANCH=${OPTARG};;
  esac
 done
 
@@ -50,7 +51,12 @@ if [ "${WEBUI:-false}" == "true" ]; then
   LOGFILE=${BASE}/temp/${EMAIL}/${UNIQUEID}.txt
   mkdir -p temp/${EMAIL} && cd $_
   print_log "Cloning Repository...\n"
-  git clone -q https://:@${PLATFORM}/${USERNAME}/${REPONAME} "$UNIQUEID" >/dev/null 2>&1
+  CLONE_URL=https://:@${PLATFORM}/${USERNAME}/${REPONAME}
+  if [ -z "$TARGET_BRANCH" ]; then
+    git clone -q "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
+  else
+    git clone -q -b "$TARGET_BRANCH" "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
+  fi
   if [ $? -ne 0 ]; then
     print_danger "Failed to Clone. Repository does not exist.\n"
     exit 4
