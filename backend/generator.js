@@ -46,14 +46,15 @@ exports.executeScript = function (socket, formData, callback) {
     console.log('child process exited with code ' + code);
     var data = { code: code, email: email, uniqueId: uniqueId, gitUrl: gitUrl };
     if (code === 0) {
-      mailer.sendEmail(data);
       socketHandler.handleSocket(socket, 'success', data);
-      if (callback != undefined) {
+      if (callback !== undefined) {
         callback(null, data)
+      } else {
+        mailer.sendEmail(data);
       }
     } else {
       socketHandler.handleSocket(socket, 'failure', data);
-      if (callback != undefined) {
+      if (callback !== undefined) {
         callback({
           message: `Process exited with code : ${code}`
         })
