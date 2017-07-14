@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts g:t:d:m:u:w:s:p:b: option
+while getopts g:t:d:m:u:s:p:b: option
 do
  case "${option}"
  in
@@ -9,33 +9,21 @@ do
  d) export DEBUG=${OPTARG};;
  m) EMAIL=${OPTARG};;
  u) UNIQUEID=${OPTARG};;
- w) WEBUI=${OPTARG};;
  s) export SUBPROJECT_URLS=${OPTARG};;
  p) export SUBPROJECT_DOCPATHS=${OPTARG};;
  b) TARGET_BRANCH=${OPTARG};;
  esac
 done
 
-LOGFILE='/dev/stdout'
-
 function print_log {
-  if [ -n "$LOGFILE" ]; then
-    echo -e $1 | tee -a ${LOGFILE}
-  else
-    echo -e $1
-  fi
+  echo -e $1 | tee -a ${LOGFILE}
 }
 
 function print_danger {
-  if [ -n "$LOGFILE" ]; then
-    >&2 echo -e $1 | tee -a ${LOGFILE}
-  else
-    >&2 echo -e $1
-  fi
+  >&2 echo -e $1 | tee -a ${LOGFILE}
 }
 
-REPO=${GITURL:-$(git config remote.origin.url)}
-URL_SPLIT=(${REPO//// })
+URL_SPLIT=(${GITURL//// })
 
 PLATFORM=${URL_SPLIT[1]}
 USERNAME=${URL_SPLIT[2]}
@@ -46,27 +34,26 @@ INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") els
 
 # Ensures that BASE has contents of yaydoc repository
 # and change current directory to git repository.
-if [ "${WEBUI:-false}" == "true" ]; then
-  BASE=$(pwd)
-  LOGFILE=${BASE}/temp/${EMAIL}/${UNIQUEID}.txt
-  mkdir -p temp/${EMAIL} && cd $_
-  print_log "Cloning Repository...\n"
-  CLONE_URL=https://:@${PLATFORM}/${USERNAME}/${REPONAME}
-  if [ -z "$TARGET_BRANCH" ]; then
-    git clone -q "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
-  else
-    git clone -q -b "$TARGET_BRANCH" "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
-  fi
-  if [ $? -ne 0 ]; then
-    print_danger "Failed to Clone. Repository does not exist.\n"
-    exit 4
-  fi
-  cd ${UNIQUEID}
-  print_log "Repository Cloned Successfully!\n"
+BASE=$(pwd)
+LOGFILE=${BASE}/temp/${EMAIL}/${UNIQUEID}.txt
+
+mkdir -p temp/${EMAIL} && cd $_
+print_log "Cloning Repository...\n"
+CLONE_URL=https://:@${PLATFORM}/${USERNAME}/${REPONAME}
+
+if [ -z "$TARGET_BRANCH" ]; then
+  git clone -q "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
 else
-  git clone -q https://github.com/fossasia/yaydoc.git yaydocclone
-  BASE=$(pwd)/yaydocclone
+  git clone -q -b "$TARGET_BRANCH" "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
 fi
+
+if [ $? -ne 0 ]; then
+  print_danger "Failed to Clone. Repository does not exist.\n"
+  exit 4
+fi
+
+cd ${UNIQUEID}
+print_log "Repository Cloned Successfully!\n"
 
 ROOT_DIR=$(pwd)
 
@@ -84,7 +71,7 @@ if [ -z "$ON_HEROKU" ]; then
   fi
 
   # Install packages required for documentation generation
-  print_log "Installing packages required for documentation generation\n"
+  print_log "Installing dependencies...\n"
   pip install -q -r $BASE/requirements.txt
   print_log "Installation successful\n"
 fi
@@ -128,7 +115,7 @@ if [ -f $DOCPATH/conf.py ]; then
   cat $DOCPATH/conf.py >> $BUILD_DIR/conf.py
 fi
 
-rsync -a --exclude=conf.py --exclude=yaydoctemp --exclude=yaydocclone $DOCPATH/ $BUILD_DIR/ 2>>${LOGFILE}
+rsync -a --exclude=conf.py --exclude=yaydoctemp $DOCPATH/ $BUILD_DIR/ 2>>${LOGFILE}
 cd $BUILD_DIR
 
 if [ "${AUTOAPI_PYTHON:-false}" == "true" ]; then
@@ -174,15 +161,13 @@ if [ $? -ne 0 ]; then
 fi
 print_log "Documentation Generated Successfully!\n"
 
-if [ "${WEBUI:-false}" == "true" ]; then
-  print_log "Setting up documentation for Download and Preview\n"
-  mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
-  rm -rf $BASE/temp/$EMAIL/$UNIQUEID
-  zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
-  if [ $? -ne 0 ]; then
-    print_danger "Failed setting up.\n"
-    exit 3
-  fi
+print_log "Setting up documentation for Download and Preview\n"
+mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
+rm -rf $BASE/temp/$EMAIL/$UNIQUEID
+zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
+if [ $? -ne 0 ]; then
+  print_danger "Failed setting up.\n"
+  exit 3
 fi
 
 print_log "Documentation setup successful!\n"

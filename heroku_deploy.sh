@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts e:h:n:u:w: option
+while getopts e:h:n:u: option
 do
  case "${option}"
  in
@@ -8,7 +8,6 @@ do
  h) export HEROKU_API_KEY=${OPTARG};;
  n) HEROKU_APP_NAME=${OPTARG};;
  u) UNIQUE_ID=${OPTARG};;
- w) WEBUI=${OPTARG};;
  esac
 done
 
@@ -19,12 +18,8 @@ if [ ${STATUS_CODE} -eq 403 ]; then
   exit 1
 fi
 
-if [ "${WEBUI:-false}" == "true" ]; then
-  BASE=$(pwd)
-  cd temp/$EMAIL/${UNIQUE_ID}_preview
-else
-  cd _build/html
-fi
+BASE=$(pwd)
+cd temp/$EMAIL/${UNIQUE_ID}_preview
 
 mkdir -p app
 cd app

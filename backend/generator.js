@@ -16,7 +16,6 @@ exports.executeScript = function (socket, formData, callback) {
   var docTheme = formData.docTheme;
   var debug = formData.debug;
   var uniqueId = uuidV4();
-  var webUI = "true";
   var subProject = "";
   var subDocpath = [];
   if (formData.subProject !== undefined) {
@@ -32,7 +31,6 @@ exports.executeScript = function (socket, formData, callback) {
     "-m", email,
     "-d", debug,
     "-u", uniqueId,
-    "-w", webUI,
     "-s", subProject,
     "-p", subDocpath.join(",")
   ];

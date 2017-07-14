@@ -5,14 +5,12 @@ var socketHandler = require('../util/socketHandler.js');
 
 exports.deployPages = function (socket, data) {
   var repoName = data.gitURL.split("/")[4].split(".")[0];
-  var webUI = "true";
   var username = data.username;
   var oauthToken = crypter.decrypt(data.encryptedToken);
 
   const args = [
     "-e", data.email,
     "-i", data.uniqueId,
-    "-w", webUI,
     "-n", username,
     "-o", oauthToken,
     "-r", repoName
@@ -36,14 +34,12 @@ exports.deployPages = function (socket, data) {
 exports.deployHeroku = function (socket, data) {
   var email = data.email;
   var herokuAppName = data.herokuAppName;
-  var webUI = "true";
   var herokuAPIKey = crypter.decrypt(data.herokuAPIKey);
   var uniqueId = data.uniqueId;
 
   const args = [
     "-e", email,
     "-u", uniqueId,
-    "-w", webUI,
     "-h", herokuAPIKey,
     "-n", herokuAppName,
   ];

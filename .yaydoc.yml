@@ -1,0 +1,12 @@
+metadata:
+  projectname: Yaydoc
+  version: development
+  author: FOSSASIA
+
+build:
+  docpath: docs/
+  doctheme: sphinx_fossasia_theme
+
+publish:
+  ghpages:
+    docurl: yaydoc.fossasia.org

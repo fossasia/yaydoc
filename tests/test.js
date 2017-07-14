@@ -21,7 +21,6 @@ describe('WebUi Generator', () => {
     "-t", "alabaster",
     "-m", email,
     "-u", uniqueId,
-    "-w", "true"
   ]
   let exitCode
   let files

@@ -2,11 +2,6 @@ language: python
 
 env:
   global:
-    - AUTHOR=FOSSASIA
-    - DOCPATH=docs/
-    - DOCURL=yaydoc.fossasia.org
-    - PROJECTNAME=Yaydoc
-    - VERSION=development
     - ENCRYPTION_KEY=ABCGDHEUSHFKIRMJSDFIUTEHFNGOWPOR
 
 install:
@@ -22,20 +17,3 @@ script:
   - python tests/test.py
   - npm run test
 
-before_deploy:
-  - openssl aes-256-cbc -K $encrypted_cab6203e105e_key -iv $encrypted_cab6203e105e_iv -in .utility/yaydoc_deploy.enc -out .utility/yaydoc_deploy -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 .utility/yaydoc_deploy
-  - ssh-add .utility/yaydoc_deploy
-
-deploy:
-  - provider: script
-    skip_cleanup: true
-    script: .utility/deploy_docs.sh
-    on:
-      branch: deploy
-  - provider: script
-    skip_cleanup: true
-    script: .utility/deploy_docs.sh
-    on:
-      branch: master
