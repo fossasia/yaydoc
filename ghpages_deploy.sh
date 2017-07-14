@@ -42,7 +42,9 @@ if ! git checkout gh-pages ; then
 fi
 
 # Overwrite files in the branch
-git rm -rfq ./*
+shopt -s extglob
+rm -rf ./!(.git)
+
 cp -a ../${UNIQUE_ID}_preview/. ./
 
 echo -e "Overwrite successfully \n"
