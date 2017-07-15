@@ -39,6 +39,7 @@ import sys
 import mock
 import pkg_resources
 from recommonmark.parser import CommonMarkParser
+from recommonmark.transform import AutoStructify
 
 # Adding scripts directory to path
 sys.path.insert(0, os.path.abspath('scripts'))
@@ -69,7 +70,8 @@ sys.modules.update((mod_name, mock.Mock()) for mod_name in mock_modules)
 extensions = ['sphinx.ext.githubpages',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'javasphinx',]
+    'javasphinx',
+    'sphinxcontrib.apiblueprint']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['{{ dot }}templates']
@@ -280,3 +282,7 @@ import directives
 def setup(app):
     app.add_directive('include', directives.Include)
     app.add_directive('mdinclude', directives.MdInclude)
+    app.add_config_value('recommonmark_config', {
+        'enable_eval_rst': True,
+    }, True)
+    app.add_transform(AutoStructify)
