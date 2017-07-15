@@ -161,6 +161,17 @@ if [ $? -ne 0 ]; then
 fi
 print_log "Documentation Generated Successfully!\n"
 
+if [ -n "$APIDOCS_NAME" ] && [ -n "$APIDOCS_URL" ]; then
+  if [ "$APIDOCS_NAME" == "swagger" ]; then
+    STABLE_SWAGGER=$(curl -s https://api.github.com/repos/swagger-api/swagger-ui/releases/latest  | grep tarball_url | cut -d '"' -f 4) >/dev/null 2>&1
+    wget -O swagger.tar.gz ${STABLE_SWAGGER} >/dev/null 2>&1
+    mkdir swagger
+    tar -xf swagger.tar.gz --strip-components=1 -C swagger >/dev/null 2>&1
+    cp -r swagger/dist _build/html/apidocs
+    sed -i -e "s|http://petstore.swagger.io/v2/swagger.json|${APIDOCS_URL}|g" _build/html/apidocs/index.html
+  fi
+fi
+
 print_log "Setting up documentation for Download and Preview\n"
 mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
 rm -rf $BASE/temp/$EMAIL/$UNIQUEID

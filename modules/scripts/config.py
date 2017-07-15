@@ -49,6 +49,10 @@ def _get_default_config(username, reponame):
             'publish': {'ghpages': {'docurl': None,},
                         'heroku': {'app_name': None,},
                        },
+            'apidocs': {'name': None,
+                        'url': None,
+                        'ui': None,
+                       },
            }
     return conf
 
@@ -95,6 +99,7 @@ def _get_env_dict(conf):
     metadata = conf['metadata']
     build = conf['build']
     publish = conf['publish']
+    apidocs = conf['apidocs']
 
     # TODO autoapi should also be handled using some kind of fields.
     autoapi = build['autoapi']
@@ -127,6 +132,10 @@ def _get_env_dict(conf):
 
             'DOCURL': publish['ghpages']['docurl'],
             'HEROKU_APP_NAME': publish['heroku']['app_name'],
+
+            'APIDOCS_NAME': apidocs['name'],
+            'APIDOCS_URL': apidocs['url'],
+            'APIDOCS_UI': apidocs['ui'],
            }
 
 def _export_env(envdict):

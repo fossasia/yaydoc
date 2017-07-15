@@ -53,6 +53,15 @@ publish:
     app_name: yaydoc               # Name of the heroku app. Your docs would be deployed at <app_name>.herokuapp.com
 ```
 
+- Configuring API Docs
+
+```yaml
+apidocs:
+  name: swagger                               # Supported api-docs [ swagger(https://swagger.io/) ]
+  url:  http://api.susi.ai/docs/swagger.json  # URL to the JSON specification
+  ui: swagger                                 # Supported UI [ swagger(https://swagger.io/swagger-ui/) ]
+```
+
 Currently Yaydoc only supports publishing to ghpages and heroku.
 
 ## Accessing the Yaydoc CI
