@@ -53,6 +53,7 @@ def _get_default_config(username, reponame):
                         'url': None,
                         'ui': None,
                        },
+            'javadoc': {'path': None},
            }
     return conf
 
@@ -100,6 +101,7 @@ def _get_env_dict(conf):
     build = conf['build']
     publish = conf['publish']
     apidocs = conf['apidocs']
+    javadoc = conf['javadoc']
 
     # TODO autoapi should also be handled using some kind of fields.
     autoapi = build['autoapi']
@@ -108,7 +110,7 @@ def _get_env_dict(conf):
 
     autoapi_paths = {section['language']: section.get('path', '.')
                      for section in autoapi}
-    
+
     return {'PROJECTNAME': metadata['projectname'],
             'VERSION': metadata['version'],
             'AUTHOR': metadata['author'],
@@ -136,6 +138,8 @@ def _get_env_dict(conf):
             'APIDOCS_NAME': apidocs['name'],
             'APIDOCS_URL': apidocs['url'],
             'APIDOCS_UI': apidocs['ui'],
+
+            'JAVADOC_PATH': javadoc['path'],
            }
 
 def _export_env(envdict):
