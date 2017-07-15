@@ -8,7 +8,7 @@ exports.lineOutput = function (socket, process, event, increment) {
     input     : process.stdout,
     terminal  : false
   }).on('line', function(data) {
-    if (donePercent <= 90) {
+    if ((donePercent + increment) <= 90) {
       donePercent += increment;
     }
     console.log(data);

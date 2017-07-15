@@ -3,38 +3,21 @@ extends ../layout
 block content
   script(src="/socket.io/socket.io.js")
   script.
-    var socket = io();
-    socket.emit('ghpages-deploy', {
+    var data = {
       'email': "#{email}",
       'gitURL': "#{gitURL}",
       'uniqueId': "#{uniqueId}",
       'encryptedToken': "#{token}",
       'username': "#{username}"
-    });
-
-    socket.on('github-deploy-logs', function (data) {
-      $('#messages').append($('<li>').text(data.data));
-      $("#progress").css("width", data.donePercent + "%");
-    });
-
-    socket.on('github-error-logs', function (data) {
-      $('#messages').append($('<li style="color:red">').text(data));
-    });
-
-    socket.on('github-success', function(data) {
-      styles.showNotification("Documentation deployed successfully to Github Pages!");
-      $("#progress").css("width", "100%");
-      $("#main-content").append('<br><center><a class="btn btn-default" href="'+ data.pagesURL +'" target="_blank">GH-PAGES</a></center>')
-    });
-
-    socket.on('github-failure', function (data) {
-      styles.showNotification("Failed to deploy documentation: Error " + data.errorCode);
-    });
+    };
+  script(src="/scripts/socket-github.js")
   .container
     .col-md-6.col-md-offset-3#main-content
       .progress
         #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
           span.sr-only
       .logs.pre-scrollable
-        h4(style='text-align: center; padding-top: 5px; color: #ffffff') Console Output
+        h4.console-output-header Console Output
         ul#messages
+      .row(style='text-align: center;margin-top: 20px;')
+        a.btn.btn-default(id='btnGithubPages' target="_blank") Github Pages

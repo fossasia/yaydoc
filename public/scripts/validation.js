@@ -1,7 +1,15 @@
+/**
+ * Validation of form input values
+ */
 (function(){
   var messages = [];
 
   var obj = {
+    /**
+     * Check input form at `/index` for valud inputs
+     * @param formData: Object containing form input as value
+     * @returns {boolean}: true for valid form values
+     */
     isValidForm: function(formData) {
       var valid = true;
       var regex = '';
@@ -26,10 +34,10 @@
         }
       }
 
-      if (formData.subProject != undefined) {
+      if (formData.subProject !== undefined) {
         for (var i = 0; i < formData.subProject.length; i++) {
           regex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
-          if (!(formData.subProject[i] == "")) {
+          if (!(formData.subProject[i] === "")) {
             if(!regex.test(formData.subProject[i])) {
               messages.push("Invalid URL");
               valid = false;
@@ -40,19 +48,40 @@
       return valid;
     },
 
+    /**
+     * Retrieve messages to display in notification
+     * @returns {Array}: messages
+     */
     getMessages: function () {
       return messages;
     },
 
+    /**
+     * Set values to notification messages
+     * @param val: messages
+     */
     setMessages: function (val) {
       messages = val;
     },
 
+    /**
+     * Check if the inputted URL is a valid Github Repository or not
+     * @param url: URL of the Github Repository
+     * @returns {boolean}: true if the inputted value if value
+     */
     isGithubHTTPS: function (url) {
       regex = /^(http|https):\/\/github.com\/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}\/[a-z\d-]{0,38}(\.git)?/
       return regex.test(url)
     },
 
+    /**
+     * Check if the inputted value is a valid Heroku app name or not
+     * @param name: Heroku App Name
+     * @returns {string}:
+     *                  - invalid: Invalid Heroku App Name
+     *                  - existent: Existing Heroku App Name
+     *                  - valid: Valid Heroku App Name
+     */
     validateHerokuAppName: function (name) {
       styles.invalidInput('herokuAppName');
 

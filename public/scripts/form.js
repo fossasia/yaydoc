@@ -1,6 +1,5 @@
-
 /**
- * Client-side Event Handling
+ * Client-side Event Handling for index
  */
 $(function () {
   var socket = io();
@@ -21,35 +20,57 @@ $(function () {
     }
   });
 
+  /**
+   * Add subprojects in the form
+   */
+  var tempSubProjectId = 1;
+  $("#btnSubProject").click(function () {
+    $("#subproject").append(`<select id="subproject_${tempSubProjectId}" placeholder="Enter URL for Sub Project" name="subproject_url[]" class="form-control subproject" type="text"></select>`)
+    addSuggestion(`#subproject_${tempSubProjectId}`);
+    tempSubProjectId += 1;
+  });
+
+  /**
+   * Retrieving standard logs from documentation generation
+   */
   socket.on('logs', function (data) {
-    $('#messages').append($('<li class="info">').text(data.data));
+    $('#messages').append($('<li class="info-logs">').text(data.data));
     $("#progress").css("width", data.donePercent + "%");
   });
 
+  /**
+   * Retrieving erroneous logs from documentation generation
+   */
   socket.on('err-logs', function (msg) {
-    $('#messages').append($('<li class="error">').text(msg));
+    $('#messages').append($('<li class="danger-logs">').text(msg));
   });
 
+  /**
+   * Displaying links to further actions on successful generation
+   */
   socket.on('success', function (data) {
     $("#progress").css("width", "100%");
-    $('#btnDownload').css("display", "inline");
-    $('#btnDownload').attr("href", "/download/" + data.email +"/" + data.uniqueId);
-    $('#btnPreview').css("display", "inline");
-    $('#btnPreview').attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
+    $('#btnDownload').css("display", "inline").attr("href", "/download/" + data.email +"/" + data.uniqueId);
+    $('#btnPreview').css("display", "inline").attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
     styles.showNotification("Documentation Generated Successfully");
     if (validation.isGithubHTTPS(data.gitUrl)) {
       $('#btnDeployGithub').css("display", "inline");
       $('#onetimeDeploy').attr("href", '/auth/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
     }
-    $('#btnDeployHeroku').css("display", "inline");
-    $('#btnDeployHeroku').attr("href", '/auth/heroku?email='+data.email+'&uniqueId='+data.uniqueId);
+    $('#btnDeployHeroku').css("display", "inline").attr("href", '/auth/heroku?email='+data.email+'&uniqueId='+data.uniqueId);
     $('#btnLogs').css("display", "inline");
     $("#btnLogs").click(function () {
       socket.emit('retrieve-detailed-logs', {email: data.email, uniqueId: data.uniqueId});
       $('#downloadDetailedLogs').attr('href', '/logs/' + data.email + '/' + data.uniqueId);
     });
+
   });
 
+  /**
+   * Actions performed on a failure in documentation generation
+   * - Display process failure notification
+   * - Retrieve detailed logs from the backend
+   */
   socket.on('failure', function (data) {
     $('#btnLogs').css("display", "inline");
     styles.showNotification("Failed to Generate Documentation: Error " + data.code);
@@ -60,12 +81,18 @@ $(function () {
     });
   });
 
+  /**
+   * Displaying detailed logs in a modal
+   */
   socket.on('file-content', function(data){
     new Clipboard('#copy-button');
     $('#detailed-logs').html(data);
     $('#detailed-logs-modal').modal('show');
   });
 
+  /**
+   * Notification on a successful copy operation on logs
+   */
   $('#copy-button').click(function () {
     styles.showNotification('Logs copied to clipboard!');
   })
@@ -74,6 +101,7 @@ $(function () {
 
 /**
  * Retrieve data from input form fields
+ * @returns {{}}: From Data as an object
  */
 function getData() {
   var data = {};
@@ -95,11 +123,4 @@ function getData() {
   });
 
   return data;
-}
-
-var tempSubProjectId = 1
-function addSubProject() {
-  $("#subproject").append(`<select id="subproject_${tempSubProjectId}" placeholder="Enter URL for Sub Project" name="subproject_url[]" class="form-control subproject" type="text"></select>`)
-  addSuggestion(`#subproject_${tempSubProjectId}`)
-  tempSubProjectId += 1;
 }
