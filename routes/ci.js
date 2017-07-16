@@ -5,6 +5,7 @@ var repositoryModel = require("../model/repository.js");
 var crypter = require("../util/crypter.js");
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
+var commitWatcher = require("../util/commitWatcher.js");
 router.get('/register', function (req, res, next) {
   var query = `ci=true&username=${req.session.username}`;
   res.redirect(`/?${query}`);
@@ -73,38 +74,58 @@ router.post('/webhook', function(req, res, next) {
   if (branch !== "gh-pages") {
     switch (event) {
       case "push":
-        repositoryModel.findOneRepository(
-          {
-            githubId: req.body.repository.owner.id,
-            name: req.body.repository.name
-          }
-        ).
-        then(function(result) {
-          var data = {
-            email: result.email,
-            gitUrl: req.body.repository.clone_url,
-            docTheme: "",
-          }
-          generator.executeScript({}, data, function(err, generatedData) {
-            if (err) {
-              console.log(err);
-            } else {
-              deploy.deployPages({}, {
-                email: result.email,
-                gitURL: req.body.repository.clone_url,
-                username: result.username,
-                uniqueId: generatedData.uniqueId,
-                encryptedToken: result.accessToken
-              })
+      let sha = req.body.head_commit.id;
+      let username = req.body.repository.full_name.split("/")[0];
+      let repoName = req.body.repository.name;
+      let formats = ['.md', '.rst'];
+      commitWatcher.docChanged(sha, username, repoName, formats)
+      .then(function (changed) {
+        if (changed) {
+          repositoryModel.findOneRepository(
+            {
+              githubId: req.body.repository.owner.id,
+              name: req.body.repository.name
             }
+          ).
+          then(function(result) {
+            var data = {
+              email: result.email,
+              gitUrl: req.body.repository.clone_url,
+              docTheme: "",
+            }
+            generator.executeScript({}, data, function(err, generatedData) {
+              if (err) {
+                console.log(err);
+              } else {
+                deploy.deployPages({}, {
+                  email: result.email,
+                  gitURL: req.body.repository.clone_url,
+                  username: result.username,
+                  uniqueId: generatedData.uniqueId,
+                  encryptedToken: result.accessToken
+                })
+              }
+            })
           })
+          .catch(function (err) {
+            console.log(err);
+            res.json({
+              status: true
+            })
+          })
+        } else {
+          res.json({
+            status: false,
+            description: "Documentation files didn't changed"
+          })
+        }
+      })
+      .catch(function (err) {
+        next({
+          status: 500,
+          message: 'Something went wrong.'
         })
-        .catch((err) => {
-          console.log(err);
-        })
-        res.json({
-          status: true
-        })
+      })
         break;
       default:
         res.json({
