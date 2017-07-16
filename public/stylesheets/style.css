@@ -115,5 +115,13 @@ a {
 .console-output-header {
   text-align: center;
   padding-top: 5px;
-  color: #ffffff
+  color: #ffffff;
+}
+
+#configs {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  -webkit-transition: opacity 600ms, visibility 600ms;
+  transition: opacity 600ms, visibility 600ms;
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts g:t:d:m:u:s:p:b: option
+while getopts g:t:d:m:u:s:p:b:l: option
 do
  case "${option}"
  in
@@ -12,6 +12,7 @@ do
  s) export SUBPROJECT_URLS=${OPTARG};;
  p) export SUBPROJECT_DOCPATHS=${OPTARG};;
  b) TARGET_BRANCH=${OPTARG};;
+ l) export DOCPATH=${OPTARG};;
  esac
 done
 
@@ -48,12 +49,16 @@ else
 fi
 
 if [ $? -ne 0 ]; then
-  print_danger "Failed to Clone. Repository does not exist.\n"
+  print_danger "Failed to Clone. Either the repository or the specified branch in that repository does not exist.\n"
   exit 4
 fi
 
 cd ${UNIQUEID}
 print_log "Repository Cloned Successfully!\n"
+
+if [ -z "$DOCPATH" ]; then
+  print_danger "DOCPATH isn't specified. Default value of 'docs' or configuration from .yaydoc.yml is used"
+fi
 
 ROOT_DIR=$(pwd)
 
@@ -80,6 +85,11 @@ fi
 ENVVARS="$(python ${BASE}/modules/scripts/config.py "${USERNAME}" "${REPONAME}")"
 echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
 eval $ENVVARS
+
+if [ ! -d ${ROOT_DIR}/${DOCPATH} ]; then
+  print_danger "The DOCPATH (${DOCPATH}) does not exist.\n"
+  exit 5
+fi
 
 # Setting up build directory
 if [ "$DOCPATH" != "." ]; then

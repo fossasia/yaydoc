@@ -16,6 +16,8 @@ exports.executeScript = function (socket, formData, callback) {
   var docTheme = formData.docTheme;
   var debug = formData.debug;
   var uniqueId = uuidV4();
+  var targetBranch = formData.targetBranch === undefined ? '' : formData.targetBranch;
+  var docPath = formData.docPath === undefined ? '' : formData.docPath;
   var subProject = "";
   var subDocpath = [];
   if (formData.subProject !== undefined) {
@@ -32,7 +34,9 @@ exports.executeScript = function (socket, formData, callback) {
     "-d", debug,
     "-u", uniqueId,
     "-s", subProject,
-    "-p", subDocpath.join(",")
+    "-p", subDocpath.join(","),
+    "-b", targetBranch,
+    "-l", docPath
   ];
 
   var process = spawn("./generate.sh", args);

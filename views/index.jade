@@ -3,8 +3,9 @@ extends layout
 block content
   script(src="/socket.io/socket.io.js")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.1/clipboard.min.js")
-  script(src="/scripts/form.js")
   script(src="/scripts/suggestion.js")
+  script(src="/scripts/defaults.js")
+  script(src="/scripts/form.js")
   script(src="/scripts/ci.js")
   #notification-container
     li.notification Hello
@@ -20,10 +21,10 @@ block content
       form(method='post' action='/generate')
         .form-group
           label.control-label(for='email') Email:
-          input#email.form-control(type='email', placeholder='Enter Email', name='email', required='')
+          input.form-control#email(type='email', placeholder='Enter Email', name='email', required='')
         .form-group
           label.control-label(for='git_url') GITURL:
-          select#git_url.form-control(type='text', placeholder='Enter URL of Github Repository', name='git_url')
+          select.form-control#git_url(type='text', placeholder='Enter URL of Github Repository', name='git_url')
         .div#subproject
         .form-group
           label.control-label(for='doc_theme') Doc Theme:
@@ -49,17 +50,41 @@ block content
             option(value='Flask-Sphinx-Themes') Flask-Sphinx-Themes
             option(value='sphinxjp.themes.sphinxjp') sphinxjp.themes.sphinxjp
         .form-group
-            label.control-label(for='debug') Debug mode
-            input#debug(type='checkbox', value='true', name='debug', checked=false)
+          input#advanced(type="checkbox")
+          label(for='advanced') &nbsp; Advanced Configurations
+        #configs
+          .form-group
+            label.control-label Debug Mode: &nbsp;
+            .btn-group(data-toggle="buttons")
+              label.btn.btn-default.active
+                input#disabled(type='radio' name='debug' value='false')
+                | Disabled
+              label.btn.btn-default
+                input#enabled(type='radio' name='debug' value='true')
+                | Enabled
+          .form-group
+            label.control-label(for='target_branch') Branch Name:
+            .input-group
+              span.input-group-btn
+                button.btn.btn-default#btnEditBranch(type='button')
+                  span.glyphicon.glyphicon-unchecked#checkbox_target_branch
+              input.form-control#target_branch(type='text' placeholder='Default Branch | Received from .yaydoc.yml' name='target_branch' disabled='disabled')
+          .form-group
+            label.control-label(for='doc_path') Doc Path:
+            .input-group
+              span.input-group-btn
+                button.btn.btn-default#btnEditPath(type='button')
+                  span.glyphicon.glyphicon-unchecked#checkbox_doc_path
+              input.form-control#doc_path(type='text' placeholder='Default:- `docs` | Received from .yaydoc.yml' name='doc_path' disabled='')
         .form-group#buttons
-            button.btn.btn-default(type='button' id='btnGenerate') Generate Docs
-            button.btn.btn-default(type='button' id='btnSubProject' onclick="addSubProject()") Add Sub Project
-            .row(style='padding-bottom: 25px;')
-              a.btn.btn-default(id='btnDownload') Download
-              a.btn.btn-default(id='btnPreview' target='_blank') Preview
-            .row
-              a.btn.btn-default(id='btnDeployGithub' data-toggle='modal', data-target='#githubModal') Deploy to Github
-              a.btn.btn-default(id='btnDeployHeroku') Deploy to Heroku
+          button.btn.btn-default#btnGenerate(type='button') Generate Docs
+          button.btn.btn-default#btnSubProject(type='button') Add Sub Project
+          .row(style='padding-bottom: 25px;')
+            a.btn.btn-default#btnDownload Download
+            a.btn.btn-default#btnPreview(target='_blank') Preview
+          .row
+            a.btn.btn-default#btnDeployGithub(data-toggle='modal', data-target='#githubModal') Deploy to Github
+            a.btn.btn-default#btnDeployHeroku(target='_blank') Deploy to Heroku
       .progress
         #progress.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width:0%')
           span.sr-only
