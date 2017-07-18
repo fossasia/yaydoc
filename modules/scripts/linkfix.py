@@ -21,14 +21,13 @@ def is_relative(path):
     """whether `path` is relative"""
     return not bool(urlparse(path).netloc)
 
-def get_html_path(path):
+def get_html_path(path, filetype):
     """
     Returns path with extension html if original extension is md or rst or
-    no extension at all. This method is meant to only be called for modifying
-    markdown links.
+    if filetype is markdown and path has no extension at all.
     """
     basepath, ext = os.path.splitext(path)
-    if ext in ('', '.md', '.rst'):
+    if ext in ('.md', '.rst') or (filetype == 'md' and ext == ''):
         return basepath + '.html'
     return path
 
@@ -56,8 +55,7 @@ def fix_relative_links(content, path):
         link = match_object.group('link').replace(os.path.sep, '/')
 
         if is_relative(link):
-            if filetype == 'md':
-                link = get_html_path(link)
+            link = get_html_path(link, filetype)
             # Split path into tokens ignoring starting and trailing slash
             splitted = [value for value in link.split('/') if value]
             if len(splitted) > level:
