@@ -36,24 +36,24 @@ def _get_default_config(username, reponame):
     conf = {'metadata': {'projectname': reponame,
                          'version': utctime,
                          'author': username,
-                         'subproject': [],
                          'debug': False,
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
-                      'doctheme': 'sphinx_fossasia_theme',
-                      'docpath': 'docs',
+                      'theme': 'sphinx_fossasia_theme',
+                      'source': 'docs',
                       'autoapi': [],
                       'mock': [],
+                      'subproject': [],
                      },
-            'publish': {'ghpages': {'docurl': None,},
+            'publish': {'ghpages': {'url': None,},
                         'heroku': {'app_name': None,},
                        },
-            'apidocs': {'name': None,
-                        'url': None,
-                        'ui': None,
-                       },
-            'javadoc': {'path': None},
+            'extras': {'swagger': {'url': None,
+                                   'ui': 'swagger',
+                                  },
+                       'javadoc': {'path': None,},
+                      },
            }
     return conf
 
@@ -100,29 +100,28 @@ def _get_env_dict(conf):
     metadata = conf['metadata']
     build = conf['build']
     publish = conf['publish']
-    apidocs = conf['apidocs']
-    javadoc = conf['javadoc']
+    extras = conf['extras']
 
     # TODO autoapi should also be handled using some kind of fields.
     autoapi = build['autoapi']
     if not isinstance(autoapi, list):
         autoapi = [autoapi]
 
-    autoapi_paths = {section['language']: section.get('path', '.')
+    autoapi_paths = {section['language']: section.get('source', '.')
                      for section in autoapi}
 
     return {'PROJECTNAME': metadata['projectname'],
             'VERSION': metadata['version'],
             'AUTHOR': metadata['author'],
-            'SUBPROJECT_URLS': multi_field(metadata['subproject'], 'url'),
-            'SUBPROJECT_DOCPATHS': multi_field(metadata['subproject'],
-                                               'docpath', 'docs'),
             'DEBUG': boolean_field(metadata['debug']),
 
             'MARKDOWN_FLAVOUR': build['markdown_flavour'],
             'LOGO': build['logo'],
-            'DOCTHEME': build['doctheme'],
-            'DOCPATH': build['docpath'],
+            'DOCTHEME': build['theme'],
+            'DOCPATH': build['source'],
+            'SUBPROJECT_URLS': multi_field(build['subproject'], 'url'),
+            'SUBPROJECT_DOCPATHS': multi_field(build['subproject'],
+                                               'source', 'docs'),
 
             'AUTOAPI_PYTHON': boolean_field('python' in autoapi_paths),
             'AUTOAPI_PYTHON_PATH': autoapi_paths.get('python', '.'),
@@ -132,14 +131,13 @@ def _get_env_dict(conf):
 
             'MOCK_MODULES': multi_field(build['mock']),
 
-            'DOCURL': publish['ghpages']['docurl'],
+            'DOCURL': publish['ghpages']['url'],
             'HEROKU_APP_NAME': publish['heroku']['app_name'],
 
-            'APIDOCS_NAME': apidocs['name'],
-            'APIDOCS_URL': apidocs['url'],
-            'APIDOCS_UI': apidocs['ui'],
+            'SWAGGER_SPEC_URL': extras['swagger']['url'],
+            'SWAGGER_UI': extras['swagger']['ui'],
 
-            'JAVADOC_PATH': javadoc['path'],
+            'JAVADOC_PATH': extras['javadoc']['path'],
            }
 
 def _export_env(envdict):
