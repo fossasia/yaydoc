@@ -71,7 +71,6 @@ extras:
   javadoc:
     path: 'src/'                                # Path for javadoc source files
 ```
-
 Currently Yaydoc only supports publishing to ghpages and heroku.
 
 ## Accessing the Yaydoc CI
@@ -95,4 +94,8 @@ Currently Yaydoc only supports publishing to ghpages and heroku.
 - RSS feed
 ```
 .. feed:: <rss url>
+```
+- Twitter Feed
+```
+.. timeline:: <query>
 ```
