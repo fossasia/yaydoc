@@ -172,8 +172,8 @@ if [ $? -ne 0 ]; then
 fi
 print_log "Documentation Generated Successfully!\n"
 
-if [ -n "$APIDOCS_NAME" ] && [ -n "$APIDOCS_URL" ]; then
-  if [ "$APIDOCS_NAME" == "swagger" ]; then
+if [ -n "$SWAGGER_SPEC_URL" ]; then
+  if [ "$SWAGGER_UI" == "swagger" ]; then
     STABLE_SWAGGER=$(curl -s https://api.github.com/repos/swagger-api/swagger-ui/releases/latest  | grep tarball_url | cut -d '"' -f 4) >/dev/null 2>&1
     wget -O swagger.tar.gz ${STABLE_SWAGGER} >/dev/null 2>&1
     mkdir swagger

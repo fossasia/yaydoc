@@ -23,30 +23,27 @@ metadata:
   projectname: Yaydoc    # Name of the Project, default: Name of the repository
   version: development   # Version of the Project, default: UTC date of latest deployment
   debug: true            # Enables detailed logging, default: false
-  subproject:            # Other projects which should be included when building the documentation
-    - url: <URL of Subproject 1>       # URL of the repository
-      docpath: doc                     # Path of the documentation of the subproject, default: docs
-    - url: <URL of subproject 2>
 ```
 
 - Configuring build options
 
 ```yaml
 build:
-  doctheme: sphinx_fossasia_theme      # Name of the theme. Apart from built in sphinx themes, custom themes from PyPI are also supported, default: sphinx_fossasia_theme   
-  docpath: docs                        # Path of the documentation, default: docs
-  logo: images/logo.svg                # Path to an image to be used as logo for the Project. It should be relative to `docpath`.
+  theme: sphinx_fossasia_theme         # Name of the theme. Apart from built in sphinx themes, custom themes from PyPI are also supported, default: sphinx_fossasia_theme
+  source: docs                         # Path of the documentation, default: docs
+  logo: images/logo.svg                # Path to an image to be used as logo for the Project. It should be relative to `source`.
   markdown_flavour: markdown_github    # Markdown format flavour. should be one of `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`, default: markdown_github
+  mock:                                # Any python modules or packages which should be mocked. Useful if your project depends on C dependencies.
+    - numpy
+    - scipy
   autoapi:               # If enabled, Yaydoc will crawl your repository and try to extract API documentation
     - language: python   # Language for which API docs should be generated.
-      path: modules      # If specified, only the `path` would be crawled to extract APIs
+      source: modules    # If specified, only the `source` would be crawled to extract APIs
     - language: java
-```
-- Javadoc configuration
-
-```yaml
-javadoc:
-  path: 'src/'
+  subproject:            # Other projects which should be included when building the documentation
+    - url: <URL of Subproject 1>       # URL of the repository
+      source: doc                      # Path of the documentation of the subproject, default: docs
+    - url: <URL of subproject 2>
 ```
 
 - Configuring publishers
@@ -54,18 +51,20 @@ javadoc:
 ```yaml
 publish:
   ghpages:
-    docurl: yaydoc.fossasia.org    # Custom URL at which the site should be published, default: <username>.github.io/<reponame>
+    url: yaydoc.fossasia.org       # Custom URL at which the site should be published, default: <username>.github.io/<reponame>
   heroku:
     app_name: yaydoc               # Name of the heroku app. Your docs would be deployed at <app_name>.herokuapp.com
 ```
 
-- Configuring API Docs
+- Configuring External services
 
 ```yaml
-apidocs:
-  name: swagger                               # Supported api-docs [ swagger(https://swagger.io/) ]
-  url:  http://api.susi.ai/docs/swagger.json  # URL to the JSON specification
-  ui: swagger                                 # Supported UI [ swagger(https://swagger.io/swagger-ui/) ]
+extras:
+  swagger:                              # Supported api-docs [ swagger(https://swagger.io/) ]
+    url: http://api.susi.ai/docs/swagger.json   # URL to the JSON specification
+    ui: swagger                                 # Supported UI [ swagger(https://swagger.io/swagger-ui/) ], default: swagger
+  javadoc:
+    path: 'src/'                                # Path for javadoc source files
 ```
 
 Currently Yaydoc only supports publishing to ghpages and heroku.
