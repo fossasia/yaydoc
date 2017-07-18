@@ -63,7 +63,7 @@ def _ignore_dirs(dirpath, dirnames, ignored_dirnames, path=None):
                 dirnames.remove(dirname)
 
 
-def get_index(root, subprojects, sub_docpaths):
+def get_index(root, subprojects, sub_docpaths, javadoc):
     index = []
 
     subproject_dirs = [subproject.split(os.path.sep)[0]
@@ -93,19 +93,29 @@ def get_index(root, subprojects, sub_docpaths):
         toctree = get_toctree(os.curdir, [sub_index_path],
                               _title(subproject.split(os.path.sep)[0]))
         index.append(toctree)
+    # add javadoc if javadoc exist
+    if javadoc != "":
+        index = add_javadoc(index)
 
     return '\n\n'.join(index) + '\n'
 
+def add_javadoc(index):
+    javadoc = ["API Documentation", "\n", "=================", "\n",
+     "* `javadoc <./javadoc>`_"]
+    return index + javadoc
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='Path to the root of the Repository')
     parser.add_argument('-s', '--subprojects', default='',
                         help='Comma seperated subprojects')
+    parser.add_argument('-j', '--javadoc', default='',
+                        help='Path of java source files for Javadoc')
     parser.add_argument('-d', '--sub-docpaths', default='',
                         help='Comma seperated docpaths for subprojects')
     args = parser.parse_args()
     subprojects, sub_docpaths = [], []
+    javadoc = args.javadoc
     if args.subprojects:
         subprojects = [name.strip().replace('/', os.path.sep)
                        for name in args.subprojects.split(',')]
@@ -114,7 +124,7 @@ def main():
                         for name in args.sub_docpaths.split(',')]
     if len(subprojects) != len(sub_docpaths):
         raise ValueError("Invalid arguments")
-    content = get_index(args.root, subprojects, sub_docpaths)
+    content = get_index(args.root, subprojects, sub_docpaths, javadoc)
     with open('index.rst', 'w') as file:
         file.write(content)
 

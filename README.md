@@ -22,7 +22,7 @@ metadata:
   author: FOSSASIA       # Author of the project, default: Github uername or organization
   projectname: Yaydoc    # Name of the Project, default: Name of the repository
   version: development   # Version of the Project, default: UTC date of latest deployment
-  debug: true            # Enables detailed logging, default: false 
+  debug: true            # Enables detailed logging, default: false
   subproject:            # Other projects which should be included when building the documentation
     - url: <URL of Subproject 1>       # URL of the repository
       docpath: doc                     # Path of the documentation of the subproject, default: docs
@@ -41,6 +41,12 @@ build:
     - language: python   # Language for which API docs should be generated.
       path: modules      # If specified, only the `path` would be crawled to extract APIs
     - language: java
+```
+- Javadoc configuration
+
+```yaml
+javadoc:
+  path: 'src/'
 ```
 
 - Configuring publishers

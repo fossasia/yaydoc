@@ -64,6 +64,9 @@
     },
     {
       "url": "https://github.com/heroku/heroku-buildpack-cli"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-jvm-common"
     }
   ],
   "addons": [

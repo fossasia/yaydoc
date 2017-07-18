@@ -154,12 +154,13 @@ if [ ! -f index.rst ]; then
   if [ "$DOCPATH" == "." ]; then
     GENINDEX_PARAM=$ROOT_DIR/yaydoctemp
   fi
-  python $BASE/modules/scripts/genindex.py -s "$SUBPROJECT_DIRS" -d "$SUBPROJECT_DOCPATHS" "$GENINDEX_PARAM"
+  python $BASE/modules/scripts/genindex.py -j "$JAVADOC_PATH" -s "$SUBPROJECT_DIRS" -d "$SUBPROJECT_DOCPATHS" "$GENINDEX_PARAM"
   if [ "${DEBUG:-false}" == "true" ]; then
     print_log "\n--------------------------------------\n"
     cat index.rst | tee -a ${LOGFILE}
     print_log "\n--------------------------------------\n"
   fi
+
   print_log "Auto generated index.rst\n"
 fi
 
@@ -180,6 +181,10 @@ if [ -n "$APIDOCS_NAME" ] && [ -n "$APIDOCS_URL" ]; then
     cp -r swagger/dist _build/html/apidocs
     sed -i -e "s|http://petstore.swagger.io/v2/swagger.json|${APIDOCS_URL}|g" _build/html/apidocs/index.html
   fi
+fi
+
+if [[  -n "$JAVADOC_PATH" ]]; then
+  javadoc -sourcepath $ROOT_DIR/$JAVADOC_PATH -d $BUILD_DIR/_build/html/javadoc -subpackages . >> ${LOGFILE} 2>>${LOGFILE}
 fi
 
 print_log "Setting up documentation for Download and Preview\n"
