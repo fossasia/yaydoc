@@ -15,11 +15,16 @@ LINK_TEMPLATES = {'rst': {'format': '`{title}<{link}>`',
                   'md': {'format': '[{title}]({link})',
                          'regex': re.compile(r'\[(?P<title>[^\[\]]*?)\]\((?P<link>[^)(]*?)\)'),
                         },
-                 }
+                  'html': {'format': '<{start}src="{link}"{end}>',
+                           'regex': re.compile(r'<(?P<start>[^><]*?)src\s*=\s*"(?P<link>.*?)"(?P<end>[^<]*?)>'),
+                          },
+                  }
+
 
 def is_relative(path):
     """whether `path` is relative"""
     return not bool(urlparse(path).netloc)
+
 
 def get_html_path(path, filetype):
     """
@@ -30,6 +35,19 @@ def get_html_path(path, filetype):
     if ext in ('.md', '.rst') or (filetype == 'md' and ext == ''):
         return basepath + '.html'
     return path
+
+
+def fixlink(link, level, filetype=None):
+    if is_relative(link):
+        link = get_html_path(link, filetype)
+        splitted = [value for value in link.split('/') if value]
+        if len(splitted) > level:
+            splitted = splitted[level:]
+        else:
+            splitted = [os.pardir] * level + splitted
+        link = '/'.join(splitted)
+    return link
+
 
 def fix_relative_links(content, path):
     """
@@ -54,17 +72,7 @@ def fix_relative_links(content, path):
         title = match_object.group('title')
         link = match_object.group('link').replace(os.path.sep, '/')
 
-        if is_relative(link):
-            link = get_html_path(link, filetype)
-            # Split path into tokens ignoring starting and trailing slash
-            splitted = [value for value in link.split('/') if value]
-            if len(splitted) > level:
-                splitted = splitted[level:]
-            else:
-                splitted = [os.pardir] * level + splitted
-
-            link = '/'.join(splitted)
-
+        link = fixlink(link, level, filetype)
         fmt_str = LINK_TEMPLATES[filetype]['format']
         output = fmt_str.format(title=title, link=link)
         if len(output) < length:
@@ -74,10 +82,19 @@ def fix_relative_links(content, path):
             output = fmt_str.format(title=title, link=link)
         return output
 
-    try:
-        regex = LINK_TEMPLATES[filetype]['regex']
-    except KeyError:
-        # filetype not in LINK_TEMPLATES. return content as it is
+    def fix_html(match_object):
+        start = match_object.group('start')
+        link = match_object.group('link').replace(os.path.sep, '/')
+        end = match_object.group('end')
+
+        link = fixlink(link, level, filetype)
+        fmt_str = LINK_TEMPLATES['html']['format']
+        output = fmt_str.format(start=start, link=link, end=end)
+        return output
+
+    content = re.sub(LINK_TEMPLATES['html']['regex'], fix_html, content)
+
+    if filetype not in ('md', 'rst'):
         return content
 
-    return re.sub(regex, fix, content)
+    return re.sub(LINK_TEMPLATES[filetype]['regex'], fix, content)
