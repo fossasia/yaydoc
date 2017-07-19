@@ -12,14 +12,12 @@ router.get('/register', function (req, res, next) {
 });
 
 router.post('/register', function (req, res, next) {
-  var username = req.session.username || '';
-  var repositoryName = req.body.repository;
+  var repositoryName = req.body.repository || '';
   var token = req.session.token || '';
 
-  if (username || repositoryName || token) {
+  if (repositoryName === '' || token === '') {
     console.log("Invalid parameters");
     console.log(JSON.stringify({
-      "username": username,
       "repository_name": repositoryName,
       "token": token
     }));
@@ -27,7 +25,7 @@ router.post('/register', function (req, res, next) {
   }
 
   request({
-    url: `https://api.github.com/repos/${username}/${repositoryName}/hooks?access_token=${token}`,
+    url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${token}`,
     headers: {
       'User-Agent': 'request'
     }
@@ -47,7 +45,7 @@ router.post('/register', function (req, res, next) {
     });
     if (!isRegistered) {
       request({
-        url: `https://api.github.com/repos/${username}/${repositoryName}/hooks?access_token=${token}`,
+        url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${token}`,
         headers: {
           'User-Agent': 'request'
         },
@@ -71,7 +69,7 @@ router.post('/register', function (req, res, next) {
         }
 
         repositoryModel.newRepository(repositoryName,
-          username,
+          req.session.username,
           req.session.githubId,
           crypter.encrypt(token),
           req.session.email)
@@ -119,8 +117,7 @@ router.post('/webhook', function(req, res, next) {
     switch (event) {
       case "push":
         repositoryModel.findOneRepository({
-            githubId: req.body.repository.owner.id,
-            name: req.body.repository.name
+            name: req.body.repository.full_name
         }).then(function(result) {
           var data = {
             email: result.email,

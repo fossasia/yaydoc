@@ -122,22 +122,28 @@ block content
       .modal-content
         .modal-header
           button.close(type='button', data-dismiss='modal') ×
-          h5.modal-title CI Deployment
+          h4.modal-title CI Deployment
         .modal-body
-          h4 Select the repository
+          .form-group
+            label.control-label(for='orgs') Organisation:
+            select.form-control#orgs
+              option #{username}
+              if organisations
+                each organisation in organisations
+                  option=organisation
           form#ci_register(action="/ci/register", method="POST")
-            div.input-group
-              input.form-control#search_bar(placeholder="Enter project name")
-              span.input-group-btn
-                button.btn.btn-default#search(type="button") Search
-            br
-            div#search_result                         
-           .modal-footer
-              button.btn.btn-default.disabled#register_btn(type="submit") Register
+            .form-group
+              label.control-label(for='search_bar') Search Repository:
+              .input-group
+                input.form-control#search_bar(placeholder="Enter project name")
+                span.input-group-btn
+                  button.btn.btn-default#search(type="button") Search
+            .form-group#search_result
+        .modal-footer
+          button.btn.btn-default.disabled#register_btn(type="submit") Register
   if ci === true
     script.
       $("#ciModal").modal('show');
-      var username = "#{username}";      
   if showMessage === true
     script.
       styles.showNotification("#{message}");

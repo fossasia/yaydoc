@@ -3,6 +3,7 @@ var router = express.Router();
 var passport = require("passport");
 var crypter = require("../util/crypter.js");
 var validation = require("../public/scripts/validation.js");
+var github = require('../backend/github');
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -18,11 +19,16 @@ router.get("/", function(req, res, next) {
     data.showMessage = true;
     data.message = messages[req.query.message];
   }
-  if (req.query.ci == "true") {
-    data.ci = true
+  if (req.query.ci === "true") {
+    data.ci = true;
     data.username = req.query.username;
+    github.retrieveOrgs(req.session.token, function (organisations) {
+      data.organisations = organisations;
+      return res.render("index", data);
+    });
+  } else {
+    return res.render("index", data);
   }
-  res.render("index", data);
 });
 
 /* Downloading Documentation as ZIP */
