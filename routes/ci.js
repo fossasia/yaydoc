@@ -12,14 +12,31 @@ router.get('/register', function (req, res, next) {
 });
 
 router.post('/register', function (req, res, next) {
-
+  var username = req.session.username || '';
   var repositoryName = req.body.repository;
+  var token = req.session.token || '';
+
+  if (username || repositoryName || token) {
+    console.log("Invalid parameters");
+    console.log(JSON.stringify({
+      "username": username,
+      "repository_name": repositoryName,
+      "token": token
+    }));
+    return res.redirect('/?message=3');
+  }
+
   request({
-    url: `https://api.github.com/repos/${req.session.username}/${repositoryName}/hooks?access_token=${req.session.token}`,
+    url: `https://api.github.com/repos/${username}/${repositoryName}/hooks?access_token=${token}`,
     headers: {
       'User-Agent': 'request'
     }
   }, function (error, response, body) {
+    if (response.statusCode !== 200) {
+      console.log(response.statusCode + ': ' + response.statusMessage);
+      res.redirect("/?message=3");
+    }
+
     var hooks = JSON.parse(body);
     var hookurl = 'https://' + process.env.HOSTNAME + '/ci/webhook';
     var isRegistered = false;
@@ -30,7 +47,7 @@ router.post('/register', function (req, res, next) {
     });
     if (!isRegistered) {
       request({
-        url: `https://api.github.com/repos/${req.session.username}/${repositoryName}/hooks?access_token=${req.session.token}`,
+        url: `https://api.github.com/repos/${username}/${repositoryName}/hooks?access_token=${token}`,
         headers: {
           'User-Agent': 'request'
         },
@@ -47,10 +64,16 @@ router.post('/register', function (req, res, next) {
           }
         }
       }, function(error, response, body) {
+
+        if (response.statusCode !== 201) {
+          console.log(response.statusCode + ': ' + response.statusMessage);
+          res.redirect("/?message=3");
+        }
+
         repositoryModel.newRepository(repositoryName,
-          req.session.username,
+          username,
           req.session.githubId,
-          crypter.encrypt(req.session.token),
+          crypter.encrypt(token),
           req.session.email)
           .then(function(result) {
             res.redirect("/?message=1");
@@ -65,7 +88,7 @@ router.post('/register', function (req, res, next) {
     } else {
       res.redirect("/?message=2");
     }
-  })
+  });
 });
 
 router.post('/webhook', function(req, res, next) {
