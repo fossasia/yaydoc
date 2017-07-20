@@ -10,6 +10,7 @@
 ## Prerequisites
 - Create a directory in your repository containing all the markup files along with an `index.rst` file which contains [toctrees](http://www.sphinx-doc.org/en/stable/markup/toctree.html) to link the various documents.
 - Register your repository with [Yaydoc CI](https://yaydoc.herokuapp.com).
+- If you use embedded html in markdown or ReST, any static content such as images, javascript referred from it should be present in a `_static` directory placed under **source**.
 
 ## Usage
 
