@@ -148,7 +148,7 @@ if [ -n "$SUBPROJECT_URLS" ]; then
   source $BASE/multiple_generate.sh
 fi
 
-if [ ! -f index.rst ]; then
+if [ ! -f index.rst ] && [ ! -f index.md ]; then
   print_danger "No index.rst found. Auto generating...\n"
   GENINDEX_PARAM=$ROOT_DIR
   if [ "$DOCPATH" == "." ]; then
