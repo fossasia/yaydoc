@@ -4,7 +4,9 @@ var output = require('../util/output');
 var socketHandler = require('../util/socketHandler.js');
 
 exports.deployPages = function (socket, data) {
-  var repoName = data.gitURL.split("/")[4].split(".")[0];
+  var gitUrlSplit = data.gitURL.split("/");
+  var repoName = gitUrlSplit[4].split(".")[0];
+  var owner = gitUrlSplit[3];
   var username = data.username;
   var oauthToken = crypter.decrypt(data.encryptedToken);
 
@@ -12,8 +14,9 @@ exports.deployPages = function (socket, data) {
     "-e", data.email,
     "-i", data.uniqueId,
     "-n", username,
-    "-o", oauthToken,
-    "-r", repoName
+    "-t", oauthToken,
+    "-r", repoName,
+    "-o", owner
   ];
 
   var process = spawn("./ghpages_deploy.sh", args);
