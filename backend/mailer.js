@@ -26,7 +26,7 @@ exports.sendEmail = function (data) {
 
   var textContent = 'Hey! Your documentation generated successfully. Preview it here: ' + previewURL +
                     '. Download it here: ' + downloadURL ;
-  if (deployURL !== "") {
+  if (githubDeployURL !== "") {
     textContent += '. Deploy to Github Pages: ' + githubDeployURL;
   }
 

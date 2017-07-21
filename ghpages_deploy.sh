@@ -5,24 +5,25 @@
 # Environment Variables:
 # $DOCURL - Custom URL where the documentation would be published.
 
-while getopts e:i:n:o:r: option
+while getopts e:i:n:t:r:o: option
 do
   case "${option}"
   in
   e) EMAIL=${OPTARG};;
   i) UNIQUE_ID=${OPTARG};;
   n) USERNAME=${OPTARG};;
-  o) OAUTH_TOKEN=${OPTARG};;
+  t) OAUTH_TOKEN=${OPTARG};;
   r) REPONAME=${OPTARG};;
+  o) OWNER=${OPTARG};;
   esac
 done
 
 git config --global user.name "Yaydoc Bot"
 git config --global user.email "noreply+bot@example.com"
 
-GIT_HTTPS_URL=https://$USERNAME:$OAUTH_TOKEN@github.com/$USERNAME/$REPONAME.git
+GIT_HTTPS_URL=https://${USERNAME}:${OAUTH_TOKEN}@github.com/${OWNER}/${REPONAME}.git
 cd temp/${EMAIL}
-git clone --quiet $GIT_HTTPS_URL ${UNIQUE_ID}_pages
+git clone --quiet ${GIT_HTTPS_URL} ${UNIQUE_ID}_pages
 
 
 if [ $? -ne 0 ]; then
