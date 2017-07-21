@@ -18,7 +18,7 @@ exports.sendEmail = function (data) {
 
   var previewURL = 'http://' + hostname + '/preview/' + data.email + '/' + data.uniqueId + '_preview';
   var downloadURL = 'http://' + hostname + '/download/' + data.email + '/' + data.uniqueId;
-  var deployURL = "";
+  var githubDeployURL = "";
   if (validation.isGithubHTTPS(data.gitUrl)) {
     githubDeployURL = 'http://' + hostname + '/auth/github?email=' + data.email + '&uniqueId=' + data.uniqueId + '&gitURL=' + data.gitUrl;
   }
@@ -38,7 +38,7 @@ exports.sendEmail = function (data) {
       downloadURL: downloadURL,
       githubDeployURL: githubDeployURL,
       herokuDeployURL: herokuDeployURL
-  })
+  });
 
   client.sendMail({
     from: 'info@yaydoc.com',

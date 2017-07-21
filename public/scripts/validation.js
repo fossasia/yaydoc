@@ -70,7 +70,7 @@
      * @returns {boolean}: true if the inputted value if value
      */
     isGithubHTTPS: function (url) {
-      regex = /^(http|https):\/\/github.com\/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}\/[a-z\d-]{0,38}(\.git)?/
+      const regex = /^(http|https):\/\/(www.|)github.com\/[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}\/[A-Za-z\d-]{0,38}(\.git)?/;
       return regex.test(url)
     },
 
