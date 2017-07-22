@@ -52,7 +52,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/preview", express.static(path.join(__dirname, "temp")))
+app.use("/preview", express.static(path.join(__dirname, "temp")));
 
 app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
@@ -77,7 +77,8 @@ io.on('connection', function(socket){
 
   socket.on('retrieve-detailed-logs', function (data) {
     generator.retrieveLogs(socket, data);
-  })
+  });
+
 });
 
 // catch 404 and forward to error handler
