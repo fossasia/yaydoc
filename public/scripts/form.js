@@ -93,10 +93,11 @@ $(function () {
       $('#onetimeDeploy').attr("href", '/auth/github?email='+data.email+'&uniqueId='+data.uniqueId+'&gitURL='+data.gitUrl);
     }
     $('#btnDeployHeroku').css("display", "inline").attr("href", '/auth/heroku?email='+data.email+'&uniqueId='+data.uniqueId);
+
     $('#btnLogs').css("display", "inline");
     $("#btnLogs").click(function () {
-      socket.emit('retrieve-detailed-logs', {email: data.email, uniqueId: data.uniqueId});
-      $('#downloadDetailedLogs').attr('href', '/logs/' + data.email + '/' + data.uniqueId);
+      socket.emit('retrieve-generate-logs', {email: data.email, uniqueId: data.uniqueId});
+      $('#downloadDetailedLogs').attr('href', '/logs/generate/' + data.email + '/' + data.uniqueId);
     });
 
   });
@@ -107,12 +108,12 @@ $(function () {
    * - Retrieve detailed logs from the backend
    */
   socket.on('failure', function (data) {
-    $('#btnLogs').css("display", "inline");
     styles.showNotification("Failed to Generate Documentation: Error " + data.code);
 
+    $('#btnLogs').css("display", "inline");
     $("#btnLogs").click(function () {
-      socket.emit('retrieve-detailed-logs', {email: data.email, uniqueId: data.uniqueId});
-      $('#downloadDetailedLogs').attr('href', '/logs/' + data.email + '/' + data.uniqueId);
+      socket.emit('retrieve-generate-logs', {email: data.email, uniqueId: data.uniqueId});
+      $('#downloadDetailedLogs').attr('href', '/logs/generate' + data.email + '/' + data.uniqueId);
     });
   });
 

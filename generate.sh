@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source logging.sh
+
 while getopts g:t:d:m:u:s:p:b:l: option
 do
  case "${option}"
@@ -16,14 +18,6 @@ do
  esac
 done
 
-function print_log {
-  echo -e $1 | tee -a ${LOGFILE}
-}
-
-function print_danger {
-  >&2 echo -e $1 | tee -a ${LOGFILE}
-}
-
 URL_SPLIT=(${GITURL//// })
 
 PLATFORM=${URL_SPLIT[1]}
@@ -36,16 +30,16 @@ INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") els
 # Ensures that BASE has contents of yaydoc repository
 # and change current directory to git repository.
 BASE=$(pwd)
-LOGFILE=${BASE}/temp/${EMAIL}/${UNIQUEID}.txt
+LOGFILE=${BASE}/temp/${EMAIL}/generate_${UNIQUEID}.txt
 
 mkdir -p temp/${EMAIL} && cd $_
 print_log "Cloning Repository...\n"
 CLONE_URL=https://:@${PLATFORM}/${USERNAME}/${REPONAME}
 
 if [ -z "$TARGET_BRANCH" ]; then
-  git clone -q "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
+  git clone "$CLONE_URL" "$UNIQUEID" >>${LOGFILE} 2>>${LOGFILE}
 else
-  git clone -q -b "$TARGET_BRANCH" "$CLONE_URL" "$UNIQUEID" >/dev/null 2>&1
+  git clone -b "$TARGET_BRANCH" "$CLONE_URL" "$UNIQUEID" >>${LOGFILE} 2>>${LOGFILE}
 fi
 
 if [ $? -ne 0 ]; then
@@ -66,18 +60,18 @@ if [ -z "$ON_HEROKU" ]; then
   # Create an isolated Python environment
   if [ "$INVENV" == "false" ]; then
     print_log "Installing virtualenv\n"
-    pip install -q --user virtualenv
+    pip install --user virtualenv >>${LOGFILE} 2>>${LOGFILE}
     print_log "Installation successful\n"
 
     print_log "Creating an isolated Python environment\n"
-    virtualenv -q --python=python $HOME/yaydocvenv
+    virtualenv --python=python $HOME/yaydocvenv >>${LOGFILE} 2>>${LOGFILE}
     source $HOME/yaydocvenv/bin/activate
     print_log "Python environment created successfully!\n"
   fi
 
   # Install packages required for documentation generation
   print_log "Installing dependencies...\n"
-  pip install -q -r $BASE/requirements.txt
+  pip install -r $BASE/requirements.txt >>${LOGFILE} 2>>${LOGFILE}
   print_log "Installation successful\n"
 fi
 
@@ -109,7 +103,7 @@ mkdir -p _themes
 
 # Setting up documentation sources
 print_log "Setting up documentation sources\n"
-sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES >> ${LOGFILE}
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES >>${LOGFILE} 2>>${LOGFILE}
 if [ $? -ne 0 ]; then
   print_danger "Failed to initialize build process.\n"
   exit 1
@@ -133,15 +127,15 @@ if [ "${AUTOAPI_PYTHON:-false}" == "true" ]; then
   # ImportError, install any packages in requirements.txt of the project
   # if available
   if [ -f $ROOT_DIR/setup.py ]; then
-    pip install $ROOT_DIR/
+    pip install $ROOT_DIR/ >>${LOGFILE} 2>>${LOGFILE}
   elif [ -f $ROOT_DIR/requirements.txt ]; then
-    pip install -q -r $ROOT_DIR/requirements.txt
+    pip install -r $ROOT_DIR/requirements.txt >>${LOGFILE} 2>>${LOGFILE}
   fi
-  sphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_PYTHON_PATH/
+  sphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_PYTHON_PATH/ >>${LOGFILE} 2>>${LOGFILE}
 fi
 
 if [ "${AUTOAPI_JAVA:-false}" == "true" ]; then
-  javasphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_JAVA_PATH/
+  javasphinx-apidoc -o source/ $ROOT_DIR/$AUTOAPI_JAVA_PATH/ >>${LOGFILE} 2>>${LOGFILE}
 fi
 
 if [ -n "$SUBPROJECT_URLS" ]; then
@@ -190,7 +184,7 @@ fi
 print_log "Setting up documentation for Download and Preview\n"
 mv $BUILD_DIR/_build/html $ROOT_DIR/../${UNIQUEID}_preview && cd $_/../
 rm -rf $BASE/temp/$EMAIL/$UNIQUEID
-zip -r -q ${UNIQUEID}.zip ${UNIQUEID}_preview
+zip -r ${UNIQUEID}.zip ${UNIQUEID}_preview >>${LOGFILE} 2>>${LOGFILE}
 if [ $? -ne 0 ]; then
   print_danger "Failed setting up.\n"
   exit 3

@@ -23,6 +23,8 @@ var generator = require("./backend/generator");
 var deploy = require("./backend/deploy");
 
 
+var output = require('./util/output');
+
 var app = express();
 
 /**
@@ -75,10 +77,17 @@ io.on('connection', function(socket){
     deploy.deployHeroku(socket, formData);
   });
 
-  socket.on('retrieve-detailed-logs', function (data) {
-    generator.retrieveLogs(socket, data);
+  socket.on('retrieve-generate-logs', function (data) {
+    output.retrieveLogs(socket, 'generate', data);
   });
 
+  socket.on('retrieve-ghpages-deploy-logs', function (data) {
+    output.retrieveLogs(socket, 'ghpages_deploy', data);
+  });
+
+  socket.on('retrieve-heroku-deploy-logs', function (data) {
+    output.retrieveLogs(socket, 'heroku_deploy', data);
+  })
 });
 
 // catch 404 and forward to error handler

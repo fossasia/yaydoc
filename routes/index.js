@@ -38,8 +38,8 @@ router.get('/download/:email/:uniqueId', function (req, res, next) {
 });
 
 /* Download detailed logs created during documentation generation */
-router.get('/logs/:email/:uniqueId', function (req, res, next) {
-  var file = __dirname + '/../temp/' + req.params.email + '/' + req.params.uniqueId + '.txt';
+router.get('/logs/:type/:email/:uniqueId', function (req, res, next) {
+  var file = __dirname + '/../temp/' + req.params.email + '/' + req.params.type + '_' + req.params.uniqueId + '.txt';
   res.download(file);
 });
 

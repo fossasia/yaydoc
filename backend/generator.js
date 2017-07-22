@@ -65,12 +65,3 @@ exports.executeScript = function (socket, formData, callback) {
   });
   return true;
 };
-
-exports.retrieveLogs = function (socket, data) {
-  var process = spawn('cat', [ 'temp/' + data.email + '/' + data.uniqueId + '.txt' ]);
-
-  process.stdout.setEncoding('utf-8');
-  process.stdout.on('data', function (data) {
-    socket.emit('file-content', data);
-  });
-};
