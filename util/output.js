@@ -1,6 +1,7 @@
 var exports = module.exports = {};
 
 var readline = require('readline');
+var spawn = require('child_process').spawn;
 
 exports.lineOutput = function (socket, process, event, increment) {
   var donePercent = 0;
@@ -24,4 +25,15 @@ exports.lineError = function (socket, process, event) {
     console.log(data);
     socket.emit(event, data);
   });
+};
+
+exports.retrieveLogs = function (socket, name, data) {
+  var process = spawn('cat', [ 'temp/' + data.email + '/' + name + '_' + data.uniqueId + '.txt' ]);
+
+  process.stdout.setEncoding('utf-8');
+  process.stdout.on('data', function (data) {
+    console.log("emiting file cotente");
+    socket.emit('file-content', data);
+  });
+
 };

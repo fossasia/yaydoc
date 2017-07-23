@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source logging.sh
+
 while getopts e:h:n:u: option
 do
  case "${option}"
@@ -7,69 +9,71 @@ do
  e) EMAIL=${OPTARG};;
  h) export HEROKU_API_KEY=${OPTARG};;
  n) HEROKU_APP_NAME=${OPTARG};;
- u) UNIQUE_ID=${OPTARG};;
+ u) UNIQUEID=${OPTARG};;
  esac
 done
 
-echo "Setting up system for Heroku Deployment...."
+print_log "Setting up system for Heroku Deployment....\n"
 STATUS_CODE=$(curl -s -o /dev/null -w '%{http_code}' -u ":$HEROKU_API_KEY" -n https://api.heroku.com/apps/${HEROKU_APP_NAME} -H "Accept: application/vnd.heroku+json; version=3");
 if [ ${STATUS_CODE} -eq 403 ]; then
-  echo "You do not have access to this Heroku Application"
+  print_danger "You do not have access to this Heroku Application\n"
   exit 1
 fi
 
 BASE=$(pwd)
-cd temp/$EMAIL/${UNIQUE_ID}_preview
+LOGFILE=$(pwd)/temp/${EMAIL}/heroku_deploy_${UNIQUEID}.txt
+
+cd temp/${EMAIL}/${UNIQUEID}_preview
 
 mkdir -p app
 cd app
 
-curl https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-x64.tar.gz 2>/dev/null | tar xzv > /dev/null 2>&1
+curl https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-x64.tar.gz 2>/dev/null | tar xzv >/dev/null 2>&1
 
 cp $BASE/web.js .
-rsync -av --progress ../ . --exclude app >/dev/null 2>&1
+rsync -av --progress ../ . --exclude app >>${LOGFILE} 2>>${LOGFILE}
 
 cd ..
-tar czfv slug.tgz ./app > /dev/null 2>&1
+tar czfv slug.tgz ./app >/dev/null 2>&1
 
 if [ ${STATUS_CODE} -eq 404 ]; then
-  echo "Creating Heroku app..."
-  heroku create $HEROKU_APP_NAME >/dev/null 2>&1
+  print_log "Creating Heroku app...\n"
+  heroku create $HEROKU_APP_NAME >>${LOGFILE} 2>>${LOGFILE}
   if [ $? -ne 0 ]; then
-    >&2 echo "Failed to create Heroku app."
+    print_danger "Failed to create Heroku app.\n"
     exit 1
   fi
-  echo "Heroku app created successfully"
+  print_log "Heroku app created successfully!\n"
 fi
 
-echo "Registering a new slug..."
+print_log "Registering a new slug...\n"
 Arr=($(curl -u ":$HEROKU_API_KEY" -X POST \
 -H 'Content-Type:application/json' \
 -H 'Accept: application/vnd.heroku+json; version=3' \
 -d '{"process_types": {"web":"node-v6.11.0-linux-x64/bin/node web.js"}}' \
--n https://api.heroku.com/apps/${HEROKU_APP_NAME}/slugs 2>/dev/null | \
+-n https://api.heroku.com/apps/${HEROKU_APP_NAME}/slugs 2>>${LOGFILE} | \
 python -c "import sys, json; obj=json.load(sys.stdin); print(obj['blob']['url'] + '\n' +obj['id'])"))
-echo "Slug registered successfully!"
+print_log "Slug registered successfully!\n"
 
-echo "Uploading slug to the URL provided by Heroku"
+print_log "Uploading slug to the URL provided by Heroku...\n"
 status=$(curl  -s -o /dev/null -w "%{http_code}" -X PUT \
 -H "Content-Type:" \
 --data-binary @slug.tgz \
 "${Arr[0]}")
 if [ ${status} -ne 200 ]; then
-  >&2 echo "Failed to upload. Error Code: ${status}"
+  print_danger "Failed to upload. Error Code: ${status}\n"
   exit 2
 fi
-echo "Slug uploaded successfully!"
+print_log "Slug uploaded successfully!\n"
 
-echo "Releasing the slug to app..."
+print_log "Releasing the slug to app...\n"
 status=$(curl  -s -o /dev/null -w "%{http_code}" -u ":$HEROKU_API_KEY" -X POST \
 -H "Accept: application/vnd.heroku+json; version=3" \
 -H "Content-Type:application/json" \
 -d '{"slug":"'${Arr[1]}'"}' \
 -n https://api.heroku.com/apps/$HEROKU_APP_NAME/releases)
 if [ ${status} -ne 201 ]; then
-  >&2 echo "Failed to release the slug. Error Code: ${status}"
+  print_danger "Failed to release the slug. Error Code: ${status}\n"
   exit 3
 fi
-echo -e "Slug released successfully\n Application available at https://${HEROKU_APP_NAME}.herokuapp.com/ "
+print_log "Slug released successfully\n Application available at https://${HEROKU_APP_NAME}.herokuapp.com/\n"

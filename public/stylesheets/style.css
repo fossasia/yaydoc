@@ -58,6 +58,11 @@ a {
   width: -moz-fit-content;
 }
 
+.btnLogsDiv {
+  text-align: center;
+  margin-top: 20px;
+}
+
 #notification-container {
   position: absolute;
   text-align: center;
