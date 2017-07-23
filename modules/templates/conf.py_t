@@ -43,7 +43,7 @@ from recommonmark.transform import AutoStructify
 
 # Adding scripts directory to path
 sys.path.insert(0, os.path.abspath('scripts'))
-
+sys.path.insert(0, os.path.join(os.path.abspath('scripts'), 'extensions'))
 {% if autoapi_python == 'true' %}
 for (dirpath, dirnames, filenames) in os.walk('{{ root_dir }}'):
     # Directory contains __init__.py. It should be a python package
@@ -71,7 +71,8 @@ extensions = ['sphinx.ext.githubpages',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'javasphinx',
-    'sphinxcontrib.apiblueprint']
+    'sphinxcontrib.apiblueprint',
+    'blog']
 
 {% if github_ribbon_enable == 'true' %}
 extensions.append('sphinxcontrib.github_ribbon')
