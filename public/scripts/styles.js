@@ -2,7 +2,6 @@
  * Perform various dynamic UI style changes
  */
 (function(){
-  window.history.pushState("", "", location.pathname);
   window.styles = {
     /**
      * Display Notification panel for 5 seconds
@@ -55,6 +54,44 @@
       } else {
         input.attr("disabled", "disabled");
         $('#checkbox_' + id).removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+      }
+    },
+
+    /**
+     * Get Query Parameter from URL
+     * @param name: key of the query parameter
+     * @param url: url from where the query string is received
+     * @returns string: value of the query parameter
+     */
+    getParameterByName: function(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    },
+
+    /**
+     * Disable a button
+     * @param id: `id` attribute of button tag
+     */
+    disableButton: function (id) {
+      const button = $('#' + id);
+      if (!button.attr("disabled")) {
+        button.attr("disabled", "disabled");
+      }
+    },
+
+    /**
+     * Enable a button
+     * @param id: `id` attribute of button tag
+     */
+    enableButton: function (id) {
+      const button = $('#' + id);
+      if (button.attr("disabled")) {
+        button.removeAttr("disabled");
       }
     }
   };

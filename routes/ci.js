@@ -6,14 +6,9 @@ var crypter = require("../util/crypter.js");
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
 
-router.get('/register', function (req, res, next) {
-  var query = `ci=true&username=${req.session.username}`;
-  res.redirect(`/?${query}`);
-});
-
 router.post('/register', function (req, res, next) {
   var repositoryName = req.body.repository || '';
-  var token = req.session.token || '';
+  var token = req.user.token || '';
 
   if (repositoryName === '' || token === '') {
     console.log("Invalid parameters");
@@ -21,7 +16,7 @@ router.post('/register', function (req, res, next) {
       "repository_name": repositoryName,
       "token": token
     }));
-    return res.redirect('/?message=3');
+    return res.redirect('/dashboard?status=registration_failed');
   }
 
   request({
@@ -32,7 +27,7 @@ router.post('/register', function (req, res, next) {
   }, function (error, response, body) {
     if (response.statusCode !== 200) {
       console.log(response.statusCode + ': ' + response.statusMessage);
-      res.redirect("/?message=3");
+      res.redirect("/dashboard?status=registration_failed");
     }
 
     var hooks = JSON.parse(body);
@@ -65,16 +60,16 @@ router.post('/register', function (req, res, next) {
 
         if (response.statusCode !== 201) {
           console.log(response.statusCode + ': ' + response.statusMessage);
-          res.redirect("/?message=3");
+          res.redirect("/dashboard?status=registration_failed");
         }
 
         repositoryModel.newRepository(repositoryName,
-          req.session.username,
-          req.session.githubId,
+          req.user.username,
+          req.user.githubId,
           crypter.encrypt(token),
-          req.session.email)
+          req.user.email)
           .then(function(result) {
-            res.redirect("/?message=1");
+            res.redirect("/dashboard?status=registration_successful");
           })
           .catch(function(err) {
             next({
@@ -84,7 +79,7 @@ router.post('/register', function (req, res, next) {
           })
       })
     } else {
-      res.redirect("/?message=2");
+      res.redirect("/dashboard?status=registration_already");
     }
   });
 });

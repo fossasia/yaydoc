@@ -14,11 +14,14 @@ exports.retrieveOrgs = function (accessToken, callback) {
       'Authorization': 'token ' + accessToken
     }
   }, function (error, response, body) {
-    var organisations = [];
+    var organizations = [];
     var bodyJSON = JSON.parse(body);
-    bodyJSON.forEach(function (organisation) {
-      organisations.push(organisation.login);
+    bodyJSON.forEach(function (organization) {
+      organizations.push({
+        name: organization.login,
+        avatar: organization.avatar_url
+      });
     });
-    return callback(organisations);
+    return callback(organizations);
   });
 };

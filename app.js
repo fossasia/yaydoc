@@ -59,6 +59,7 @@ app.use("/preview", express.static(path.join(__dirname, "temp")));
 app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
 app.use("/deploy", require("./routes/deploy"));
+app.use("/dashboard", require("./routes/dashboard"));
 app.use("/ci", require("./routes/ci"));
 
 /**

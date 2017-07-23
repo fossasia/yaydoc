@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding-top: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -130,3 +130,14 @@ a {
   -webkit-transition: opacity 600ms, visibility 600ms;
   transition: opacity 600ms, visibility 600ms;
 }
+
+.navbar {
+  margin-top: -50px;
+}
+
+#btnLogout {
+  background-color: transparent;
+  border: 0;
+  margin-top: 15px;
+}
+

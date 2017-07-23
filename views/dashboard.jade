@@ -1,0 +1,60 @@
+extends layout
+
+block content
+  script(src="/scripts/socket-dashboard.js")
+  nav.navbar.navbar-default
+    .container
+      .navbar-header
+        button.navbar-toggle(type='button', data-toggle='collapse', data-target='#myNavbar')
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand(href='#') Yaydoc CI
+      #myNavbar.collapse.navbar-collapse
+        ul.nav.navbar-nav.navbar-right
+          li
+            form(action='/auth/logout', method='post')
+              button#btnLogout Logout
+  .container
+    .col-md-4
+      h1 #{user.name}
+      p
+        strong Username:
+        | &nbsp;#{user.username}
+        br
+        strong Email:
+        | &nbsp;#{user.email}
+      hr
+      h5(style="font-weight: 700") Authorized Organizations
+      if organizations
+        each organization in organizations
+          .media
+            .media-left
+              img.media-object(src="#{organization.avatar}&s=36")
+            .media-body
+              h4.media-heading #{organization.name}
+      p
+      | Is an organization missing?
+      br
+      a(href="https://github.com/settings/connections/applications/c42225ddf5aabda1f626" target="_blank") Review and add
+      | &nbsp;your authorized organizations.
+    .col-md-8
+      .row
+        .col-md-10.col-md-offset-1
+          h3 Register Repository
+          .form-group
+            label.control-label(for='orgs') Username/Organization:
+            select.form-control#orgs
+              option #{user.username}
+              if organizations
+                each organization in organizations
+                  option=organization.name
+          form#ci_register(action="/ci/register", method="POST")
+            .form-group
+              label.control-label(for='search_bar') Search Repository:
+              .input-group
+                input.form-control#search_bar(placeholder="Enter project name")
+                span.input-group-btn
+                  button.btn.btn-default#search(type="button") Search
+            .form-group#search_result
+            button.btn.btn-default#btnRegister(disabled) Register
