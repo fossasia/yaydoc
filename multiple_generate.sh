@@ -5,7 +5,7 @@ function cloneSubProject() {
   rm -rf .git
   SUB_ROOT_DIR=$(pwd)
   cd $3
-  if [ ! -f index.rst ]; then
+  if [ ! -f index.rst ] && [ ! -f index.md ]; then
     echo -e "No index.rst found at $2/$3. Auto generating...\n"
     python $BASE/modules/scripts/genindex.py $SUB_ROOT_DIR
     if [ "${DEBUG:-false}" == "true" ]; then

@@ -8,7 +8,7 @@
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ## Prerequisites
-- Create a directory in your repository containing all the markup files along with an `index.rst` file which contains [toctrees](http://www.sphinx-doc.org/en/stable/markup/toctree.html) to link the various documents.
+- Create a directory in your repository containing all the markup files along with an `index.rst` file which contains [toctrees](http://www.sphinx-doc.org/en/stable/markup/toctree.html) to link the various documents. You can also provide the index in markdown format although then you won't be able to include other documents such as the `README` into them.
 - Register your repository with [Yaydoc CI](https://yaydoc.herokuapp.com).
 - If you use embedded html in markdown or ReST, any static content such as images, javascript referred from it should be present in a `_static` directory placed under **source**.
 
