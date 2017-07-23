@@ -90,3 +90,9 @@ Currently Yaydoc only supports publishing to ghpages and heroku.
 - Sphinx's alabaster theme will be used for documentation
 
 - You can see the generated documentation at `https://<username>.github.io/<project name>`
+
+## Custom directives
+- RSS feed
+```
+.. feed:: <rss url>
+```
