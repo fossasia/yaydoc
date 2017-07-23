@@ -5,18 +5,12 @@ block content
   script(src="/scripts/suggestion.js")
   script(src="/scripts/defaults.js")
   script(src="/scripts/form.js")
-  script(src="/scripts/ci.js")
-  #notification-container
-    li.notification Hello
   .container
     .col-md-6.col-md-offset-3
-    center
-      h1 Continuous Integration
-    center
-      a.btn.btn-default(type='button' href="/auth/ci") CI Deploy
-    .col-md-6.col-md-offset-3
-      center
-        h1 Web Generator
+      .text-center
+        a.btn.btn-default(type='button' href="/auth/ci") Sign in to Yaydoc CI
+      hr
+      h2(style='text-align: center') Documentation Generator
       form(method='post' action='/generate')
         .form-group
           label.control-label(for='email') Email:
@@ -116,35 +110,5 @@ block content
         .modal-footer
           button.btn.btn-default#copy-button(data-clipboard-action='copy' data-clipboard-target='#detailed-logs' style='float: left') Copy to Clipboard
           a#downloadDetailedLogs.btn.btn-default Download
-  .modal.fade#ciModal(role='dialog')
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button.close(type='button', data-dismiss='modal') ×
-          h4.modal-title CI Deployment
-        .modal-body
-          .form-group
-            label.control-label(for='orgs') Organisation:
-            select.form-control#orgs
-              option #{username}
-              if organisations
-                each organisation in organisations
-                  option=organisation
-          form#ci_register(action="/ci/register", method="POST")
-            .form-group
-              label.control-label(for='search_bar') Search Repository:
-              .input-group
-                input.form-control#search_bar(placeholder="Enter project name")
-                span.input-group-btn
-                  button.btn.btn-default#search(type="button") Search
-            .form-group#search_result
-        .modal-footer
-          button.btn.btn-default.disabled#register_btn(type="submit") Register
-  if ci === true
-    script.
-      $("#ciModal").modal('show');
-  if showMessage === true
-    script.
-      styles.showNotification("#{message}");
   script.
     $('#doc_theme').editableSelect();

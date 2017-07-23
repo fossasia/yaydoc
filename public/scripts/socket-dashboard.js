@@ -1,21 +1,10 @@
 /**
- * Disable the register button
- */
-var addDisable = function () {
-  if (!$("#register_btn").hasClass("disabled")) {
-    $("#register_btn").addClass("disabled");
-  }
-};
-
-/**
  * Search for repositories
  */
 var search = function () {
-  const username = $("#orgs").val();
+  var username = $("#orgs").val();
   const searchBarInput = $("#search_bar");
   const searchResultDiv = $("#search_result");
-  const registerButton = $("#register_btn");
-  const repositorySelect = $("#repositories");
 
   searchResultDiv.empty();
   if (searchBarInput.val() === "") {
@@ -29,10 +18,9 @@ var search = function () {
     searchResultDiv.empty();
     if (result.total_count === 0) {
       searchResultDiv.append(`<p class="text-center">No results found<p>`);
-      addDisable();
+      styles.disableButton("btnRegister");
     } else {
-      registerButton.removeClass("disabled");
-      addDisable();
+      styles.disableButton("btnRegister");
       var select = '<label class="control-label" for="repositories">Repositories:</label>';
       select += '<select class="form-control" id="repositories" name="repository" required>';
       select += `<option value="">Please select</option>`;
@@ -42,10 +30,10 @@ var search = function () {
       select += '</select>';
       searchResultDiv.append(select);
       $("#repositories").change(function () {
-        if (repositorySelect.val() !== "") {
-          registerButton.removeClass("disabled");
+        if ($("#repositories").val() !== "") {
+          styles.enableButton("btnRegister");
         } else {
-          addDisable();
+          styles.disableButton("btnRegister");
         }
       });
     }
@@ -53,6 +41,17 @@ var search = function () {
 };
 
 $(function() {
+  const predefinedMessages = {
+    'registration_successful': "Registration successful! Hereafter Documentation will be pushed to the GitHub pages on each commit.",
+    'registration_already': "This repository has already been registered.",
+    'registration_failed': "Failed to register repository to Yaydoc!"
+  };
+
+  if ((predefinedMessages[styles.getParameterByName("status")] || '') !== '') {
+    styles.showNotification(predefinedMessages[styles.getParameterByName("status")]);
+    window.history.pushState("", "", location.pathname);
+  }
+
   $("#search").click(function () {
     search();
   });

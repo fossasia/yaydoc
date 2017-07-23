@@ -3,32 +3,16 @@ var router = express.Router();
 var passport = require("passport");
 var crypter = require("../util/crypter.js");
 var validation = require("../public/scripts/validation.js");
-var github = require('../backend/github');
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
-  var messages = {
-    "1": "Thanks for registering with Yaydoc. Hereafter Documentation will be pushed to the GitHub pages on each commit.",
-    "2": "Yaydoc is already integrated with this repository.",
-    "3": "Failed to register repository."
+  if (req.user) {
+    return res.redirect('/dashboard');
   }
-  var data = {
-    title: "Yaydoc"
-  };
-  if(req.query.message !== undefined) {
-    data.showMessage = true;
-    data.message = messages[req.query.message];
-  }
-  if (req.query.ci === "true") {
-    data.ci = true;
-    data.username = req.query.username;
-    github.retrieveOrgs(req.session.token, function (organisations) {
-      data.organisations = organisations;
-      return res.render("index", data);
-    });
-  } else {
-    return res.render("index", data);
-  }
+
+  res.render("index", {
+    title: "Yaydoc | Automatic Documentation Generation and Deployment"
+  });
 });
 
 /* Downloading Documentation as ZIP */

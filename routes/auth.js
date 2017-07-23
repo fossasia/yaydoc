@@ -33,12 +33,9 @@ router.get("/ci", function (req, res, next) {
 }));
 
 router.get("/github/callback", passport.authenticate('github'), function (req, res, next) {
-  req.session.username = req.user.username;
-  req.session.token = req.user.token;
-  req.session.githubId = req.user.id;
-  req.session.email = req.user._json.email;
   if (req.session.ci) {
-    res.redirect("/ci/register");
+    req.session.ci = '';
+    res.redirect("/dashboard");
   } else {
     res.redirect("/deploy/github");
   }
@@ -53,6 +50,11 @@ router.get('/heroku', function(req, res, next){
 router.get('/heroku/callback', passport.authenticate('heroku'), function(req, res) {
   req.session.herokuAPIKey = req.user.token;
   res.redirect('/deploy/heroku');
+});
+
+router.post('/logout', function (req, res, next) {
+  req.logout();
+  res.redirect('/');
 });
 
 module.exports = router;
