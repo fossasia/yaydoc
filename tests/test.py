@@ -75,6 +75,18 @@ class RelativeLinkFixTestCase(unittest.TestCase):
         new_content = linkfix.fix_relative_links(rst_content, source_path)
         self.assertEqual(new_content, '`title     <directory/file>`')
 
+    def test_with_html(self):
+        html_content = '<img src="docs/directory/file">'
+        source_path = os.path.join(os.pardir, 'README.md')
+        new_content = linkfix.fix_relative_links(html_content, source_path)
+        self.assertEqual(new_content, '<img src="directory/file.html">')
+
+    def test_with_image(self):
+        md_content = '![icon](app/src/icons/launcher.png)'
+        source_path = os.path.join(os.pardir, 'README.md')
+        new_content = linkfix.fix_relative_links(md_content, source_path)
+        self.assertEqual(new_content, '![icon](../app/src/icons/launcher.png)')
+
 
 if __name__ == '__main__':
     unittest.main()

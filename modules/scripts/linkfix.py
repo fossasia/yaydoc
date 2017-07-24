@@ -7,6 +7,7 @@ try:
 except ImportError:
     # Python 3
     from urllib.parse import urlparse
+import mimetypes
 
 
 LINK_TEMPLATES = {'rst': {'format': '`{title}<{link}>`',
@@ -18,7 +19,7 @@ LINK_TEMPLATES = {'rst': {'format': '`{title}<{link}>`',
                   'html': {'format': '<{start}src="{link}"{end}>',
                            'regex': re.compile(r'<(?P<start>[^><]*?)src\s*=\s*"(?P<link>.*?)"(?P<end>[^<]*?)>'),
                           },
-                  }
+                 }
 
 
 def is_relative(path):
@@ -37,42 +38,52 @@ def get_html_path(path, filetype):
     return path
 
 
-def fixlink(link, level, filetype=None):
+def is_path_image(path):
+    is_image = False
+    mimetype = mimetypes.guess_type(path)[0]
+    if mimetype is not None:
+        is_image = True if mimetype.startswith('image') else False
+    return is_image
+
+
+def fixlink(link, level, linktype, filetype=None):
     if is_relative(link):
-        link = get_html_path(link, filetype)
-        splitted = [value for value in link.split('/') if value]
-        if len(splitted) > level:
-            splitted = splitted[level:]
-        else:
+        splitted = [value for value in get_html_path(link, filetype).split('/')
+                    if value]
+        if is_path_image(link) and linktype != 'html':
             splitted = [os.pardir] * level + splitted
-        link = '/'.join(splitted)
+        else:
+            if len(splitted) > level:
+                splitted = splitted[level:]
+            else:
+                splitted = [os.pardir] * level + splitted
+        return '/'.join(splitted)
     return link
 
 
-def fix_relative_links(content, path):
+def fix_relative_links(content, source_path):
     """
-    Modifies any relative links according to the `path`
+    Modifies any relative links according to the `source_path`
 
     Parameters
     ----------
     content: str
         string where modifications should be performed
 
-    path: str
+    source_path: str
         path of the source file from which content was read
     """
-    path_list = [value for value in path.replace(os.path.sep, '/').split('/')
-                 if value]
-    filetype = os.path.splitext(path)[1].lstrip('.')
-    level = path_list.count(os.pardir)
+    filetype = os.path.splitext(source_path)[1].lstrip('.')
+    level = [value for value in source_path.replace(os.path.sep, '/').split('/')
+             if value].count(os.pardir)
 
     def fix(match_object):
         """Callback meant to be passed to re.sub"""
         length = len(match_object.group(0))
         title = match_object.group('title')
-        link = match_object.group('link').replace(os.path.sep, '/')
+        link = match_object.group('link')
 
-        link = fixlink(link, level, filetype)
+        link = fixlink(link, level, 'nonhtml', filetype)
         fmt_str = LINK_TEMPLATES[filetype]['format']
         output = fmt_str.format(title=title, link=link)
         if len(output) < length:
@@ -84,10 +95,10 @@ def fix_relative_links(content, path):
 
     def fix_html(match_object):
         start = match_object.group('start')
-        link = match_object.group('link').replace(os.path.sep, '/')
+        link = match_object.group('link')
         end = match_object.group('end')
 
-        link = fixlink(link, level, filetype)
+        link = fixlink(link, level, 'html', filetype)
         fmt_str = LINK_TEMPLATES['html']['format']
         output = fmt_str.format(start=start, link=link, end=end)
         return output
