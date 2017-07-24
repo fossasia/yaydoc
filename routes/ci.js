@@ -1,13 +1,16 @@
 var express = require("express");
 var router = express.Router();
 var request = require("request");
-var repositoryModel = require("../model/repository.js");
 var crypter = require("../util/crypter.js");
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
 
+Repository = require("../model/repository.js");
+User = require("../model/user");
+
 router.post('/register', function (req, res, next) {
   var repositoryName = req.body.repository || '';
+  var organization = req.body.organization.split(":");
   var token = req.user.token || '';
 
   if (repositoryName === '' || token === '') {
@@ -20,7 +23,7 @@ router.post('/register', function (req, res, next) {
   }
 
   request({
-    url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${token}`,
+    url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
     headers: {
       'User-Agent': 'request'
     }
@@ -40,7 +43,7 @@ router.post('/register', function (req, res, next) {
     });
     if (!isRegistered) {
       request({
-        url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${token}`,
+        url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
         headers: {
           'User-Agent': 'request'
         },
@@ -63,11 +66,20 @@ router.post('/register', function (req, res, next) {
           res.redirect("/dashboard?status=registration_failed");
         }
 
-        repositoryModel.newRepository(repositoryName,
-          req.user.username,
-          req.user.githubId,
-          crypter.encrypt(token),
-          req.user.email)
+        var repository = {
+          name: repositoryName,
+          owner: {
+            id: organization[0],
+            login: organization[1]
+          },
+          registrant: {
+            id: req.user.id,
+            login: req.user.username
+          },
+          accessToken: token
+        };
+
+        Repository.newRepository(repository)
           .then(function(result) {
             res.redirect("/dashboard?status=registration_successful");
           })
@@ -111,36 +123,38 @@ router.post('/webhook', function(req, res, next) {
 
     switch (event) {
       case "push":
-        repositoryModel.findOneRepository({
+        Repository.findOneRepository({
             name: req.body.repository.full_name
         }).then(function(result) {
-          var data = {
-            email: result.email,
-            gitUrl: req.body.repository.clone_url,
-            docTheme: "",
-            debug: true,
-            targetBranch: branch,
-            docPath: ''
-          };
-          generator.executeScript({}, data, function(err, generatedData) {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            deploy.deployPages({}, {
-              email: result.email,
-              gitURL: req.body.repository.clone_url,
-              username: result.username,
-              uniqueId: generatedData.uniqueId,
-              encryptedToken: result.accessToken
+          User.getUserById(result.registrant.id, function (error, user) {
+            var data = {
+              email: user.email,
+              gitUrl: req.body.repository.clone_url,
+              docTheme: "",
+              debug: true,
+              targetBranch: branch,
+              docPath: ''
+            };
+            generator.executeScript({}, data, function(err, generatedData) {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              deploy.deployPages({}, {
+                email: user.email,
+                gitURL: req.body.repository.clone_url,
+                username: result.registrant.login,
+                uniqueId: generatedData.uniqueId,
+                encryptedToken: result.user.accessToken
+              });
             });
+          }).catch((err) => {
+            console.log(err);
           });
-        }).catch((err) => {
-          console.log(err);
-        });
 
-        return res.json({
-          status: true
+          return res.json({
+            status: true
+          });
         });
         break;
       default:

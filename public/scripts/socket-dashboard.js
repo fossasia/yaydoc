@@ -2,7 +2,7 @@
  * Search for repositories
  */
 var search = function () {
-  var username = $("#orgs").val();
+  var username = $("#orgs").val().split(":")[1];
   const searchBarInput = $("#search_bar");
   const searchResultDiv = $("#search_result");
 
