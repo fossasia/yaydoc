@@ -73,6 +73,14 @@ extensions = ['sphinx.ext.githubpages',
     'javasphinx',
     'sphinxcontrib.apiblueprint']
 
+{% if github_ribbon_enable == 'true' %}
+extensions.append('sphinxcontrib.github_ribbon')
+{% endif %}
+
+github_ribbon_repo = '{{ owner }}/{{ repo }}'
+github_ribbon_position = '{{ github_ribbon_position }}'
+github_ribbon_color = '{{ github_ribbon_color }}'
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['{{ dot }}templates']
 
