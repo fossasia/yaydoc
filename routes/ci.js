@@ -4,6 +4,7 @@ var request = require("request");
 var crypter = require("../util/crypter.js");
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
+var github = require("../backend/github");
 
 Repository = require("../model/repository.js");
 User = require("../model/user");
@@ -22,76 +23,82 @@ router.post('/register', function (req, res, next) {
     return res.redirect('/dashboard?status=registration_failed');
   }
 
-  request({
-    url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
-    headers: {
-      'User-Agent': 'request'
-    }
-  }, function (error, response, body) {
-    if (response.statusCode !== 200) {
-      console.log(response.statusCode + ': ' + response.statusMessage);
-      res.redirect("/dashboard?status=registration_failed");
-    }
-
-    var hooks = JSON.parse(body);
-    var hookurl = 'https://' + process.env.HOSTNAME + '/ci/webhook';
-    var isRegistered = false;
-    hooks.forEach(function (hook) {
-      if (hook.config.url === hookurl) {
-        isRegistered = true
-      }
-    });
-    if (!isRegistered) {
+  github.hasAdminAccess(repositoryName, token, function (error, result) {
+    if (!result) {
+      return res.redirect('/dashboard?status=registration_unauthorized');
+    } else {
       request({
         url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
         headers: {
           'User-Agent': 'request'
-        },
-        method: 'POST',
-        json: {
-          name: "web",
-          active: true,
-          events: [
-            "push"
-          ],
-          config: {
-            url: hookurl,
-            content_type: "json"
-          }
         }
-      }, function(error, response, body) {
-
-        if (response.statusCode !== 201) {
+      }, function (error, response, body) {
+        if (response.statusCode !== 200) {
           console.log(response.statusCode + ': ' + response.statusMessage);
           res.redirect("/dashboard?status=registration_failed");
         }
 
-        var repository = {
-          name: repositoryName,
-          owner: {
-            id: organization[0],
-            login: organization[1]
-          },
-          registrant: {
-            id: req.user.id,
-            login: req.user.username
-          },
-          accessToken: token
-        };
+        var hooks = JSON.parse(body);
+        var hookurl = 'https://' + process.env.HOSTNAME + '/ci/webhook';
+        var isRegistered = false;
+        hooks.forEach(function (hook) {
+          if (hook.config.url === hookurl) {
+            isRegistered = true
+          }
+        });
 
-        Repository.newRepository(repository)
-          .then(function(result) {
-            res.redirect("/dashboard?status=registration_successful");
-          })
-          .catch(function(err) {
-            next({
-              status: 500,
-              message: 'Something went wrong.'
-            })
-          })
-      })
-    } else {
-      res.redirect("/dashboard?status=registration_already");
+        if (!isRegistered) {
+          request({
+            url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
+            headers: {
+              'User-Agent': 'request'
+            },
+            method: 'POST',
+            json: {
+              name: "web",
+              active: true,
+              events: [
+                "push"
+              ],
+              config: {
+                url: hookurl,
+                content_type: "json"
+              }
+            }
+          }, function (error, response, body) {
+
+            if (response.statusCode !== 201) {
+              console.log(response.statusCode + ': ' + response.statusMessage);
+              res.redirect("/dashboard?status=registration_failed");
+            }
+
+            var repository = {
+              name: repositoryName,
+              owner: {
+                id: organization[0],
+                login: organization[1]
+              },
+              registrant: {
+                id: req.user.id,
+                login: req.user.username
+              },
+              accessToken: token
+            };
+
+            Repository.newRepository(repository).then(function (result) {
+              res.redirect("/dashboard?status=registration_successful");
+            }).catch(function (err) {
+              next({
+                status: 500,
+                message: 'Something went wrong.'
+              });
+            });
+
+          });
+        } else {
+          res.redirect("/dashboard?status=registration_already");
+        }
+      });
     }
   });
 });
