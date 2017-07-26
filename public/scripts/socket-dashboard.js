@@ -44,7 +44,8 @@ $(function() {
   const predefinedMessages = {
     'registration_successful': "Registration successful! Hereafter Documentation will be pushed to the GitHub pages on each commit.",
     'registration_already': "This repository has already been registered.",
-    'registration_failed': "Failed to register repository to Yaydoc!"
+    'registration_failed': "Failed to register repository to Yaydoc!",
+    'registration_unauthorized': "You do not have admin permission for this repository."
   };
 
   if ((predefinedMessages[styles.getParameterByName("status")] || '') !== '') {

@@ -53,3 +53,23 @@ exports.retrieveOrganizations = function (accessToken, callback) {
     callback(null, result);
   });
 };
+
+/**
+ * Check if a user has admin permissions on a repository
+ * @param repository: `full_name` of a repository
+ * @param accessToken:  Access token of the user
+ * @param callback
+ */
+exports.hasAdminAccess = function (repository, accessToken, callback) {
+  request({
+    url: 'https://api.github.com/repos/' + repository,
+    headers: {
+      'User-Agent': 'Yaydoc',
+      'Authorization': 'token ' + crypter.decrypt(accessToken)
+    }
+  }, function (error, response, body) {
+    var bodyJSON = JSON.parse(body);
+    var adminPermission = bodyJSON.permissions.admin || false;
+    callback(null, adminPermission);
+  });
+};
