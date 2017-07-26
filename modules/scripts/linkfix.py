@@ -47,7 +47,7 @@ def is_path_image(path):
 
 
 def fixlink(link, level, linktype, filetype=None):
-    if is_relative(link):
+    if is_relative(link) and not link.startswith('#'):
         splitted = [value for value in get_html_path(link, filetype).split('/')
                     if value]
         if is_path_image(link) and linktype != 'html':

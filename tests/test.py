@@ -87,6 +87,18 @@ class RelativeLinkFixTestCase(unittest.TestCase):
         new_content = linkfix.fix_relative_links(md_content, source_path)
         self.assertEqual(new_content, '![icon](../app/src/icons/launcher.png)')
 
+    def test_local_markdown_link(self):
+        md_content = '[title](#section)'
+        source_path = os.path.join(os.pardir, 'README.md')
+        new_content = linkfix.fix_relative_links(md_content, source_path)
+        self.assertEqual(new_content, '[title](#section)')
+
+    def test_local_rst_link(self):
+        md_content = '`title<#section>`'
+        source_path = os.path.join(os.pardir, 'README.md')
+        new_content = linkfix.fix_relative_links(md_content, source_path)
+        self.assertEqual(new_content, '`title<#section>`')
+
 
 if __name__ == '__main__':
     unittest.main()
