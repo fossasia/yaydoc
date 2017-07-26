@@ -4,8 +4,8 @@ metadata:
   author: FOSSASIA
 
 build:
-  docpath: docs/
-  doctheme: sphinx_fossasia_theme
+  source: docs/
+  theme: sphinx_fossasia_theme
 
 publish:
   ghpages:
