@@ -40,16 +40,16 @@ block content
       | &nbsp;your authorized organizations.
     .col-md-8
       .row
-        .col-md-10.col-md-offset-1
+        .col-md-10.col-md-offset-1.jumbotron
           h3 Register Repository
-          .form-group
-            label.control-label(for='orgs') Username/Organization:
-            select.form-control#orgs
-              option #{user.username}
-              if organizations
-                each organization in organizations
-                  option=organization.name
           form#ci_register(action="/ci/register", method="POST")
+            .form-group
+              label.control-label(for='orgs') Username/Organization:
+              select.form-control#orgs(name="organization")
+                option(value="#{user.id}:#{user.username}") #{user.username}
+                if organizations
+                  each organization in organizations
+                    option(value="#{organization.id}:#{organization.name}") #{organization.name}
             .form-group
               label.control-label(for='search_bar') Search Repository:
               .input-group
@@ -58,3 +58,46 @@ block content
                   button.btn.btn-default#search(type="button") Search
             .form-group#search_result
             button.btn.btn-default#btnRegister(disabled) Register
+      hr
+      h3 Registered Repositories
+      ul(style="list-style:none")
+        li
+          h4(style="font-weight: 700") #{user.name}
+          table.table
+            if ownedRepositories && ownedRepositories.length !== 0
+              each repository in ownedRepositories
+                tr
+                  td #{repository.name}
+                  td
+                    .btn-group(data-toggle="buttons")
+                      label.btn.btn-default.active
+                        input#disabled(type='radio' name='debug' value='false')
+                        | Disabled
+                      label.btn.btn-default
+                        input#enabled(type='radio' name='debug' value='true')
+                        | Enabled
+                  td
+                    button.btn.btn-danger Delete
+            else
+              p No repositories registered!
+        if organizations
+          each organization in organizations
+            li
+              h4(style="font-weight: 700") #{organization.name}
+              table.table
+                if organization.repositories && organization.repositories.length !== 0
+                  each repository in organization.repositories
+                    tr
+                      td #{repository.name}
+                      td
+                        .btn-group(data-toggle="buttons")
+                          label.btn.btn-default.active
+                            input#disabled(type='radio' name='debug' value='false')
+                            | Disabled
+                          label.btn.btn-default
+                            input#enabled(type='radio' name='debug' value='true')
+                            | Enabled
+                      td
+                        button.btn.btn-danger Delete
+                else
+                  p No repositories registered!

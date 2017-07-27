@@ -1,3 +1,5 @@
+const crypter = require("../util/crypter");
+
 const GithubStrategy = require("passport-github").Strategy;
 const HerokuStrategy = require("passport-heroku").Strategy;
 
@@ -29,7 +31,7 @@ module.exports = function (passport) {
       } else {
         let newUser = new User();
         newUser.id = profile.id;
-        newUser.token = accessToken;
+        newUser.token = crypter.encrypt(accessToken);
         newUser.name = profile.displayName;
         newUser.email = profile.emails[0].value;
         newUser.username = profile.username;
