@@ -21,7 +21,7 @@ done
 URL_SPLIT=(${GITURL//// })
 
 PLATFORM=${URL_SPLIT[1]}
-USERNAME=${URL_SPLIT[2]}
+OWNER=${URL_SPLIT[2]}
 REPONAME=(${URL_SPLIT[3]//./ })
 
 # https://stackoverflow.com/a/15454916/4127836
@@ -34,7 +34,7 @@ LOGFILE=${BASE}/temp/${EMAIL}/generate_${UNIQUEID}.txt
 
 mkdir -p temp/${EMAIL} && cd $_
 print_log "Cloning Repository...\n"
-CLONE_URL=https://:@${PLATFORM}/${USERNAME}/${REPONAME}
+CLONE_URL=https://:@${PLATFORM}/${OWNER}/${REPONAME}
 
 if [ -z "$TARGET_BRANCH" ]; then
   git clone "$CLONE_URL" "$UNIQUEID" >>${LOGFILE} 2>>${LOGFILE}
@@ -76,7 +76,7 @@ if [ -z "$ON_HEROKU" ]; then
 fi
 
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config.py "${USERNAME}" "${REPONAME}")"
+ENVVARS="$(python ${BASE}/modules/scripts/config.py "${OWNER}" "${REPONAME}")"
 echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
 eval $ENVVARS
 
@@ -103,7 +103,11 @@ mkdir -p _themes
 
 # Setting up documentation sources
 print_log "Setting up documentation sources\n"
-sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES >>${LOGFILE} 2>>${LOGFILE}
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME \
+  -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES \
+  -d owner=$OWNER -d repo=$REPONAME -d github_ribbon_enable=$GITHUB_RIBBON_ENABLE \
+  -d github_ribbon_position=$GITHUB_RIBBON_POSITION -d github_ribbon_color=$GITHUB_RIBBON_COLOR \
+  >>${LOGFILE} 2>>${LOGFILE}
 if [ $? -ne 0 ]; then
   print_danger "Failed to initialize build process.\n"
   exit 1
