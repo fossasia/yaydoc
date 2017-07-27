@@ -87,6 +87,7 @@ router.post('/register', function (req, res, next) {
                   },
                   accessToken: token,
                   mailService: true,
+                  hook: body.id,
                 };
               } else {
                 repository = {
@@ -94,7 +95,8 @@ router.post('/register', function (req, res, next) {
                   registrant: {
                     id: req.user.id,
                     login: req.user.username
-                  }
+                  },
+                  hook: body.id,
                 };
               }
               Repository.createOrUpdateRepository(repositoryName, repository, function (error) {
@@ -107,7 +109,12 @@ router.post('/register', function (req, res, next) {
             });
           });
         } else {
-          res.redirect("/dashboard?status=registration_already");
+          Repository.getRepositoryByName(repositoryName, function (error, repository) {
+            if (repository) {
+              return res.redirect("/dashboard?status=registration_already");
+            }
+            return res.redirect("/dashboard?status=registration_mismatch");
+          });
         }
       });
     }

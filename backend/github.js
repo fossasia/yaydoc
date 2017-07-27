@@ -73,3 +73,26 @@ exports.hasAdminAccess = function (repository, accessToken, callback) {
     callback(null, adminPermission);
   });
 };
+
+/**
+ * Delete a Repository WebHook
+ * @param name: name of the Repository
+ * @param hook: Hook Id
+ * @param accessToken: Access Token of the user
+ * @param callback
+ */
+exports.deleteHook = function (name, hook, accessToken, callback) {
+  request.delete({
+    url: 'https://api.github.com/repos/' + name + '/hooks/' + hook,
+    headers: {
+      'User-Agent': 'Yaydoc',
+      'Authorization': 'token ' + crypter.decrypt(accessToken)
+    }
+  }, function (error, result) {
+    if (error) {
+      callback(error);
+    } else {
+      callback(null);
+    }
+  });
+};

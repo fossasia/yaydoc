@@ -12,6 +12,7 @@ const repositorySchema = new mongoose.Schema({
   accessToken: String,
   buildStatus: Boolean,
   mailService: Boolean,
+  hook: String
 });
 
 const Repository = module.exports = mongoose.model('Repository', repositorySchema);
@@ -109,5 +110,14 @@ module.exports.getRepositoryByName = function (name, callback) {
  * @param callback
  */
 module.exports.createOrUpdateRepository = function (name, data, callback) {
-  Repository.findOneAndUpdate({name: name}, data, {upsert: true} , callback);
+  Repository.findOneAndUpdate({name: name}, data, {upsert: true}, callback);
+};
+
+/**
+ * Delete a registered repository by `name`
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.deleteRepositoryByName = function (name, callback) {
+  Repository.findOneAndRemove({name: name}, callback);
 };

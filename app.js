@@ -61,6 +61,7 @@ app.use("/auth", require("./routes/auth"));
 app.use("/deploy", require("./routes/deploy"));
 app.use("/dashboard", require("./routes/dashboard"));
 app.use("/ci", require("./routes/ci"));
+app.use("/repository", require("./routes/repository"));
 
 /**
  * Server-side Event Handling
