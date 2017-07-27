@@ -19,13 +19,13 @@ class ConfigTestCase(unittest.TestCase):
         self.assertEqual(updated_dict, {'1': 2, '2': {'a': 3, 'b': 5}})
 
     @patch.dict(os.environ, {'ENV2': 'val2', 'ENV4': ''}, True)
-    def test_export_env(self):
+    def test_bash_command(self):
         """Tests whether correct variables are exported"""
         envdict = {'ENV1': 'val1', 'ENV2': 'val2', 'ENV3': None, 'ENV4': 'val4'}
-        exported_env = config._export_env(envdict).strip('\n').split('\n')
-        self.assertTrue('export ENV1="val1"' in exported_env)
-        self.assertTrue('export ENV4="val4"' in exported_env)
-        self.assertEqual(len(exported_env), 2)
+        command = config.get_bash_command(envdict).strip('\n').split('\n')
+        self.assertTrue('export ENV1="val1"' in command)
+        self.assertTrue('export ENV4="val4"' in command)
+        self.assertEqual(len(command), 2)
 
 
 class IndexGenerateTestCase(unittest.TestCase):

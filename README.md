@@ -45,8 +45,7 @@ build:
     - url: <URL of Subproject 1>       # URL of the repository
       source: doc                      # Path of the documentation of the subproject, default: docs
     - url: <URL of subproject 2>
-  github_ribbon:
-    enable: true         # Display a `Fork me on Github` ribbon, Allowed values: true | false, default: false
+  github_ribbon:         # Display a `Fork me on Github` ribbon
     position: right      # Position of the ribbon, Allowed values: left | right, default: right
     color: green         # Color of the ribbon, Allowed values: red | green | darkblue | orange | gray | white, default: red
 ```

@@ -1,41 +1,168 @@
 """Prints command to set environment variables from .yaydoc.yml"""
-import sys
 import os
-import argparse
+import sys
+from datetime import datetime
+from functools import partial
 import yaml
 
-from datetime import datetime
 
-# FileNotFoundError is not available on python 2.
-# To handle that case, defining it on NameError
-# source: https://stackoverflow.com/a/21368622/4127836
-try:
-    FileNotFoundError
-except NameError:
-    FileNotFoundError = IOError
+class Configuration(object):
+    """Wrap a dictionary and provide certain helper methods.
+    Adds ability to access nested values using dotted keys.
 
-def update_dict(base, head):
-    """Recursively merge dicts"""
-    # https://stackoverflow.com/a/32357112/4127836
-    for key, value in head.items():
-        if isinstance(base, dict):
-            if isinstance(value, dict):
-                base[key] = update_dict(base.get(key, {}), value)
-            else:
-                base[key] = head[key]
+    Parameters
+    ----------
+    conf_dict: dict
+        A dictionary which should be wrapped. If not provided, an empty
+        configuration object is created.
+
+    Examples
+    --------
+    >>> my_dict = {'key1': {'nestedkey1: 'value1'}, 'key2': 'value2'}
+    >>> conf = Configuration(my_dict)
+    >>> print(conf['key1.nestedkey1'])
+    value1
+    >>> print(conf['key2'])
+    value2
+    """
+    def __init__(self, conf_dict=None):
+        self._conf = conf_dict if conf_dict is not None else dict()
+        self._connections = {}
+
+    def __getitem__(self, key_string):
+        data = self._conf
+        for key in key_string.split('.'):
+            data = data[key]
+        return data
+
+    def __setitem__(self, key, value):
+        self._conf[key] = value
+
+    def __contains__(self, key_string):
+        data = self._conf
+        for key in key_string.split('.'):
+            try:
+                data = data[key]
+            except KeyError:
+                return False
+        return True
+
+    def as_dict(self):
+        """Return a new copy of the internal dictionary"""
+        return dict(self._conf)
+
+    def connect(self, env_var, key_string, **kwargs):
+        """Connect environment variables with dictionary keys.
+
+        You can append an @ at the end of key_string to denote that the given
+        field can take multiple values. Anything after the @ will be assumed
+        to be an attribute which should be extracted from the list of those
+        multiple values.
+
+        Parameters
+        ----------
+        env_var: str
+            The name of the environment variable.
+
+        key_string: str
+            Similar to the dotted key but also provides an extension
+            where you can extract attributes from a list of dicts using @.
+
+        contains: bool
+            If true, will set whether the given key_string exists. `callback`,
+            `default` will be ignored.
+
+        default: object
+            This will only be used with @ when the provided attribute is not
+            present in a member of a list.
+
+        callback: callable
+            If present, the extracted value using the key_string will be
+            passed to the callback. The callback's return value would be
+            used as the new value
+        """
+        contains = kwargs.get('contains', False)
+        default = kwargs.get('default', None)
+        callback = kwargs.get('callback', None)
+        try:
+            ks_split = key_string.split('@')
+            attr = ks_split[1]
+            key_string = ks_split[0]
+            multi_field = True
+        except IndexError:
+            multi_field = False
+
+        if contains:
+            data = key_string in self
         else:
-            base = {key: head[key]}
-    return base
+            data = self[key_string]
+            if multi_field:
+                if not isinstance(data, list):
+                    data = [data]
+                if attr:
+                    data_ = []
+                    for element in data:
+                        try:
+                            data_.append(element[attr])
+                        except KeyError:
+                            if default is None:
+                                raise
+                            else:
+                                data_.append(default)
+                    data = data_
+            if callback:
+                data = callback(data)
+        self._connections[env_var] = data
+
+    def getenv(self, seperator=','):
+        """Return a dict with the connected environment variables as keys
+        and the extracted values as values"""
+        dict_ = {}
+        for envvar, value in self._connections.items():
+            if isinstance(value, bool):
+                value = "true" if value else "false"
+            if isinstance(value, list):
+                value = seperator.join(str(_) for _ in value)
+            dict_[envvar] = value
+        return dict_
+
+    def get(self, key_string, default=None):
+        """Similar to the dict's get method"""
+        try:
+            return self[key_string]
+        except KeyError:
+            return default
 
 
-def _get_default_config(username, reponame):
-    # All supported parameters should be defined here
-    # Any parameter with no default value should have
-    # None as the default set
+class YAMLConfigurationReader(object):
+    """Provides method to read yaml data from a file
+
+    Parameters
+    ----------
+    file: str or file-like object
+        Strings are considered to be a file name else it is assumed to be
+        a file-like object.
+    """
+    def __init__(self, file):
+        self._file = file
+
+    def read(self):
+        """Return a `Configuration` object read from the specified file"""
+        if isinstance(self._file, str):
+            try:
+                with open(self._file, 'r') as file:
+                    return Configuration(yaml.safe_load(file))
+            except IOError:
+                return Configuration()
+        return Configuration(yaml.safe_load(self._file))
+
+
+def get_default_config(owner, repo):
+    """Helper function which returns the default configuration"""
     utctime = datetime.utcnow().strftime('%b %d, %Y')
-    conf = {'metadata': {'projectname': reponame,
+    conf = {'metadata': {'projectname': repo,
                          'version': utctime,
-                         'author': username,
+                         'author': owner,
                          'debug': False,
                         },
             'build': {'markdown_flavour': 'markdown_github',
@@ -45,8 +172,7 @@ def _get_default_config(username, reponame):
                       'autoapi': [],
                       'mock': [],
                       'subproject': [],
-                      'github_ribbon': {'enable': False,
-                                        'position': 'right',
+                      'github_ribbon': {'position': 'right',
                                         'color': 'red',
                                        },
                      },
@@ -59,118 +185,109 @@ def _get_default_config(username, reponame):
                        'javadoc': {'path': None,},
                       },
            }
-    return conf
+    return Configuration(conf)
 
 
-def _get_yaml_config():
-    try:
-        with open('.yaydoc.yml', 'r') as file:
-            conf = yaml.safe_load(file)
-    except FileNotFoundError:
-        return {}
-    return conf
+def update_dict(base, head):
+    """Utility method which recursively merge dicts"""
+    # https://stackoverflow.com/a/32357112/4127836
+    for key, value in head.items():
+        if isinstance(base, dict):
+            if isinstance(value, dict):
+                base[key] = update_dict(base.get(key, {}), value)
+            else:
+                base[key] = head[key]
+        else:
+            base = {key: head[key]}
+    return base
 
 
-def boolean_field(value):
-    # This should be used for parameters which are boolean in nature
-    # and in the bash script needs a value `true` or `false`
-    return "true" if value is True else "false"
+def get_envdict(yaml_config, default_config):
+    """Helper method which returns the environment dict
+
+    Parameters
+    ----------
+    yaml_config: Configuration
+        `Configuration` object read from the yaml file
+
+    default_config: Configuration
+        `Configuration` object created using the default config
+    """
+    def autoapi_source_helper(autoapi, language):
+        """Helper method to be used as a callback for extracting the
+        source path for a particular language."""
+        for section in autoapi:
+            if section['language'] == language:
+                return section.get('source', '.')
+        return '.'
+
+    autoapi_python_source = partial(autoapi_source_helper, language='python')
+    autoapi_java_source = partial(autoapi_source_helper, language='java')
+
+    config = Configuration(update_dict(default_config.as_dict(), yaml_config.as_dict()))
+
+    config.connect('PROJECTNAME', 'metadata.projectname')
+    config.connect('VERSION', 'metadata.version')
+    config.connect('AUTHOR', 'metadata.author')
+    config.connect('DEBUG', 'metadata.debug')
+
+    config.connect('MARKDOWN_FLAVOUR', 'build.markdown_flavour')
+    config.connect('LOGO', 'build.logo')
+    config.connect('DOCTHEME', 'build.theme')
+    config.connect('DOCPATH', 'build.source')
+    config.connect('MOCK_MODULES', 'build.mock@')
+
+    config.connect('GITHUB_RIBBON_COLOR', 'build.github_ribbon.color')
+    config.connect('GITHUB_RIBBON_POSITION', 'build.github_ribbon.position')
+
+    config.connect('SUBPROJECT_URLS', 'build.subproject@url')
+    config.connect('SUBPROJECT_DOCPATHS', 'build.subproject@source', default='docs')
+
+    config.connect('AUTOAPI_PYTHON', 'build.autoapi@language', callback=lambda x: 'python' in x)
+    config.connect('AUTOAPI_JAVA', 'build.autoapi@language', callback=lambda x: 'java' in x)
+    config.connect('AUTOAPI_PYTHON_PATH', 'build.autoapi@', callback=autoapi_python_source)
+    config.connect('AUTOAPI_JAVA_PATH', 'build.autoapi@', callback=autoapi_java_source)
+
+    config.connect('DOCURL', 'publish.ghpages.url')
+    config.connect('HEROKU_APP_NAME', 'publish.heroku.app_name')
+
+    config.connect('SWAGGER_SPEC_URL', 'extras.swagger.url')
+    config.connect('SWAGGER_UI', 'extras.swagger.ui')
+    config.connect('JAVADOC_PATH', 'extras.javadoc.path')
+
+    yaml_config.connect('GITHUB_RIBBON_ENABLE', 'build.github_ribbon', contains=True)
+
+    envdict = config.getenv()
+    envdict.update(yaml_config.getenv())
+    return envdict
 
 
-def multi_field(value, attr=None, default=None):
-    # This should be used for fields which can take multiple values.
-    # `value` should be a list. If it is not a list, a list will be created
-    # with `value` as it's only element. `attr` can be used if the list is
-    # comprised of dictionaries and you only need values for one of the keys.
-    # `default` can be used for handling missing keys.
-    if not isinstance(value, list):
-        value = [value]
-    if attr is not None:
-        value_ = []
-        for _ in value:
-            try:
-                value_.append(_[attr])
-            except (IndexError, KeyError):
-                if default is None:
-                    raise
-                else:
-                    value_.append(default)
-        return ','.join(value_)
-    return ','.join(value)
+def get_bash_command(envdict):
+    """Return the bash command as a string which should be eval'd
 
-
-def _get_env_dict(conf):
-    # Add new environment variables in the returned dict
-    metadata = conf['metadata']
-    build = conf['build']
-    publish = conf['publish']
-    extras = conf['extras']
-
-    # TODO autoapi should also be handled using some kind of fields.
-    autoapi = build['autoapi']
-    if not isinstance(autoapi, list):
-        autoapi = [autoapi]
-
-    autoapi_paths = {section['language']: section.get('source', '.')
-                     for section in autoapi}
-
-    return {'PROJECTNAME': metadata['projectname'],
-            'VERSION': metadata['version'],
-            'AUTHOR': metadata['author'],
-            'DEBUG': boolean_field(metadata['debug']),
-
-            'MARKDOWN_FLAVOUR': build['markdown_flavour'],
-            'LOGO': build['logo'],
-            'DOCTHEME': build['theme'],
-            'DOCPATH': build['source'],
-            'SUBPROJECT_URLS': multi_field(build['subproject'], 'url'),
-            'SUBPROJECT_DOCPATHS': multi_field(build['subproject'],
-                                               'source', 'docs'),
-            'GITHUB_RIBBON_ENABLE': boolean_field(build['github_ribbon']['enable']),
-            'GITHUB_RIBBON_POSITION': build['github_ribbon']['position'],
-            'GITHUB_RIBBON_COLOR': build['github_ribbon']['color'],
-
-            'AUTOAPI_PYTHON': boolean_field('python' in autoapi_paths),
-            'AUTOAPI_PYTHON_PATH': autoapi_paths.get('python', '.'),
-
-            'AUTOAPI_JAVA': boolean_field('java' in autoapi_paths),
-            'AUTOAPI_JAVA_PATH': autoapi_paths.get('java', '.'),
-
-            'MOCK_MODULES': multi_field(build['mock']),
-
-            'DOCURL': publish['ghpages']['url'],
-            'HEROKU_APP_NAME': publish['heroku']['app_name'],
-
-            'SWAGGER_SPEC_URL': extras['swagger']['url'],
-            'SWAGGER_UI': extras['swagger']['ui'],
-
-            'JAVADOC_PATH': extras['javadoc']['path'],
-           }
-
-def _export_env(envdict):
-    # appends command to export environment variables from dictionary
-    # keys are converted to upper case before creating variables
+    Parameters
+    ----------
+    envdict: dict
+        The dict returned by `get_envdict`
+    """
     commands = []
     fmtstr = 'export {key}="{value}"'
     for key, value in envdict.items():
-        # This also overrides environment variables with empty string as
-        # value so, key not in os.environ would not work here
         if os.environ.get(key, '') == '' and value is not None:
             commands.append(fmtstr.format(key=key, value=str(value)))
     return '\n'.join(commands) + '\n'
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('username', help='Owner of the repository')
-    parser.add_argument('reponame', help='Name of the repository')
-    args = parser.parse_args()
-
-    conf = _get_default_config(args.username, args.reponame)
-    update_dict(conf, _get_yaml_config())
-
-    command = _export_env(_get_env_dict(conf))
-    sys.stdout.write(command)
+    """Main function of this script. Reads from a file named `.yaydoc.yml`.
+    Expects `OWNER` and `REPONAME` environment variables to be set."""
+    owner = os.environ.get('OWNER', '')
+    repo = os.environ.get('REPONAME', '')
+    yaml_config = YAMLConfigurationReader('.yaydoc.yml').read()
+    default_config = get_default_config(owner, repo)
+    envdict = get_envdict(yaml_config, default_config)
+    bash_command = get_bash_command(envdict)
+    sys.stdout.write(bash_command)
 
 
 if __name__ == '__main__':

@@ -13,6 +13,10 @@ do
  esac
 done
 
+# Setting environment variables
+ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+eval $ENVVARS
+
 print_log "Setting up system for Heroku Deployment....\n"
 STATUS_CODE=$(curl -s -o /dev/null -w '%{http_code}' -u ":$HEROKU_API_KEY" -n https://api.heroku.com/apps/${HEROKU_APP_NAME} -H "Accept: application/vnd.heroku+json; version=3");
 if [ ${STATUS_CODE} -eq 403 ]; then
