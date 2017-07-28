@@ -72,7 +72,8 @@ extensions = ['sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'javasphinx',
     'sphinxcontrib.apiblueprint',
-    'blog']
+    'blog',
+    'timeline']
 
 {% if github_ribbon_enable == 'true' %}
 extensions.append('sphinxcontrib.github_ribbon')
