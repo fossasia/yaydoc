@@ -10,6 +10,8 @@ const repositorySchema = new mongoose.Schema({
     login: String
   },
   accessToken: String,
+  buildStatus: Boolean,
+  mailService: Boolean,
 });
 
 const Repository = module.exports = mongoose.model('Repository', repositorySchema);
@@ -70,4 +72,22 @@ module.exports.getRepositoriesByOwner = function (owner, callback) {
   Repository.find({
     'owner.login': owner
   }, callback);
+};
+
+/**
+ * Get the build status of a Repository
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.getBuildStatusByRepositoryName = function (name, callback) {
+  Repository.findOne({name: name}, 'buildStatus', callback);
+};
+
+/**
+ * Set the build status of a Repository
+ * @param name: `full_name` of the repository
+ * @param buildStatus
+ */
+module.exports.setBuildStatusToRepository = function (name, buildStatus, callback) {
+  Repository.findOneAndUpdate({name: name}, {$set: {buildStatus: buildStatus}}, callback);
 };

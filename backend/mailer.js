@@ -5,15 +5,16 @@ var sgTransport = require('nodemailer-sendgrid-transport');
 var jade = require('jade');
 var hostname =process.env.HOSTNAME || 'yaydoc.herokuapp.com';
 var validation = require('../public/scripts/validation.js');
-exports.sendEmail = function (data) {
-  var options = {
-    service: 'SendGrid',
-    auth: {
-      api_user: process.env.SENDGRID_USERNAME,
-      api_key: process.env.SENDGRID_PASSWORD
-    }
-  };
 
+const options = {
+  service: 'SendGrid',
+  auth: {
+    api_user: process.env.SENDGRID_USERNAME,
+    api_key: process.env.SENDGRID_PASSWORD
+  }
+};
+
+exports.sendEmail = function (data) {
   var client = nodemailer.createTransport(sgTransport(options));
 
   var previewURL = 'http://' + hostname + '/preview/' + data.email + '/' + data.uniqueId + '_preview';
@@ -53,5 +54,26 @@ exports.sendEmail = function (data) {
       console.log('Message sent: ' + info.response);
     }
   });
+};
 
+exports.sendMailOnBuild = function (buildStatus, email, repository) {
+  var client = nodemailer.createTransport(sgTransport(options));
+  var status = buildStatus ? "Passed" : "Failed";
+
+  var textContent = status + ': ' + repository.name + ' - Yaydoc';
+  var htmlContent = status + ': ' + repository.name + ' - Yaydoc';
+
+  client.sendMail({
+    from: 'info@yaydoc.com',
+    to: email,
+    subject: status + ': ' + repository.name + ' - Yaydoc',
+    text: textContent,
+    html: htmlContent
+  }, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Message sent: ' + info.response);
+    }
+  });
 };

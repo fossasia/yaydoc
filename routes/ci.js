@@ -5,6 +5,7 @@ var crypter = require("../util/crypter.js");
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
 var github = require("../backend/github");
+var build = require("../backend/build");
 
 Repository = require("../model/repository.js");
 User = require("../model/user");
@@ -71,7 +72,6 @@ router.post('/register', function (req, res, next) {
               console.log(response.statusCode + ': ' + response.statusMessage);
               res.redirect("/dashboard?status=registration_failed");
             }
-
             var repository = {
               name: repositoryName,
               owner: {
@@ -82,18 +82,18 @@ router.post('/register', function (req, res, next) {
                 id: req.user.id,
                 login: req.user.username
               },
-              accessToken: token
+              accessToken: token,
+              mailService: true,
             };
 
-            Repository.newRepository(repository).then(function (result) {
+            Repository.newRepository(repository).then(function(result) {
               res.redirect("/dashboard?status=registration_successful");
-            }).catch(function (err) {
+            }).catch(function(err) {
               next({
                 status: 500,
                 message: 'Something went wrong.'
               });
             });
-
           });
         } else {
           res.redirect("/dashboard?status=registration_already");
@@ -131,7 +131,7 @@ router.post('/webhook', function(req, res, next) {
     switch (event) {
       case "push":
         Repository.findOneRepository({
-            name: req.body.repository.full_name
+            name: repositoryName
         }).then(function(result) {
           User.getUserById(result.registrant.id, function (error, user) {
             var data = {
@@ -142,8 +142,9 @@ router.post('/webhook', function(req, res, next) {
               targetBranch: branch,
               docPath: ''
             };
-            generator.executeScript({}, data, function(err, generatedData) {
+            generator.executeScript({}, data, function (err, generatedData) {
               if (err) {
+                build.updateBuildStatus(repositoryName, false);
                 console.log(err);
                 return;
               }
@@ -152,16 +153,17 @@ router.post('/webhook', function(req, res, next) {
                 gitURL: req.body.repository.clone_url,
                 username: result.registrant.login,
                 uniqueId: generatedData.uniqueId,
-                encryptedToken: result.user.accessToken
+                encryptedToken: result.accessToken
               });
+              build.updateBuildStatus(repositoryName, true);
             });
-          }).catch((err) => {
-            console.log(err);
           });
+        }).catch((err) => {
+          console.log(err);
+        });
 
-          return res.json({
-            status: true
-          });
+        return res.json({
+          status: true
         });
         break;
       default:
