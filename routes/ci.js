@@ -72,26 +72,37 @@ router.post('/register', function (req, res, next) {
               console.log(response.statusCode + ': ' + response.statusMessage);
               res.redirect("/dashboard?status=registration_failed");
             }
-            var repository = {
-              name: repositoryName,
-              owner: {
-                id: organization[0],
-                login: organization[1]
-              },
-              registrant: {
-                id: req.user.id,
-                login: req.user.username
-              },
-              accessToken: token,
-              mailService: true,
-            };
 
-            Repository.newRepository(repository).then(function(result) {
-              res.redirect("/dashboard?status=registration_successful");
-            }).catch(function(err) {
-              next({
-                status: 500,
-                message: 'Something went wrong.'
+            Repository.getRepositoryByName(repositoryName, function (error, repository) {
+              if (repository === null) {
+                repository = {
+                  name: repositoryName,
+                  owner: {
+                    id: organization[0],
+                    login: organization[1]
+                  },
+                  registrant: {
+                    id: req.user.id,
+                    login: req.user.username
+                  },
+                  accessToken: token,
+                  mailService: true,
+                };
+              } else {
+                repository = {
+                  accessToken: token,
+                  registrant: {
+                    id: req.user.id,
+                    login: req.user.username
+                  }
+                };
+              }
+              Repository.createOrUpdateRepository(repositoryName, repository, function (error) {
+                if (error) {
+                  res.redirect("/dashboard?status=registration_failed");
+                } else {
+                  res.redirect("/dashboard?status=registration_successful");
+                }
               });
             });
           });

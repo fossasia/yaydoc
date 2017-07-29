@@ -87,7 +87,27 @@ module.exports.getBuildStatusByRepositoryName = function (name, callback) {
  * Set the build status of a Repository
  * @param name: `full_name` of the repository
  * @param buildStatus
+ * @param callback
  */
 module.exports.setBuildStatusToRepository = function (name, buildStatus, callback) {
   Repository.findOneAndUpdate({name: name}, {$set: {buildStatus: buildStatus}}, callback);
+};
+
+/**
+ * Get a single registered repository by `full_name`
+ * @param name: `full_name` of a repository
+ * @param callback
+ */
+module.exports.getRepositoryByName = function (name, callback) {
+  Repository.findOne({name: name}, callback);
+};
+
+/**
+ * Update the repository if hook is deleted
+ * @param name: `full_name` of a repository
+ * @param data: `token`, `id` and `login` of a user
+ * @param callback
+ */
+module.exports.createOrUpdateRepository = function (name, data, callback) {
+  Repository.findOneAndUpdate({name: name}, data, {upsert: true} , callback);
 };
