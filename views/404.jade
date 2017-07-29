@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+  .errorDiv
+    .error-code.m-b-10.m-t-20
+      | 404 
+      i.fa.fa-warning
+    h3.font-bold We couldn't find the page..
+    .error-desc
+      | Sorry, but the page you are looking for was either not found or does not exist. 
+      div
+        a.login-detail-panel-button.btn(href='/')
+          i.fa.fa-arrow-left
+          |                         Go back to Homepage

@@ -141,3 +141,31 @@ a {
   margin-top: 15px;
 }
 
+.errorDiv {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.error-code {
+  bottom: 60%;
+  color: #2d353c;
+  font-size: 96px;
+  line-height: 100px;
+}
+
+.error-desc {
+  font-size: 12px;
+  color: #647788;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+.m-b-20 {
+  margin-bottom: 20px;
+}
+
+.m-t-20 {
+  margin-top: 20px;
+}
