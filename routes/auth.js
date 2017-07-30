@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var passport = require("passport");
 var validation = require("../public/scripts/validation.js");
+
 router.get("/github", function (req, res, next) {
   if (validation.isGithubHTTPS(req.query.gitURL)) {
     req.session.uniqueId = req.query.uniqueId;
@@ -21,7 +22,7 @@ router.get("/github", function (req, res, next) {
     ]
 }));
 
-router.get("/ci", function (req, res, next) {
+router.post("/ci", function (req, res, next) {
     req.session.ci = true;
     next();
 }, passport.authenticate('github', {
@@ -37,6 +38,7 @@ router.get("/github/callback", passport.authenticate('github'), function (req, r
     req.session.ci = '';
     res.redirect("/dashboard");
   } else {
+    req.session.token = req.user.token;
     res.redirect("/deploy/github");
   }
 });
