@@ -48,7 +48,9 @@ $(function() {
     'registration_unauthorized': "You do not have admin permission for this repository.",
     'registration_mismatch': "A hook for Yaydoc is created but the repository is not registered!",
     'delete_success': "Repository removed from Yaydoc successfully",
-    'delete_failure': "Failed to remove repository!"
+    'delete_failure': "Failed to remove repository!",
+    'enabled_successful': "Yaydoc enabled successfully for this repository",
+    'disabled_successful': "Yaydoc disabled successfully for this repository"
   };
 
   if ((predefinedMessages[styles.getParameterByName("status")] || '') !== '') {
@@ -100,5 +102,15 @@ $(function() {
       styles.disableButton("btnDelete");
     }
 
+  });
+
+  $('.open-disable-modal').click(function () {
+    $("#disableInput").val($(this).data('name'));
+    $("#disableBtnYes").click(function () {
+      $("#disableForm").submit();
+    });
+    $("#disableBtnClose").click(function () {
+      $("#disableModal").modal('hide');
+    });
   });
 });

@@ -69,13 +69,12 @@ block content
                 tr
                   td #{repository.name}
                   td
-                    .btn-group(data-toggle="buttons")
-                      label.btn.btn-default.active
-                        input#disabled(type='radio' name='debug' value='false')
-                        | Disabled
-                      label.btn.btn-default
-                        input#enabled(type='radio' name='debug' value='true')
-                        | Enabled
+                    if repository.enable === true
+                      button.btn.btn-warning.open-disable-modal(data-toggle="modal" data-name="#{repository.name}" href="#disableModal") Disable
+                    else
+                      form(method="POST"  action="/repository/enable")
+                        input(type="hidden", name="repository", value="#{repository.name}")
+                        button.btn.btn-primary(type="submit") Enable                    
                   td
                     button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
             else
@@ -90,17 +89,16 @@ block content
                     tr
                       td #{repository.name}
                       td
-                        .btn-group(data-toggle="buttons")
-                          label.btn.btn-default.active
-                            input#disabled(type='radio' name='debug' value='false')
-                            | Disabled
-                          label.btn.btn-default
-                            input#enabled(type='radio' name='debug' value='true')
-                            | Enabled
+                        if repository.enable === true
+                          button.btn.btn-warning.open-disable-modal(data-toggle="modal" data-name="#{repository.name}" href="#disableModal") Disable
+                        else
+                          form(method="POST"  action="/repository/enable")
+                            input(type="hidden", name="repository", value="#{repository.name}")
+                            button.btn.btn-primary(type="submit") Enable                            
                       td
                         button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
-                else
-                  p No repositories registered!
+        else
+          p No repositories registered!
   .modal.fade#deleteModal(role='dialog')
     .modal-dialog
       .modal-content
@@ -117,3 +115,18 @@ block content
               input.form-control#repository-name(name="name" autofocus)
           .modal-footer
             button.btn.btn-default#btnDelete(disabled="disabled") Delete
+  .modal.fade#disableModal(role='dialog')
+    .modal-dialog
+      .modal-content
+        form#disableForm(action="/repository/disable" method="post")
+          .modal-header
+              input#disableInput(type="hidden", name="repository")
+              button.close(type='button', data-dismiss='modal') ×
+              h4.modal-title Are you sure?
+          .modal-body
+                p
+                | Are you sure you want to disable this repo?
+          .modal-footer
+              button.btn.btn-default#disableBtnClose(type="button") Close
+              button.btn.btn-primary#disableBtnYes(type="button") Yes...Disable
+             

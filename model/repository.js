@@ -12,7 +12,11 @@ const repositorySchema = new mongoose.Schema({
   accessToken: String,
   buildStatus: Boolean,
   mailService: Boolean,
-  hook: String
+  hook: String,
+  enable: {
+    type: Boolean,
+    default: true
+  }
 });
 
 const Repository = module.exports = mongoose.model('Repository', repositorySchema);
@@ -44,6 +48,24 @@ module.exports.newRepository = function (repository) {
 module.exports.findOneRepository = function(query) {
   return new Promise(function (resolve, reject) {
     Repository.findOne(query, function(err, result) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+};
+
+/**
+ * Update repository
+ * @param query: condition for selecting collection
+ * @param update: data to be updated
+ * @returns {Promise}
+ */
+module.exports.updateRepository = function(query, update) {
+  return new Promise(function (resolve, reject) {
+    Repository.update(query, update, function(err, result) {
       if (err) {
         reject(err)
       } else {
