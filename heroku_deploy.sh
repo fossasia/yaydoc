@@ -13,8 +13,11 @@ do
  esac
 done
 
+BASE=$(pwd)
+LOGFILE=${BASE}/temp/${EMAIL}/heroku_deploy_${UNIQUEID}.txt
+
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+ENVVARS="$(python ${BASE}/modules/scripts/config.py --file=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
 eval $ENVVARS
 
 print_log "Setting up system for Heroku Deployment....\n"
@@ -23,9 +26,6 @@ if [ ${STATUS_CODE} -eq 403 ]; then
   print_danger "You do not have access to this Heroku Application\n"
   exit 1
 fi
-
-BASE=$(pwd)
-LOGFILE=$(pwd)/temp/${EMAIL}/heroku_deploy_${UNIQUEID}.txt
 
 cd temp/${EMAIL}/${UNIQUEID}_preview
 

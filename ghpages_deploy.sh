@@ -15,13 +15,16 @@ do
   i) UNIQUEID=${OPTARG};;
   n) USERNAME=${OPTARG};;
   t) OAUTH_TOKEN=${OPTARG};;
-  r) REPONAME=${OPTARG};;
-  o) OWNER=${OPTARG};;
+  r) export REPONAME=${OPTARG};;
+  o) export OWNER=${OPTARG};;
   esac
 done
 
+BASE=$(pwd)
+LOGFILE=${BASE}/temp/${EMAIL}/ghpages_deploy_${UNIQUEID}.txt
+
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+ENVVARS="$(python ${BASE}/modules/scripts/config.py --file=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
 eval $ENVVARS
 
 git config --global user.name "Yaydoc Bot"
@@ -29,10 +32,8 @@ git config --global user.email "noreply+bot@example.com"
 
 GIT_HTTPS_URL=https://${USERNAME}:${OAUTH_TOKEN}@github.com/${OWNER}/${REPONAME}.git
 cd temp/${EMAIL}
-LOGFILE=$(pwd)/ghpages_deploy_${UNIQUEID}.txt
 
 git clone ${GIT_HTTPS_URL} ${UNIQUEID}_pages >>${LOGFILE} 2>>${LOGFILE}
-
 
 if [ $? -ne 0 ]; then
   print_danger "Failed to clone gh-pages.\n"
