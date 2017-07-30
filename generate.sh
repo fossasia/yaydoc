@@ -76,7 +76,7 @@ if [ -z "$ON_HEROKU" ]; then
 fi
 
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config.py "${OWNER}" "${REPONAME}")"
+ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
 echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
 eval $ENVVARS
 

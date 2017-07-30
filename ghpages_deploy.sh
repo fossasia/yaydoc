@@ -20,6 +20,10 @@ do
   esac
 done
 
+# Setting environment variables
+ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+eval $ENVVARS
+
 git config --global user.name "Yaydoc Bot"
 git config --global user.email "noreply+bot@example.com"
 
