@@ -9,7 +9,7 @@ router.get("/github", function (req, res, next) {
     gitURL: req.session.gitURL,
     uniqueId: req.session.uniqueId,
     token: req.session.token,
-    username: req.session.username
+    username: req.user.username
   });
 });
 
