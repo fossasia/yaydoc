@@ -77,7 +77,7 @@ block content
                         input#enabled(type='radio' name='debug' value='true')
                         | Enabled
                   td
-                    button.btn.btn-danger Delete
+                    button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
             else
               p No repositories registered!
         if organizations
@@ -98,6 +98,22 @@ block content
                             input#enabled(type='radio' name='debug' value='true')
                             | Enabled
                       td
-                        button.btn.btn-danger Delete
+                        button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
                 else
                   p No repositories registered!
+  .modal.fade#deleteModal(role='dialog')
+    .modal-dialog
+      .modal-content
+        form(action="/repository/delete" method="post")
+          .modal-header
+              button.close(type='button', data-dismiss='modal') ×
+              h4.modal-title Are you sure you want to delete?
+          .modal-body
+            p
+            | Enter your repository's name (
+            code#name-code
+            | ) below to confirm you want to permanently remove it from Yaydoc:
+            .form-group
+              input.form-control#repository-name(name="name" autofocus)
+          .modal-footer
+            button.btn.btn-default#btnDelete(disabled="disabled") Delete
