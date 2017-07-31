@@ -8,7 +8,7 @@ router.get("/github", function (req, res, next) {
     email: req.session.email,
     gitURL: req.session.gitURL,
     uniqueId: req.session.uniqueId,
-    token: crypter.encrypt(req.session.token),
+    token: req.session.token,
     username: req.session.username
   });
 });

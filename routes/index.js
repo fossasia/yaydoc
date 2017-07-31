@@ -6,12 +6,14 @@ var validation = require("../public/scripts/validation.js");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
+  var isLoggedIn = false;
   if (req.user) {
-    return res.redirect('/dashboard');
+    isLoggedIn = true;
   }
 
   res.render("index", {
-    title: "Yaydoc | Automatic Documentation Generation and Deployment"
+    title: "Yaydoc | Automatic Documentation Generation and Deployment",
+    isLoggedIn: isLoggedIn,
   });
 });
 
