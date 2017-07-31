@@ -1,6 +1,7 @@
 """Prints command to set environment variables from .yaydoc.yml"""
 import os
 import sys
+import argparse
 from datetime import datetime
 from functools import partial
 import yaml
@@ -150,7 +151,7 @@ class YAMLConfigurationReader(object):
         """Return a `Configuration` object read from the specified file"""
         if isinstance(self._file, str):
             try:
-                with open(self._file, 'r') as file:
+                with open(os.path.normpath(self._file), 'r') as file:
                     return Configuration(yaml.safe_load(file))
             except IOError:
                 return Configuration()
@@ -281,9 +282,13 @@ def get_bash_command(envdict):
 def main():
     """Main function of this script. Reads from a file named `.yaydoc.yml`.
     Expects `OWNER` and `REPONAME` environment variables to be set."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--file', default='.yaydoc.yml', help='Path to yaml file')
+    args = parser.parse_args()
+
     owner = os.environ.get('OWNER', '')
     repo = os.environ.get('REPONAME', '')
-    yaml_config = YAMLConfigurationReader('.yaydoc.yml').read()
+    yaml_config = YAMLConfigurationReader(args.file).read()
     default_config = get_default_config(owner, repo)
     envdict = get_envdict(yaml_config, default_config)
     bash_command = get_bash_command(envdict)

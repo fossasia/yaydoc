@@ -75,6 +75,9 @@ if [ -z "$ON_HEROKU" ]; then
   print_log "Installation successful\n"
 fi
 
+# Copying yaml file
+cp .yaydoc.yml ${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml >>${LOGFILE} 2>>${LOGFILE}
+
 # Setting environment variables
 ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
 echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
@@ -170,18 +173,18 @@ if [ $? -ne 0 ]; then
 fi
 print_log "Documentation Generated Successfully!\n"
 
-if [ -n "$SWAGGER_SPEC_URL" ]; then
-  if [ "$SWAGGER_UI" == "swagger" ]; then
+if [ -n "${SWAGGER_SPEC_URL}" ]; then
+  if [ "${SWAGGER_UI}" == "swagger" ]; then
     STABLE_SWAGGER=$(curl -s https://api.github.com/repos/swagger-api/swagger-ui/releases/latest  | grep tarball_url | cut -d '"' -f 4) >/dev/null 2>&1
     wget -O swagger.tar.gz ${STABLE_SWAGGER} >/dev/null 2>&1
     mkdir swagger
     tar -xf swagger.tar.gz --strip-components=1 -C swagger >/dev/null 2>&1
     cp -r swagger/dist _build/html/apidocs
-    sed -i -e "s|http://petstore.swagger.io/v2/swagger.json|${APIDOCS_URL}|g" _build/html/apidocs/index.html
+    sed -i -e "s|http://petstore.swagger.io/v2/swagger.json|${SWAGGER_SPEC_URL}|g" _build/html/apidocs/index.html
   fi
 fi
 
-if [[  -n "$JAVADOC_PATH" ]]; then
+if [[  -n "${JAVADOC_PATH}" ]]; then
   javadoc -sourcepath $ROOT_DIR/$JAVADOC_PATH -d $BUILD_DIR/_build/html/javadoc -subpackages . >> ${LOGFILE} 2>>${LOGFILE}
 fi
 
