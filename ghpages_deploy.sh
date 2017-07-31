@@ -49,7 +49,7 @@ cd ${UNIQUEID}_pages
 git fetch
 if ! git checkout gh-pages ; then
   print_danger "gh-pages branch doesn't exist. Creating....\n"
-  git checkout -b gh-pages
+  git checkout --orphan gh-pages
   print_log "gh-pages branch created!\n"
 fi
 
@@ -72,8 +72,9 @@ fi
 # Publish documentation
 print_log "Publishing documentation....\n"
 git add -f .
-git commit -q -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))"
-git push origin gh-pages
+git commit -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))" >>${LOGFILE} 2>>${LOGFILE}
+git push origin gh-pages >>${LOGFILE} 2>>${LOGFILE}
+
 print_log "Documentation published successfully!\n"
 
 cd ..
