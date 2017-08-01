@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+
+BuildLog = require('./buildlog');
+
 const repositorySchema = new mongoose.Schema({
   name: String,
   owner: {
@@ -16,7 +19,11 @@ const repositorySchema = new mongoose.Schema({
   enable: {
     type: Boolean,
     default: true
-  }
+  },
+  builds: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Repository = module.exports = mongoose.model('Repository', repositorySchema);
@@ -142,4 +149,62 @@ module.exports.createOrUpdateRepository = function (name, data, callback) {
  */
 module.exports.deleteRepositoryByName = function (name, callback) {
   Repository.findOneAndRemove({name: name}, callback);
+};
+
+/**
+ * Increment the build number for a registered repository
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.incrementBuildNumber = function (name, callback) {
+  Repository.findOne({name: name}, 'builds', function (error, repository) {
+    if (error) {
+      callback(error);
+    } else {
+      repository.builds += 1;
+      repository.save(function (error, repository) {
+        callback(error, repository);
+      })
+    }
+  })
+};
+
+/**
+ * Get a single repository with a log history of 10 logs
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.getRepositoryWithLogs = function (name, callback) {
+  Repository.getRepositoryByName(name, function (error, repository) {
+    if (error) {
+      callback(error);
+    } else {
+      BuildLog.getBuildLogsByRepository(name, function (error, buildLogs) {
+        callback(error, {
+          repository: repository,
+          buildLogs: buildLogs,
+        });
+      })
+    }
+  })
+};
+
+/**
+ * Get a single repository with the latest logs
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.getRepositoryWithLatestLogs = function (name, callback) {
+  Repository.getRepositoryByName(name, function (error, repository) {
+    if (error) {
+      callback(error);
+    } else {
+      BuildLog.getLatestBuildLogByRepository(name, function (error, buildLog) {
+        callback(error, {
+          repository: repository,
+          buildLog: buildLog
+        });
+      })
+    }
+  })
 };

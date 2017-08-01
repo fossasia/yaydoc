@@ -3,6 +3,8 @@ var spawn = require('child_process').spawn;
 var output = require('../util/output');
 var socketHandler = require('../util/socketHandler.js');
 
+BuildLog = require('../model/buildlog');
+
 exports.deployPages = function (socket, data) {
   var gitUrlSplit = data.gitURL.split("/");
   var repoName = gitUrlSplit[4].split(".")[0];
@@ -34,6 +36,12 @@ exports.deployPages = function (socket, data) {
       uniqueId: uniqueId,
       code: code
     };
+
+    BuildLog.storeGithubPagesLogs(owner + '/' + repoName,
+      'temp/' + email + '/ghpages_deploy_' + uniqueId + '.txt', function (error) {
+        console.log(error);
+      });
+
     if (code === 0) {
       socketHandler.handleSocket(socket, 'github-success', data);
     } else {

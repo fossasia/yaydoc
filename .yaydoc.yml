@@ -12,4 +12,4 @@ build:
 
 publish:
   ghpages:
-    docurl: yaydoc.fossasia.org
+    url: yaydoc.fossasia.org

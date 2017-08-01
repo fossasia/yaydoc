@@ -6,6 +6,8 @@ var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
 var socketHandler = require('../util/socketHandler.js');
 
+BuildLog = require('../model/buildlog');
+
 exports.executeScript = function (socket, formData, callback) {
   if (!validation.isValidForm(formData)) {
     socketHandler.handleSocket(socket, 'err-logs', "Failed to generated documentation due to an error in input fields");
@@ -45,18 +47,26 @@ exports.executeScript = function (socket, formData, callback) {
   socketHandler.handleLineError(socket, process, 'err-logs');
 
   process.on('exit', function (code) {
+    var reponame = gitUrl.split('/')[3] + '/' + gitUrl.split('/')[4].split('.')[0];
     console.log('child process exited with code ' + code);
     var data = { code: code, email: email, uniqueId: uniqueId, gitUrl: gitUrl };
     if (code === 0) {
       socketHandler.handleSocket(socket, 'success', data);
       if (callback !== undefined) {
-        callback(null, data)
+        BuildLog.storeGenerateLogs(reponame,
+          'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
+            callback(error, data)
+          });
       } else {
         mailer.sendEmail(data);
       }
     } else {
       socketHandler.handleSocket(socket, 'failure', data);
       if (callback !== undefined) {
+        BuildLog.storeGenerateLogs(reponame,
+          'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
+          callback(error, data)
+        });
         callback({
           message: `Process exited with code : ${code}`
         })
