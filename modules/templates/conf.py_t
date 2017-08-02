@@ -78,11 +78,28 @@ extensions = ['sphinx.ext.githubpages',
 
 {% if github_ribbon_enable == 'true' %}
 extensions.append('sphinxcontrib.github_ribbon')
-{% endif %}
 
 github_ribbon_repo = '{{ owner }}/{{ repo }}'
 github_ribbon_position = '{{ github_ribbon_position }}'
 github_ribbon_color = '{{ github_ribbon_color }}'
+{% endif %}
+
+{% if github_button_enable == 'true' %}
+extensions.append('github_button')
+
+github_user_name = '{{ owner }}'
+github_repo = '{{ repo }}'
+
+gh_btns = '{{ github_buttons }}'.split(',')
+github_button_star = True if 'star' in gh_btns else False
+github_button_watch = True if 'watch' in gh_btns else False
+github_button_issues = True if 'issues' in gh_btns else False
+github_button_fork = True if 'fork' in gh_btns else False
+github_button_follow = True if 'follow' in gh_btns else False
+
+github_button_size = 'large' if '{{ github_button_large }}' == 'true' else 'none'
+github_button_show_count = '{{ github_button_show_count }}'
+{% endif %}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['{{ dot }}templates']

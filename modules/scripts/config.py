@@ -188,6 +188,15 @@ def get_default_config(owner, repo):
                       'github_ribbon': {'position': 'right',
                                         'color': 'red',
                                        },
+                      'github_button': {'buttons': {'watch': True,
+                                                    'star': True,
+                                                    'fork': True,
+                                                    'issues': True,
+                                                    'follow': True
+                                                   },
+                                        'show_count': True,
+                                        'large': True,
+                                       },
                      },
             'publish': {'ghpages': {'url': None,},
                         'heroku': {'app_name': None,},
@@ -239,6 +248,13 @@ def get_envdict(yaml_config, default_config):
         keys and values for theme options."""
         return [option.split('=')[index].strip() for option in options]
 
+    def github_btn_callback(btns):
+        btn_list = []
+        for btn_type in ('watch', 'star', 'issues', 'fork', 'follow'):
+            if btns[btn_type] is True:
+                btn_list.append(btn_type)
+        return btn_list
+
     autoapi_python_source = partial(autoapi_source_helper, language='python')
     autoapi_java_source = partial(autoapi_source_helper, language='java')
 
@@ -263,6 +279,10 @@ def get_envdict(yaml_config, default_config):
     config.connect('GITHUB_RIBBON_COLOR', 'build.github_ribbon.color')
     config.connect('GITHUB_RIBBON_POSITION', 'build.github_ribbon.position')
 
+    config.connect('GITHUB_BUTTONS', 'build.github_button.buttons', callback=github_btn_callback)
+    config.connect('GITHUB_BUTTON_LARGE', 'build.github_button.large')
+    config.connect('GITHUB_BUTTON_SHOW_COUNT', 'build.github_button.show_count')
+
     config.connect('SUBPROJECT_URLS', 'build.subproject@url')
     config.connect('SUBPROJECT_DOCPATHS', 'build.subproject@source', default='docs')
 
@@ -279,6 +299,7 @@ def get_envdict(yaml_config, default_config):
     config.connect('JAVADOC_PATH', 'extras.javadoc.path')
 
     yaml_config.connect('GITHUB_RIBBON_ENABLE', 'build.github_ribbon', contains=True)
+    yaml_config.connect('GITHUB_BUTTON_ENABLE', 'build.github_button', contains=True)
 
     envdict = config.getenv()
     envdict.update(yaml_config.getenv())
