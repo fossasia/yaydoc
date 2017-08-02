@@ -8,9 +8,10 @@ var passport = require("passport");
 var dotenv = require("dotenv");
 var session = require("express-session");
 var mongoose = require("mongoose");
-
 dotenv.config({path: './.env'});
 require('./util/passport')(passport);
+var task = require("./backend/task");
+var cron = require('node-cron');
 
 mongoose.connect(process.env.MONGODB_URI, {
   useMongoClient: true
@@ -95,6 +96,13 @@ io.on('connection', function(socket){
     output.retrieveLogs(socket, 'heroku_deploy', data);
   })
 });
+
+
+// Tasks runs on every 24 hrs
+
+//cron.schedule('* 23 * * *', function(){
+  task.checkExpiredToken();
+//});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

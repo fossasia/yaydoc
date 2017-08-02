@@ -27,6 +27,7 @@ module.exports = function (passport) {
       }
       if (user) {
         user.token = crypter.encrypt(accessToken);
+        user.expired = false;
         user.save();
         return done(null, user);
       } else {
@@ -36,7 +37,7 @@ module.exports = function (passport) {
         newUser.name = profile.displayName;
         newUser.email = profile.emails[0].value;
         newUser.username = profile.username;
-
+        newUser.expired = false;
         newUser.save(function (error) {
           if (error) {
             throw error;
@@ -57,5 +58,4 @@ module.exports = function (passport) {
       cb(null, profile);
     }
   ));
-
 };

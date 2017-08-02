@@ -263,3 +263,24 @@ exports.getRepositoryBranches = function (name, callback) {
     }
   });
 };
+/**  
+ * Get user details by access token
+ * @param accessToken: Access Token of the user
+ * @param callback: callback
+ */
+
+exports.retriveUser = function (accessToken, callback) {
+  request({
+    url: 'https://api.github.com/users/',
+    headers: {
+      'User-Agent': 'Yaydoc',
+      'Authorization': 'token ' + crypter.decrypt(accessToken)
+    }
+  }, function (error, response, body) {
+    if (response.status !== 200) {
+      callback({statusCode: response.status}, null);
+    } else {
+      callback(error, JSON.parse(body));
+    }
+  })
+};
