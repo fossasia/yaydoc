@@ -118,3 +118,54 @@ a {
     background-color: #FFEB3B;
     border-radius: 10px;
 }
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a.headerlink {
+    visibility: hidden;
+    -webkit-transition: color 600ms;
+    transition: color 600ms;
+    color: #DDD;
+    padding: 0 4px;
+    text-decoration: none;
+}
+
+.body h1:hover a.headerlink,
+.body h2:hover a.headerlink,
+.body h3:hover a.headerlink,
+.body h4:hover a.headerlink,
+.body h5:hover a.headerlink,
+.body h6:hover a.headerlink{
+    visibility: visible;
+}
+
+a.headerlink:hover {
+    color: gray;
+}
+
+table {
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+table > tbody > tr > td,
+table > tbody > tr > th,
+table > tfoot > tr > td,
+table > tfoot > tr > th,
+table > thead > tr > td,
+table > thead > tr > th {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border: 1px solid #ddd;
+}
+
+table > tbody > tr:nth-of-type(2n+1) {
+    background-color: #f9f9f9;
+}
