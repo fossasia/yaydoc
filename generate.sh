@@ -110,6 +110,7 @@ sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ 
   -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES \
   -d owner=$OWNER -d repo=$REPONAME -d github_ribbon_enable=$GITHUB_RIBBON_ENABLE \
   -d github_ribbon_position=$GITHUB_RIBBON_POSITION -d github_ribbon_color=$GITHUB_RIBBON_COLOR \
+  -d theme_opts_keys=$DOCTHEME_OPTIONS_KEYS -d theme_opts_values=$DOCTHEME_OPTIONS_VALUES \
   >>${LOGFILE} 2>>${LOGFILE}
 if [ $? -ne 0 ]; then
   print_danger "Failed to initialize build process.\n"

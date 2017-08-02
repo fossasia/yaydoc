@@ -73,7 +73,8 @@ extensions = ['sphinx.ext.githubpages',
     'javasphinx',
     'sphinxcontrib.apiblueprint',
     'blog',
-    'timeline']
+    'timeline',
+]
 
 {% if github_ribbon_enable == 'true' %}
 extensions.append('sphinxcontrib.github_ribbon')
@@ -195,7 +196,11 @@ else:
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {}
+{% if theme_opts_keys and theme_opts_values %}
+for key, value in zip('{{ theme_opts_keys }}'.split(','), '{{ theme_opts_values }}'.split(',')):
+    html_theme_options[key] = value
+{% endif %}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

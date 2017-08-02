@@ -118,13 +118,23 @@ class Configuration(object):
     def getenv(self, seperator=','):
         """Return a dict with the connected environment variables as keys
         and the extracted values as values"""
+        def py2str(value):
+            """Convert Python objects to strings for easy parsing from bash.
+
+            Currently converts boolean values to true|false and lists to
+            `seperator` seperated strings.
+            """
+            if value is None:
+                return ""
+            if isinstance(value, bool):
+                return "true" if value else "false"
+            if isinstance(value, list):
+                return seperator.join(py2str(_) for _ in value)
+            return str(value)
+
         dict_ = {}
         for envvar, value in self._connections.items():
-            if isinstance(value, bool):
-                value = "true" if value else "false"
-            if isinstance(value, list):
-                value = seperator.join(str(_) for _ in value)
-            dict_[envvar] = value
+            dict_[envvar] = py2str(value)
         return dict_
 
     def get(self, key_string, default=None):
@@ -168,7 +178,9 @@ def get_default_config(owner, repo):
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
-                      'theme': 'sphinx_fossasia_theme',
+                      'theme': {'name': 'sphinx_fossasia_theme',
+                                'options': [],
+                               },
                       'source': 'docs',
                       'autoapi': [],
                       'mock': [],
@@ -222,8 +234,16 @@ def get_envdict(yaml_config, default_config):
                 return section.get('source', '.')
         return '.'
 
+    def theme_options_helper(options, index):
+        """Helper method to be used as a callback for extracting the
+        keys and values for theme options."""
+        return [option.split('=')[index].strip() for option in options]
+
     autoapi_python_source = partial(autoapi_source_helper, language='python')
     autoapi_java_source = partial(autoapi_source_helper, language='java')
+
+    theme_options_keys = partial(theme_options_helper, index=0)
+    theme_options_values = partial(theme_options_helper, index=1)
 
     config = Configuration(update_dict(default_config.as_dict(), yaml_config.as_dict()))
 
@@ -234,7 +254,9 @@ def get_envdict(yaml_config, default_config):
 
     config.connect('MARKDOWN_FLAVOUR', 'build.markdown_flavour')
     config.connect('LOGO', 'build.logo')
-    config.connect('DOCTHEME', 'build.theme')
+    config.connect('DOCTHEME', 'build.theme.name')
+    config.connect('DOCTHEME_OPTIONS_KEYS', 'build.theme.options@', callback=theme_options_keys)
+    config.connect('DOCTHEME_OPTIONS_VALUES', 'build.theme.options@', callback=theme_options_values)
     config.connect('DOCPATH', 'build.source')
     config.connect('MOCK_MODULES', 'build.mock@')
 

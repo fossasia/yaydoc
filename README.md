@@ -30,7 +30,11 @@ metadata:
 
 ```yaml
 build:
-  theme: sphinx_fossasia_theme         # Name of the theme. Apart from built in sphinx themes, custom themes from PyPI are also supported, default: sphinx_fossasia_theme
+  theme:
+    name: sphinx_fossasia_theme        # Name of the theme. Apart from built in sphinx themes, custom themes from PyPI are also supported, default: sphinx_fossasia_theme
+    options:                           # The respective theme options in the form `"<key>=<value>"`. They are theme specific.
+      - "link_about=/about"
+      - "show_fossasia_logo=true"
   source: docs                         # Path of the documentation, default: docs
   logo: images/logo.svg                # Path to an image to be used as logo for the Project. It should be relative to `source`.
   markdown_flavour: markdown_github    # Markdown format flavour. should be one of `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`, default: markdown_github
