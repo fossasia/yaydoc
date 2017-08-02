@@ -5,7 +5,8 @@ metadata:
 
 build:
   source: docs/
-  theme: sphinx_fossasia_theme
+  theme:
+    name: sphinx_fossasia_theme
   github_ribbon:
     color: red
 
