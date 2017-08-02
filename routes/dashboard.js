@@ -3,11 +3,11 @@ var router = express.Router();
 var async = require("async");
 
 var github = require('../backend/github');
-
+var authMiddleware = require("../middleware/auth.js")
 User = require('../model/user');
 Repository = require('../model/repository');
 
-router.get('/', isLoggedIn, function (req, res, next) {
+router.get('/', authMiddleware.isLoggedIn, function (req, res, next) {
   User.getUserById(req.session.passport.user, function (err, user) {
     async.parallel({
       organizations: function(callback) {
@@ -31,12 +31,5 @@ router.get('/', isLoggedIn, function (req, res, next) {
   });
 });
 
-function isLoggedIn(req, res, next) {
-  if (req.user) {
-    next();
-  } else {
-    res.redirect('/');
-  }
-}
 
 module.exports = router;

@@ -151,31 +151,38 @@ router.post('/webhook', function(req, res, next) {
         Repository.findOneRepository({
             name: repositoryName
         }).then(function(result) {
-          User.getUserById(result.registrant.id, function (error, user) {
-            var data = {
-              email: user.email,
-              gitUrl: req.body.repository.clone_url,
-              docTheme: "",
-              debug: true,
-              targetBranch: branch,
-              docPath: ''
-            };
-            generator.executeScript({}, data, function (err, generatedData) {
-              if (err) {
-                build.updateBuildStatus(repositoryName, false);
-                console.log(err);
-                return;
-              }
-              deploy.deployPages({}, {
+          if (result.enable === true) {
+            User.getUserById(result.registrant.id, function (error, user) {
+              var data = {
                 email: user.email,
-                gitURL: req.body.repository.clone_url,
-                username: result.registrant.login,
-                uniqueId: generatedData.uniqueId,
-                encryptedToken: result.accessToken
+                gitUrl: req.body.repository.clone_url,
+                docTheme: "",
+                debug: true,
+                targetBranch: branch,
+                docPath: ''
+              };
+              generator.executeScript({}, data, function (err, generatedData) {
+                if (err) {
+                  build.updateBuildStatus(repositoryName, false);
+                  console.log(err);
+                  return;
+                }
+                deploy.deployPages({}, {
+                  email: user.email,
+                  gitURL: req.body.repository.clone_url,
+                  username: result.registrant.login,
+                  uniqueId: generatedData.uniqueId,
+                  encryptedToken: result.accessToken
+                });
+                build.updateBuildStatus(repositoryName, true);
               });
-              build.updateBuildStatus(repositoryName, true);
             });
-          });
+          } else {
+            res.json({
+              status: false,
+              description: "Yaydoc is disabled for this repository"
+            })
+          }
         }).catch((err) => {
           console.log(err);
         });
