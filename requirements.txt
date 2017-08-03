@@ -7,3 +7,4 @@ mock
 javasphinx
 sphinxcontrib-apiblueprint
 sphinxcontrib-github_ribbon
+sphinxcontrib-newsfeed

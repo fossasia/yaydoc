@@ -111,6 +111,7 @@ sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ 
   -d owner=$OWNER -d repo=$REPONAME -d github_ribbon_enable=$GITHUB_RIBBON_ENABLE \
   -d github_ribbon_position=$GITHUB_RIBBON_POSITION -d github_ribbon_color=$GITHUB_RIBBON_COLOR \
   -d theme_opts_keys=$DOCTHEME_OPTIONS_KEYS -d theme_opts_values=$DOCTHEME_OPTIONS_VALUES \
+  -d disqus_shortname=${DISQUS_SHORTNAME} \
   >>${LOGFILE} 2>>${LOGFILE}
 if [ $? -ne 0 ]; then
   print_danger "Failed to initialize build process.\n"
@@ -156,7 +157,7 @@ if [ ! -f index.rst ] && [ ! -f index.md ]; then
   if [ "$DOCPATH" == "." ]; then
     GENINDEX_PARAM=$ROOT_DIR/yaydoctemp
   fi
-  python $BASE/modules/scripts/genindex.py -j "$JAVADOC_PATH" -s "$SUBPROJECT_DIRS" -d "$SUBPROJECT_DOCPATHS" "$GENINDEX_PARAM"
+  python $BASE/modules/scripts/genindex.py -j "$JAVADOC_PATH" -s "$SUBPROJECT_DIRS" -d "$SUBPROJECT_DOCPATHS" -q "${DISQUS_SHORTNAME}" "$GENINDEX_PARAM"
   if [ "${DEBUG:-false}" == "true" ]; then
     print_log "\n--------------------------------------\n"
     cat index.rst | tee -a ${LOGFILE}
