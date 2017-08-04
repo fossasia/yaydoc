@@ -63,7 +63,7 @@ def _ignore_dirs(dirpath, dirnames, ignored_dirnames, path=None):
                 dirnames.remove(dirname)
 
 
-def get_index(root, subprojects, sub_docpaths, javadoc):
+def get_index(root, subprojects, sub_docpaths, javadoc, disqus):
     index = []
 
     subproject_dirs = [subproject.split(os.path.sep)[0]
@@ -94,8 +94,10 @@ def get_index(root, subprojects, sub_docpaths, javadoc):
                               _title(subproject.split(os.path.sep)[0]))
         index.append(toctree)
     # add javadoc if javadoc exist
-    if javadoc != "":
+    if javadoc:
         index = add_javadoc(index)
+    if disqus:
+        index = add_disqus(index)
 
     return '\n\n'.join(index) + '\n'
 
@@ -104,6 +106,10 @@ def add_javadoc(index):
      "* `javadoc <./javadoc>`_"]
     return index + javadoc
 
+def add_disqus(index):
+    disqus = [".. disqus::"]
+    return index + disqus
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='Path to the root of the Repository')
@@ -111,11 +117,14 @@ def main():
                         help='Comma seperated subprojects')
     parser.add_argument('-j', '--javadoc', default='',
                         help='Path of java source files for Javadoc')
+    parser.add_argument('-q', '--disqus-shortname', default='',
+                        help='Disqus shortname')
     parser.add_argument('-d', '--sub-docpaths', default='',
                         help='Comma seperated docpaths for subprojects')
     args = parser.parse_args()
     subprojects, sub_docpaths = [], []
     javadoc = args.javadoc
+    disqus = args.disqus_shortname
     if args.subprojects:
         subprojects = [name.strip().replace('/', os.path.sep)
                        for name in args.subprojects.split(',')]
@@ -124,7 +133,7 @@ def main():
                         for name in args.sub_docpaths.split(',')]
     if len(subprojects) != len(sub_docpaths):
         raise ValueError("Invalid arguments")
-    content = get_index(args.root, subprojects, sub_docpaths, javadoc)
+    content = get_index(args.root, subprojects, sub_docpaths, javadoc, disqus)
     with open('index.rst', 'w') as file:
         file.write(content)
 

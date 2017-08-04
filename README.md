@@ -73,6 +73,8 @@ extras:
     ui: swagger                                 # Supported UI [ swagger(https://swagger.io/swagger-ui/) ], default: swagger
   javadoc:
     path: 'src/'                                # Path for javadoc source files
+  disqus:
+    short_name: 'yaydoc'                # Unique identifier for a disqus website. To aquire one you need to register a website on https://disqus.com
 ```
 Currently Yaydoc only supports publishing to ghpages and heroku.
 

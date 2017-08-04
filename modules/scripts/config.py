@@ -196,6 +196,7 @@ def get_default_config(owner, repo):
                                    'ui': 'swagger',
                                   },
                        'javadoc': {'path': None,},
+                       'disqus': {'short_name': None},
                       },
            }
     return Configuration(conf)
@@ -277,6 +278,7 @@ def get_envdict(yaml_config, default_config):
     config.connect('SWAGGER_SPEC_URL', 'extras.swagger.url')
     config.connect('SWAGGER_UI', 'extras.swagger.ui')
     config.connect('JAVADOC_PATH', 'extras.javadoc.path')
+    config.connect('DISQUS_SHORTNAME', 'extras.disqus.short_name')
 
     yaml_config.connect('GITHUB_RIBBON_ENABLE', 'build.github_ribbon', contains=True)
 

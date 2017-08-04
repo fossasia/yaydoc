@@ -76,6 +76,13 @@ extensions = ['sphinx.ext.githubpages',
     'timeline',
 ]
 
+{% if disqus_shortname %}
+extensions.append('sphinxcontrib.newsfeed')
+disqus_shortname = '{{ disqus_shortname }}'
+import sphinxcontrib.newsfeed as newsfeed
+newsfeed.DISQUS_TEMPLATE = newsfeed.DISQUS_TEMPLATE.replace('http', 'https')
+{% endif %}
+
 {% if github_ribbon_enable == 'true' %}
 extensions.append('sphinxcontrib.github_ribbon')
 {% endif %}
