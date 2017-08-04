@@ -3,6 +3,8 @@ $(function() {
     'mail_disabled_successful': "Mail service disabled for this repository",
     'mail_enabled_successful': "Mail service enabled for this repository",
     'mail_changed_successful': "Email address associated with this repository changed successfully",
+    'pr_enabled_successful': "PR status enabled for this repository",
+    'pr_disabled_successful': "PR status disabled for this repository"
   };
 
   if ((predefinedMessages[styles.getParameterByName("status")] || '') !== '') {

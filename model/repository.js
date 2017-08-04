@@ -30,6 +30,10 @@ const repositorySchema = new mongoose.Schema({
   subRepositories:{
     type: [String],
     default: []
+  },
+  PRStatus: {
+    type: Boolean,
+    default: false
   }
 });
 

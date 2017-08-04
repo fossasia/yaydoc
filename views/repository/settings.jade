@@ -41,6 +41,20 @@ block content
         input.form-control#email(type="email" name="email" value="#{repository.mailService.email}")
       button.btn.btn-default(type="submit") Save
     hr
+    h3 Pull Request Status
+    if repository.PRStatus
+      form(method="POST"  action="/repository/prstatus/disable").form-inline
+        .form-group
+          label.control-label Status:&nbsp;
+          input(type="hidden", name="repository", value="#{repository.name}")
+        button.btn.btn-warning Disable
+    else
+      form(method="POST"  action="/repository/prstatus/enable").form-inline
+        .form-group
+          label.control-label Status:&nbsp;
+          input(type="hidden", name="repository", value="#{repository.name}")
+        button.btn.btn-primary Enable
+    hr
     h3 Danger Zone
     if repository.enable
       form(method="POST"  action="/repository/disable").form-inline

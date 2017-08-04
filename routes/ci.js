@@ -116,15 +116,14 @@ router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
 
 router.post('/webhook', function(req, res, next) {
   var event = req.get('X-GitHub-Event');
-  var branch = req.body.ref.split("/")[2];
+  var branch;
   var repositoryName = req.body.repository.full_name;
-  if (branch === "gh-pages") {
-    return res.json({
-      status: false,
-      description: "No operation on pushes to gh-pages branch"
-    });
-  }
   var query = {};
+  if (event === "pull_request") {
+    branch = req.body.pull_request.base.ref;
+  } else {
+    branch = req.body.ref.split("/")[2];
+  }
   if (req.query.sub === "true") {
     query.subRepositories = req.body.repository.full_name;
   } else {
@@ -142,6 +141,12 @@ router.post('/webhook', function(req, res, next) {
         } else {
           switch (event) {
             case 'push':
+            if (branch === "gh-pages") {
+              return res.json({
+                status: false,
+                description: "No operation on pushes to gh-pages branch"
+              });
+            }
             User.getUserById(repositoryData.registrant.id, function(err, userData) {
               if (err) {
                 next({
@@ -189,6 +194,51 @@ router.post('/webhook', function(req, res, next) {
                 });
               }
             });
+              break;
+            case 'pull_request':
+              if (req.body.action === "reopened" || req.body.action === "opened") {
+                if (repositoryData.PRStatus === true) {
+                  var commitId = req.body.pull_request.head.sha;
+                  github.createStatus(commitId, req.body.repository.full_name, "pending", "Yaydoc is checking your build", repositoryData.accessToken, function(error, data) {
+                    if (!error) {
+                      var user = req.body.pull_request.head.label.split(":")[0];
+                      var targetBranch = req.body.pull_request.head.label.split(":")[1];
+                      var gitURL = `https://github.com/${user}/${req.body.repository.name}.git`;
+                      var data = {
+                        email: "admin@fossasia.org",
+                        gitUrl: gitURL,
+                        docTheme: "",
+                        debug: true,
+                        docPath: "",
+                        buildStatus: true,
+                        targetBranch: targetBranch
+                      };
+                      generator.executeScript({}, data, function(error, generatedData) {
+                        var status, description;
+                        if(error) {
+                          status = "failure";
+                          description = error.message;
+                        } else {
+                          status = "success";
+                          description = generatedData.message;
+                        }
+                        github.createStatus(commitId, req.body.repository.full_name, status, description, repositoryData.accessToken, function(error, data) {
+                          if (error) {
+                            console.log(error);
+                          } else {
+                            console.log(data);
+                          }
+                        });
+                      });
+                    }
+                  });
+                } else {
+                  res.json({
+                    status: true,
+                    description: "PR Status check is disabled for this repository"
+                  });
+                }
+              }
               break;
             default:
             return res.json({

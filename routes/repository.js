@@ -113,4 +113,30 @@ router.post('/mail', authMiddleware.isLoggedIn, function (req, res, next) {
   });
 });
 
+router.post('/prstatus/enable', authMiddleware.isLoggedIn, function (req, res, next) {
+  Repository.updateRepository({name: req.body.repository}, {PRStatus: true})
+  .then(function () {
+    res.redirect('/' + req.body.repository + '/settings?status=pr_enabled_successful');
+  })
+  .catch(function () {
+    next({
+      status: 500,
+      messages: 'Something went wrong'
+    });
+  });
+});
+
+router.post('/prstatus/disable', authMiddleware.isLoggedIn, function (req, res, next) {
+  Repository.updateRepository({name: req.body.repository}, {PRStatus: false})
+  .then(function () {
+    res.redirect('/' + req.body.repository + '/settings?status=pr_disabled_successful');
+  })
+  .catch(function () {
+    next({
+      status: 500,
+      messages: 'Something went wrong'
+    });
+  });
+});
+
 module.exports = router;
