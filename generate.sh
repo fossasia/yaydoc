@@ -85,7 +85,7 @@ fi
 
 ROOT_DIR=$(pwd)
 
-if [ -z "${ON_HEROKU}" ]; then
+if [ -z "${DEPLOYMENT}" ]; then
   # Create an isolated Python environment
   if [ "${INVENV}" == "false" ]; then
     print_log "Installing virtualenv\n"

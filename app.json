@@ -40,7 +40,7 @@
       "value": "https://<app-name>.herokuapp.com/auth/heroku/callback",
       "required": true
     },
-    "ON_HEROKU": {
+    "DEPLOYMENT": {
       "value": "true"
     },
     "ENCRYPTION_KEY": {
