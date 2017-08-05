@@ -1,5 +1,6 @@
 import os
 import argparse
+from serializer import deserialize
 
 
 def _title(value):
@@ -137,10 +138,10 @@ def main():
     javadoc = args.javadoc
     if args.subprojects:
         subprojects = [name.strip().replace('/', os.path.sep)
-                       for name in args.subprojects.split(',')]
+                       for name in deserialize(args.subprojects)]
     if args.sub_docpaths:
         sub_docpaths = [name.strip().replace('/', os.path.sep)
-                        for name in args.sub_docpaths.split(',')]
+                        for name in deserialize(args.sub_docpaths)]
     if len(subprojects) != len(sub_docpaths):
         raise ValueError("Invalid arguments")
     content = get_index(args.root, subprojects, sub_docpaths, javadoc)

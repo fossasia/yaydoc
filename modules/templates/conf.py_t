@@ -41,10 +41,13 @@ import pkg_resources
 from recommonmark.parser import CommonMarkParser
 from recommonmark.transform import AutoStructify
 
-# Adding scripts directory to path
+# Adding scripts and extensions directory to sys.path
 sys.path.insert(0, os.path.abspath('scripts'))
 sys.path.insert(0, os.path.join(os.path.abspath('scripts'), 'extensions'))
-{% if autoapi_python == 'true' %}
+
+from serializer import deserialize
+
+{% if autoapi_python == true %}
 for (dirpath, dirnames, filenames) in os.walk('{{ root_dir }}'):
     # Directory contains __init__.py. It should be a python package
     if '__init__.py' in filenames:
@@ -53,10 +56,8 @@ for (dirpath, dirnames, filenames) in os.walk('{{ root_dir }}'):
         sys.path.append(os.path.abspath(os.path.dirname(dirpath)))
 {% endif %}
 
-{% if mock_modules %}
-mock_modules = [name.strip() for name in '{{ mock_modules }}'.split(',')]
+mock_modules = deserialize('{{ mock_modules }}')
 sys.modules.update((mod_name, mock.Mock()) for mod_name in mock_modules)
-{% endif %}
 
 # -- General configuration ------------------------------------------------
 
@@ -76,7 +77,7 @@ extensions = ['sphinx.ext.githubpages',
     'timeline',
 ]
 
-{% if github_ribbon_enable == 'true' %}
+{% if github_ribbon_enable == true %}
 extensions.append('sphinxcontrib.github_ribbon')
 
 github_ribbon_repo = '{{ owner }}/{{ repo }}'
@@ -84,20 +85,20 @@ github_ribbon_position = '{{ github_ribbon_position }}'
 github_ribbon_color = '{{ github_ribbon_color }}'
 {% endif %}
 
-{% if github_button_enable == 'true' %}
+{% if github_button_enable == true %}
 extensions.append('github_button')
 
 github_user_name = '{{ owner }}'
 github_repo = '{{ repo }}'
 
-gh_btns = '{{ github_buttons }}'.split(',')
-github_button_star = True if 'star' in gh_btns else False
-github_button_watch = True if 'watch' in gh_btns else False
-github_button_issues = True if 'issues' in gh_btns else False
-github_button_fork = True if 'fork' in gh_btns else False
-github_button_follow = True if 'follow' in gh_btns else False
+gh_btns = deserialize('{{ github_buttons }}')
+github_button_star = 'star' in gh_btns
+github_button_watch = 'watch' in gh_btns
+github_button_issues = 'issues' in gh_btns
+github_button_fork = 'fork' in gh_btns
+github_button_follow = 'follow' in gh_btns
 
-github_button_size = 'large' if '{{ github_button_large }}' == 'true' else 'none'
+github_button_size = 'large' if deserialize('{{ github_button_large }}') else 'none'
 github_button_show_count = '{{ github_button_show_count }}'
 {% endif %}
 
@@ -215,7 +216,9 @@ else:
 #
 html_theme_options = {}
 {% if theme_opts_keys and theme_opts_values %}
-for key, value in zip('{{ theme_opts_keys }}'.split(','), '{{ theme_opts_values }}'.split(',')):
+theme_opt_keys = deserialize('{{ theme_opts_keys }}')
+theme_opt_vals = deserialize('{{ theme_opts_values }}')
+for key, value in zip(theme_opt_keys, theme_opt_vals):
     html_theme_options[key] = value
 {% endif %}
 

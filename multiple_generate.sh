@@ -27,8 +27,8 @@ function cloneSubProject() {
   fi
 }
 
-IFS=',' read -ra SUBPROJECT_URLS_ARRAY <<< "${SUBPROJECT_URLS}"
-IFS=',' read -ra SUBPROJECT_DOCPATHS_ARRAY <<< "${SUBPROJECT_DOCPATHS}"
+IFS=',' read -ra SUBPROJECT_URLS_ARRAY <<< "$(python -c 'import os; print (os.environ["SUBPROJECT_URLS"].strip("[]"));')"
+IFS=',' read -ra SUBPROJECT_DOCPATHS_ARRAY <<< "$(python -c 'import os; print (os.environ["SUBPROJECT_DOCPATHS"].strip("[]"));')"
 
 SUBPROJECT_DIRS_ARRAY=()
 
@@ -44,4 +44,4 @@ done
 wait
 
 # shellcheck disable=SC2034
-SUBPROJECT_DIRS=$(IFS=, ; echo "${SUBPROJECT_DIRS_ARRAY[*]}")
+SUBPROJECT_DIRS="[$(IFS=, ; echo "${SUBPROJECT_DIRS_ARRAY[*]}")]"
