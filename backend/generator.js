@@ -5,6 +5,9 @@ var uuidV4 = require("uuid/v4");
 var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
 var socketHandler = require('../util/socketHandler.js');
+var miscellaneous = require('../util/miscellaneous');
+
+BuildLog = require('../model/buildlog');
 
 exports.executeScript = function (socket, formData, callback) {
   if (!validation.isValidForm(formData)) {
@@ -50,13 +53,20 @@ exports.executeScript = function (socket, formData, callback) {
     if (code === 0) {
       socketHandler.handleSocket(socket, 'success', data);
       if (callback !== undefined) {
-        callback(null, data)
+        BuildLog.storeGenerateLogs(miscellaneous.getRepositoryFullName(gitUrl),
+          'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
+            callback(error, data)
+          });
       } else {
         mailer.sendEmail(data);
       }
     } else {
       socketHandler.handleSocket(socket, 'failure', data);
       if (callback !== undefined) {
+        BuildLog.storeGenerateLogs(reponame,
+          'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
+          callback(error, data)
+        });
         callback({
           message: `Process exited with code : ${code}`
         })

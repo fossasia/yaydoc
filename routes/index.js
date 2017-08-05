@@ -1,10 +1,11 @@
 var express = require("express");
 var router = express.Router();
-var passport = require("passport");
-var crypter = require("../util/crypter.js");
-var validation = require("../public/scripts/validation.js");
+
+var hostname = process.env.HOSTNAME || 'yaydoc.herokuapp.com';
+
 
 Repository = require("../model/repository");
+BuildLog = require("../model/buildlog");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -60,6 +61,37 @@ router.get('/:owner/:reponame.svg', function (req, res, next) {
       width: width,
       color: color,
       x: x,
+    });
+  });
+});
+
+router.get('/:owner/:reponame', function (req, res, next) {
+  Repository.getRepositoryWithLatestLogs(req.params.owner + '/' + req.params.reponame, function (error, result) {
+    if (result[0] === null || error) {
+      return res.status(404).render('repository/404');
+    }
+
+    if (result[0].logs === null) {
+      return res.status(404).render('repository/404');
+    }
+
+    res.render('repository/index', {title: result[0].name + ' | Yaydoc',
+      repository: result[0],
+      hostname: hostname,
+    });
+  });
+});
+
+router.get('/:owner/:reponame/logs', function (req, res, next) {
+  Repository.getRepositoryWithLogs(req.params.owner + '/' + req.params.reponame, function (error, result) {
+    if (result === null || error) {
+      return res.status(404).render('repository/404');
+    }
+
+    res.render('repository/logs', {title: result[0].name + ' | Yaydoc',
+      repository: result[0],
+      buildLogs: result,
+      hostname: hostname,
     });
   });
 });

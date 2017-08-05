@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+  .container
+    h2
+      | #{repository.name} &nbsp;
+      a(href='https://github.com/#{repository.name}' target="_blank")
+        span.glyphicon.glyphicon-link
+      | &nbsp;
+      img(src='/#{repository.name}.svg' data-toggle="modal" data-target="#statustag-modal" style='cursor: pointer')
+    ul.nav.nav-tabs(style="margin-bottom: 10px")
+      li
+        a(href="/#{repository.name}") Latest Log
+      li.active
+        a(href="/#{repository.name}/logs") Log History
+    for buildLog in buildLogs
+      - buildLog = buildLog.logs
+      .panel-group#accordion
+        .panel.panel-default
+          .panel-heading
+            h4.panel-title
+              a(data-toggle='collapse', data-parent='#accordion', href='#collapse-generate-#{buildLog.buildNumber}')
+                | Generate Logs (##{buildLog.buildNumber})
+                span(style="float:right") #{buildLog.generate.datetime}
+          .panel-collapse.collapse(id="collapse-generate-#{buildLog.buildNumber}")
+            .panel-body
+              if buildLog.generate.data
+                pre #{buildLog.generate.data}
+              else
+                p
+                | Failed to retrieve Documentation Generation Logs. It is possible that the process is currently being run.
+                | If that is the case, kindly refresh or come back later.
+        .panel.panel-default
+          .panel-heading
+            h4.panel-title
+              a(data-toggle='collapse', data-parent='#accordion', href='#collapse-deploy-#{buildLog.buildNumber}')
+                | Github Pages Deployment Logs (##{buildLog.buildNumber})
+                span(style="float:right") #{buildLog.generate.datetime}
+          .panel-collapse.collapse(id="collapse-deploy-#{buildLog.buildNumber}")
+            .panel-body
+              if buildLog.ghpages.data
+                pre #{buildLog.ghpages.data}
+              else
+                p
+                | Failed to retrieve Github Pages Deployment Logs. It is possible that the process is currently being run.
+                | If that is the case, kindly refresh or come back later.
+  .modal.fade#statustag-modal(role='dialog')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal') ×
+          h4.modal-title Status Image
+        .modal-body
+          p Add the following in your README file to see latest deployment status in your repository.
+          pre [![Yaydoc Status](https://#{hostname}/#{repository.name}.svg)](https://#{hostname}/#{repository.name})
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Close

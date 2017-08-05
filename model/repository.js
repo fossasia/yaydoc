@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+
+BuildLog = require('./buildlog');
+
 const repositorySchema = new mongoose.Schema({
   name: String,
   owner: {
@@ -16,7 +19,11 @@ const repositorySchema = new mongoose.Schema({
   enable: {
     type: Boolean,
     default: true
-  }
+  },
+  builds: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Repository = module.exports = mongoose.model('Repository', repositorySchema);
@@ -142,4 +149,82 @@ module.exports.createOrUpdateRepository = function (name, data, callback) {
  */
 module.exports.deleteRepositoryByName = function (name, callback) {
   Repository.findOneAndRemove({name: name}, callback);
+};
+
+/**
+ * Increment the build number for a registered repository
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.incrementBuildNumber = function (name, callback) {
+  Repository.findOne({name: name}, 'builds', function (error, repository) {
+    if (error) {
+      callback(error);
+    } else {
+      repository.builds += 1;
+      repository.save(function (error, repository) {
+        callback(error, repository);
+      })
+    }
+  })
+};
+
+/**
+ * Get a single repository with a log history of 10 logs
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.getRepositoryWithLogs = function (name, callback) {
+  Repository.aggregate([
+    { $match: {name: name}},
+    {
+      $lookup: {
+        from: 'buildlogs',
+        localField: 'name',
+        foreignField: 'repository',
+        as: 'logs'
+      }
+    },
+    {
+      $unwind: '$logs'
+    },
+    {
+      $sort: {
+        'logs.buildNumber': -1
+      }
+    },
+    { $limit : 10 }
+  ]).exec(function (error, results) {
+    callback(error, results);
+  });
+};
+
+/**
+ * Get a single repository with the latest logs
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.getRepositoryWithLatestLogs = function (name, callback) {
+  Repository.aggregate([
+    { $match: {name: name}},
+    {
+      $lookup: {
+        from: 'buildlogs',
+        localField: 'name',
+        foreignField: 'repository',
+        as: 'logs'
+      }
+    },
+    {
+      $unwind: '$logs'
+    },
+    {
+      $sort: {
+        'logs.buildNumber': -1
+      }
+    },
+    { $limit : 1 }
+  ]).exec(function (error, results) {
+    callback(error, results);
+  });
 };
