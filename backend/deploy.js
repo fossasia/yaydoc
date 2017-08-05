@@ -2,13 +2,13 @@ var crypter = require("../util/crypter.js");
 var spawn = require('child_process').spawn;
 var output = require('../util/output');
 var socketHandler = require('../util/socketHandler.js');
+var miscellaneous = require('../util/miscellaneous');
 
 BuildLog = require('../model/buildlog');
 
 exports.deployPages = function (socket, data) {
-  var gitUrlSplit = data.gitURL.split("/");
-  var repoName = gitUrlSplit[4].split(".")[0];
-  var owner = gitUrlSplit[3];
+  var repoName = miscellaneous.getRepositoryName(data.gitURL);
+  var owner = miscellaneous.getRepositoryOwner(data.gitURL);
   var username = data.username;
   var oauthToken = crypter.decrypt(data.encryptedToken);
   var email = data.email;

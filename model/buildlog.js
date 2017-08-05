@@ -12,11 +12,11 @@ const buildLogSchema = mongoose.Schema({
   },
   generate: {
     data: Buffer,
-    datetime: String,
+    datetime: Date,
   },
   ghpages: {
     data: Buffer,
-    datetime:String,
+    datetime: Date,
   },
 });
 

@@ -67,17 +67,16 @@ router.get('/:owner/:reponame.svg', function (req, res, next) {
 
 router.get('/:owner/:reponame', function (req, res, next) {
   Repository.getRepositoryWithLatestLogs(req.params.owner + '/' + req.params.reponame, function (error, result) {
-    if (result === null || error) {
+    if (result[0] === null || error) {
       return res.status(404).render('repository/404');
     }
 
-    if (result.buildLog === null) {
+    if (result[0].logs === null) {
       return res.status(404).render('repository/404');
     }
 
-    res.render('repository/index', {title: result.repository.name + ' | Yaydoc',
-      repository: result.repository,
-      buildLog: result.buildLog,
+    res.render('repository/index', {title: result[0].name + ' | Yaydoc',
+      repository: result[0],
       hostname: hostname,
     });
   });
@@ -89,13 +88,9 @@ router.get('/:owner/:reponame/logs', function (req, res, next) {
       return res.status(404).render('repository/404');
     }
 
-    if (result.buildLogs.length === 0) {
-      return res.status(404).render('repository/404');
-    }
-
-    res.render('repository/logs', {title: result.repository.name + ' | Yaydoc',
-      repository: result.repository,
-      buildLogs: result.buildLogs,
+    res.render('repository/logs', {title: result[0].name + ' | Yaydoc',
+      repository: result[0],
+      buildLogs: result,
       hostname: hostname,
     });
   });

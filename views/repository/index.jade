@@ -18,12 +18,12 @@ block content
         .panel-heading
           h4.panel-title
             a(data-toggle='collapse', data-parent='#accordion', href='#collapse1')
-              | Generate Logs (##{buildLog.buildNumber})
-              span(style="float:right") #{buildLog.generate.datetime}
+              | Generate Logs (##{repository.logs.buildNumber})
+              span(style="float:right") #{repository.logs.generate.datetime}
         .panel-collapse.collapse.in#collapse1
           .panel-body
-            if buildLog.generate.data
-              pre #{buildLog.generate.data}
+            if repository.logs.generate.data
+              pre #{repository.logs.generate.data}
             else
               p
               | Failed to retrieve Documentation Generation Logs. It is possible that the process is currently being run.
@@ -32,12 +32,12 @@ block content
         .panel-heading
           h4.panel-title
             a(data-toggle='collapse', data-parent='#accordion', href='#collapse2')
-              | Github Pages Deployment Logs (##{buildLog.buildNumber})
-              span(style="float:right") #{buildLog.generate.datetime}
+              | Github Pages Deployment Logs (##{repository.logs.buildNumber})
+              span(style="float:right") #{repository.logs.generate.datetime}
         .panel-collapse.collapse#collapse2
           .panel-body
-            if buildLog.ghpages.data
-              pre #{buildLog.ghpages.data}
+            if repository.logs.ghpages.data
+              pre #{repository.logs.ghpages.data}
             else
               p
               | Failed to retrieve Github Pages Deployment Logs. It is possible that the process is currently being run.

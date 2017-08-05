@@ -5,6 +5,7 @@ var uuidV4 = require("uuid/v4");
 var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
 var socketHandler = require('../util/socketHandler.js');
+var miscellaneous = require('../util/miscellaneous');
 
 BuildLog = require('../model/buildlog');
 
@@ -47,13 +48,12 @@ exports.executeScript = function (socket, formData, callback) {
   socketHandler.handleLineError(socket, process, 'err-logs');
 
   process.on('exit', function (code) {
-    var reponame = gitUrl.split('/')[3] + '/' + gitUrl.split('/')[4].split('.')[0];
     console.log('child process exited with code ' + code);
     var data = { code: code, email: email, uniqueId: uniqueId, gitUrl: gitUrl };
     if (code === 0) {
       socketHandler.handleSocket(socket, 'success', data);
       if (callback !== undefined) {
-        BuildLog.storeGenerateLogs(reponame,
+        BuildLog.storeGenerateLogs(miscellaneous.getRepositoryFullName(gitUrl),
           'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
             callback(error, data)
           });

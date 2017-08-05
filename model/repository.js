@@ -175,18 +175,28 @@ module.exports.incrementBuildNumber = function (name, callback) {
  * @param callback
  */
 module.exports.getRepositoryWithLogs = function (name, callback) {
-  Repository.getRepositoryByName(name, function (error, repository) {
-    if (error) {
-      callback(error);
-    } else {
-      BuildLog.getBuildLogsByRepository(name, function (error, buildLogs) {
-        callback(error, {
-          repository: repository,
-          buildLogs: buildLogs,
-        });
-      })
-    }
-  })
+  Repository.aggregate([
+    { $match: {name: name}},
+    {
+      $lookup: {
+        from: 'buildlogs',
+        localField: 'name',
+        foreignField: 'repository',
+        as: 'logs'
+      }
+    },
+    {
+      $unwind: '$logs'
+    },
+    {
+      $sort: {
+        'logs.buildNumber': -1
+      }
+    },
+    { $limit : 10 }
+  ]).exec(function (error, results) {
+    callback(error, results);
+  });
 };
 
 /**
@@ -195,16 +205,26 @@ module.exports.getRepositoryWithLogs = function (name, callback) {
  * @param callback
  */
 module.exports.getRepositoryWithLatestLogs = function (name, callback) {
-  Repository.getRepositoryByName(name, function (error, repository) {
-    if (error) {
-      callback(error);
-    } else {
-      BuildLog.getLatestBuildLogByRepository(name, function (error, buildLog) {
-        callback(error, {
-          repository: repository,
-          buildLog: buildLog
-        });
-      })
-    }
-  })
+  Repository.aggregate([
+    { $match: {name: name}},
+    {
+      $lookup: {
+        from: 'buildlogs',
+        localField: 'name',
+        foreignField: 'repository',
+        as: 'logs'
+      }
+    },
+    {
+      $unwind: '$logs'
+    },
+    {
+      $sort: {
+        'logs.buildNumber': -1
+      }
+    },
+    { $limit : 1 }
+  ]).exec(function (error, results) {
+    callback(error, results);
+  });
 };
