@@ -6,7 +6,7 @@ var authMiddleware = require("../middleware/auth.js");
 
 Repository = require("../model/repository");
 
-router.post('/delete', function (req, res, next) {
+router.post('/delete', authMiddleware.isLoggedIn, function (req, res, next) {
   var name = req.body.name || '';
 
   if (name === '') {
@@ -20,16 +20,16 @@ router.post('/delete', function (req, res, next) {
       });
     },
     function (repository, callback) {
-      Repository.deleteRepositoryWithLogs(name, function (error) {
+      github.deleteHook(repository.name, repository.hook, req.user.token, function (error) {
         callback(error, repository);
       })
     },
     function (repository, callback) {
-      github.deleteHook(repository.name, repository.hook, req.user.token, function (error) {
+      Repository.deleteRepositoryWithLogs(name, function (error) {
         callback(error);
       })
     }
-  ], function (error, result) {
+  ], function (error) {
     if (error) {
       return res.redirect('/dashboard?status=delete_failure');
     }
