@@ -1,0 +1,75 @@
+extends ../layout
+
+block content
+  script.
+    var repository = #{repository}
+  script(src="/scripts/socket-repository.js")
+  .container
+    h2
+      | #{repository.name} &nbsp;
+      a(href='https://github.com/#{repository.name}' target="_blank")
+        span.glyphicon.glyphicon-link
+      | &nbsp;
+      img(src='/#{repository.name}.svg' data-toggle="modal" data-target="#statustag-modal" style='cursor: pointer')
+    ul.nav.nav-tabs(style="margin-bottom: 10px")
+      li
+        a(href="/#{repository.name}") Latest Log
+      li
+        a(href="/#{repository.name}/logs") Log History
+      li.active
+        a(href="/#{repository.name}/settings") Settings
+    h3 General
+    p Placeholder for general settings
+    hr
+    h3 Mail Service
+    if repository.mailService.status
+      form(method="POST"  action="/repository/mail/disable").form-inline
+        .form-group
+          label.control-label Status:&nbsp;
+          input(type="hidden", name="repository", value="#{repository.name}")
+        button.btn.btn-warning Disable
+    else
+      form(method="POST"  action="/repository/mail/enable").form-inline
+        .form-group
+          label.control-label Status:&nbsp;
+          input(type="hidden", name="repository", value="#{repository.name}")
+        button.btn.btn-primary Enable
+    form(method="POST"  action="/repository/mail").form-inline
+      .form-group
+        label(for="email") Email:&nbsp;
+        input(type="hidden", name="repository", value="#{repository.name}")
+        input.form-control#email(type="email" name="email" value="#{repository.mailService.email}")
+      button.btn.btn-default(type="submit") Save
+    hr
+    h3 Danger Zone
+    if repository.enable
+      form(method="POST"  action="/repository/disable").form-inline
+        .form-group
+          label.control-label Repository Status:&nbsp;
+          input(type="hidden", name="repository", value="#{repository.name}")
+        button.btn.btn-warning Disable
+    else
+      form(method="POST"  action="/repository/enable").form-inline
+        .form-group
+          label.control-label Repository Status:&nbsp;
+          input(type="hidden", name="repository", value="#{repository.name}")
+        button.btn.btn-primary Enable
+    .form-group
+      label.control-label Delete Repository:&nbsp;
+      button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
+  .modal.fade#deleteModal(role='dialog')
+    .modal-dialog
+      .modal-content
+        form(action="/repository/delete" method="post")
+          .modal-header
+            button.close(type='button', data-dismiss='modal') ×
+            h4.modal-title Are you sure you want to delete?
+          .modal-body
+            p
+            | Enter your repository's name (
+            code#name-code
+            | ) below to confirm you want to permanently remove it from Yaydoc:
+            .form-group
+              input.form-control#repository-name(name="name" autofocus)
+          .modal-footer
+            button.btn.btn-default#btnDelete(disabled="disabled") Delete

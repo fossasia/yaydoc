@@ -74,4 +74,43 @@ router.post("/enable", authMiddleware.isLoggedIn, function(req, res, next) {
   });
 });
 
+router.post('/mail/disable', authMiddleware.isLoggedIn, function (req, res, next) {
+  Repository.updateRepository({name: req.body.repository}, {'mailService.status': false})
+  .then(function () {
+    res.redirect('/' + req.body.repository + '/settings?status=mail_disabled_successful');
+  })
+  .catch(function () {
+    next({
+      status: 500,
+      messages: 'Something went wrong'
+    });
+  });
+});
+
+router.post('/mail/enable', authMiddleware.isLoggedIn, function (req, res, next) {
+  Repository.updateRepository({name: req.body.repository}, {'mailService.status': true})
+  .then(function () {
+    res.redirect('/' + req.body.repository + '/settings?status=mail_enabled_successful');
+  })
+  .catch(function () {
+    next({
+      status: 500,
+      messages: 'Something went wrong'
+    });
+  });
+});
+
+router.post('/mail', authMiddleware.isLoggedIn, function (req, res, next) {
+  Repository.updateRepository({name: req.body.repository}, {'mailService.email': req.body.email})
+  .then(function () {
+    res.redirect('/' + req.body.repository + '/settings?status=mail_changed_successful');
+  })
+  .catch(function () {
+    next({
+      status: 500,
+      messages: 'Something went wrong'
+    });
+  });
+});
+
 module.exports = router;
