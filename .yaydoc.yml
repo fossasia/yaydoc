@@ -7,8 +7,8 @@ build:
   source: docs/
   theme:
     name: sphinx_fossasia_theme
-  github_ribbon:
-    color: red
+  github_button:
+    show_count: true
 
 publish:
   ghpages:

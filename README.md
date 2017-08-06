@@ -52,6 +52,15 @@ build:
   github_ribbon:         # Display a `Fork me on Github` ribbon
     position: right      # Position of the ribbon, Allowed values: left | right, default: right
     color: green         # Color of the ribbon, Allowed values: red | green | darkblue | orange | gray | white, default: red
+  github_button:         # Display various Github buttons.
+    buttons:
+      watch: true        # Display watch button, default: true
+      star: true         # Display star button, default: true
+      issues: true       # Display issues button, default: true
+      fork: true         # Display fork button, default: true
+      follow: true       # Display follow button, default: true
+    show_count: true     # Display count beside buttons
+    large: true          # Use large buttons
 ```
 
 - Configuring publishers
