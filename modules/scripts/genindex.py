@@ -18,15 +18,17 @@ def get_include(dirpath, filename):
     return template.format(directive=directive, document=document)
 
 
-def get_toctree(dirpath, filenames, caption=''):
-    toctree = ['.. toctree::', '   :maxdepth: 1']
-    caption_template = '   :caption: {caption}'
+def get_toctree(dirpath, filenames, level, caption=''):
     content_template = '   {document}'
     if not caption:
         caption = _title(os.path.basename(dirpath))
         if caption == os.curdir:
             caption = 'Contents'
-    toctree.append(caption_template.format(caption=caption))
+
+    toctree = [get_heading(caption, level)]
+    toctree.append('')
+    toctree.append('.. toctree::')
+    toctree.append('   :maxdepth: 1')
     # Inserting a blank line
     toctree.append('')
 
@@ -63,6 +65,21 @@ def _ignore_dirs(dirpath, dirnames, ignored_dirnames, path=None):
                 dirnames.remove(dirname)
 
 
+def get_heading(text, level=1):
+    headings = {1: "=",
+                2: "-",
+                3: "~",
+                4: "^",
+                5: "'"
+    }
+    return "{text}\n{underline}".format(text=text, underline=headings.get(level, "") * len(text))
+
+
+def get_javadoc():
+    javadoc = [get_heading("API Documentation", 1), "", "* `Javadoc <./javadoc>`_"]
+    return "\n".join(javadoc)
+
+
 def get_index(root, subprojects, sub_docpaths, javadoc):
     index = []
 
@@ -83,26 +100,28 @@ def get_index(root, subprojects, sub_docpaths, javadoc):
         _ignore_dirs(dirpath, dirnames, ['source'] + subproject_dirs, os.curdir)
 
         if filenames:
-            toctree = get_toctree(dirpath, filenames)
+            toctree = get_toctree(dirpath, filenames, 1)
             if toctree:
                 index.append(toctree)
 
+    # Add title sub project
+    if subprojects:
+        index.append(get_heading("Sub Projects", 1))
+
+    # Add links to sub projects
     for subproject, sub_docpath in zip(subprojects, sub_docpaths):
         sub_index_path = os.path.normpath(os.path.join(subproject, sub_docpath,
                                                        'index.rst'))
-        toctree = get_toctree(os.curdir, [sub_index_path],
+        toctree = get_toctree(os.curdir, [sub_index_path], 2,
                               _title(subproject.split(os.path.sep)[0]))
         index.append(toctree)
-    # add javadoc if javadoc exist
-    if javadoc != "":
-        index = add_javadoc(index)
+
+    # Add javadoc if javadoc exist
+    if javadoc:
+        index.append(get_javadoc())
 
     return '\n\n'.join(index) + '\n'
 
-def add_javadoc(index):
-    javadoc = ["API Documentation", "\n", "=================", "\n",
-     "* `javadoc <./javadoc>`_"]
-    return index + javadoc
 
 def main():
     parser = argparse.ArgumentParser()

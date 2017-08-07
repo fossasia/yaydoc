@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 import unittest
 from mock import patch
 
@@ -41,20 +42,24 @@ class IndexGenerateTestCase(unittest.TestCase):
 
     def test_toctree_directive_nodir(self):
         """Tests the output of get_toctree for files at top level of doc_path"""
-        text = genindex.get_toctree(os.curdir, ['file1.md', 'file2.rst'])
-        self.assertEqual(text, """.. toctree::
+        text = genindex.get_toctree(os.curdir, ['file1.md', 'file2.rst'], 1)
+        self.assertEqual(text, """Contents
+========
+
+.. toctree::
    :maxdepth: 1
-   :caption: Contents
 
    file1
    file2""")
 
     def test_toctree_directive_withdir(self):
         """Tests the output of get_toctree for files under a sub directory"""
-        text = genindex.get_toctree('my_dir', ['file1.md', 'file2.rst'])
-        self.assertEqual(text, """.. toctree::
+        text = genindex.get_toctree('my_dir', ['file1.md', 'file2.rst'], 1)
+        self.assertEqual(text, """My Dir
+======
+
+.. toctree::
    :maxdepth: 1
-   :caption: My Dir
 
    my_dir/file1
    my_dir/file2""")
