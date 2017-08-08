@@ -7,7 +7,7 @@ var exports = module.exports = {};
  */
 exports.getRepositoryFullName = function (url) {
   var splitURL = url.split('/');
-  return splitURL[3] + '/' + splitURL[4].split('.')[0];
+  return splitURL[3] + '/' + splitURL[4].split('.git')[0];
 };
 
 /**
@@ -16,7 +16,7 @@ exports.getRepositoryFullName = function (url) {
  * @returns string
  */
 exports.getRepositoryName = function (url) {
-  return url.split('/')[4].split('.')[0];
+  return url.split('/')[4].split('.git')[0];
 };
 
 /**

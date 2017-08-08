@@ -45,6 +45,7 @@ if [ ${STATUS_CODE} -eq 404 ]; then
   heroku create $HEROKU_APP_NAME >>${LOGFILE} 2>>${LOGFILE}
   if [ $? -ne 0 ]; then
     print_danger "Failed to create Heroku app.\n"
+    rm -rf app
     exit 1
   fi
   print_log "Heroku app created successfully!\n"
@@ -66,6 +67,7 @@ status=$(curl  -s -o /dev/null -w "%{http_code}" -X PUT \
 "${Arr[0]}")
 if [ ${status} -ne 200 ]; then
   print_danger "Failed to upload. Error Code: ${status}\n"
+  rm -rf app
   exit 2
 fi
 print_log "Slug uploaded successfully!\n"
@@ -78,6 +80,7 @@ status=$(curl  -s -o /dev/null -w "%{http_code}" -u ":$HEROKU_API_KEY" -X POST \
 -n https://api.heroku.com/apps/$HEROKU_APP_NAME/releases)
 if [ ${status} -ne 201 ]; then
   print_danger "Failed to release the slug. Error Code: ${status}\n"
+  rm -rf app
   exit 3
 fi
 print_log "Slug released successfully\n Application available at https://${HEROKU_APP_NAME}.herokuapp.com/\n"
