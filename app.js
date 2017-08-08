@@ -14,6 +14,8 @@ require('./util/passport')(passport);
 
 mongoose.connect(process.env.MONGODB_URI, {
   useMongoClient: true
+}, function (error) {
+  console.log(error);
 });
 
 /**
