@@ -68,15 +68,18 @@ block content
               each repository in ownedRepositories
                 tr
                   td #{repository.name}
-                  td
+                  td(style="width:0;vertical-align: middle")
+                    a(href="/#{repository.name}/settings")
+                      i.fa.fa-gear.fa-2x
+                  td(style="width:0")
                     if repository.enable === true
                       button.btn.btn-warning.open-disable-modal(data-toggle="modal" data-name="#{repository.name}" href="#disableModal") Disable
                     else
                       form(method="POST"  action="/repository/enable")
                         input(type="hidden", name="repository", value="#{repository.name}")
                         button.btn.btn-primary(type="submit") Enable                    
-                  td
-                    button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
+                  td(style="width:0")
+                    button.close.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false" style="color:red; font-size:30px") &times;
             else
               p No repositories registered!
         if organizations
@@ -87,16 +90,20 @@ block content
                 if organization.repositories && organization.repositories.length !== 0
                   each repository in organization.repositories
                     tr
-                      td #{repository.name}
-                      td
+                      td(style="vertical-align: middle") #{repository.name}
+                      td(style="width:0;vertical-align: middle")
+                        a(href="/#{repository.name}/settings")
+                          i.fa.fa-gear.fa-2x
+                      td(style="width:0")
                         if repository.enable === true
                           button.btn.btn-warning.open-disable-modal(data-toggle="modal" data-name="#{repository.name}" href="#disableModal") Disable
                         else
                           form(method="POST"  action="/repository/enable")
                             input(type="hidden", name="repository", value="#{repository.name}")
-                            button.btn.btn-primary(type="submit") Enable                            
-                      td
-                        button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
+                            button.btn.btn-primary(type="submit") Enable
+                      td(style="width:0")
+                        button.close.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false" style="color:red; font-size:30px") &times;
+
         else
           p No repositories registered!
   .modal.fade#deleteModal(role='dialog')
@@ -129,4 +136,3 @@ block content
           .modal-footer
               button.btn.btn-default#disableBtnClose(type="button") Close
               button.btn.btn-primary#disableBtnYes(type="button") Yes...Disable
-             

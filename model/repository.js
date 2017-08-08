@@ -14,7 +14,10 @@ const repositorySchema = new mongoose.Schema({
   },
   accessToken: String,
   buildStatus: Boolean,
-  mailService: Boolean,
+  mailService: {
+    status: Boolean,
+    email: String,
+  },
   hook: String,
   enable: {
     type: Boolean,

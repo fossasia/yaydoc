@@ -86,7 +86,10 @@ router.post('/register', function (req, res, next) {
                     login: req.user.username
                   },
                   accessToken: token,
-                  mailService: true,
+                  mailService: {
+                    status: true,
+                    email: req.user.email,
+                  },
                   hook: body.id,
                 };
               } else {
