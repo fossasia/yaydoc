@@ -3,3 +3,4 @@ temp/
 .idea/
 .env
 npm-debug.log
+__pycache__/
