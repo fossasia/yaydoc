@@ -191,9 +191,9 @@ as images, javascript referred from it should be present in a
 <div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">build</span><span class="p">:</span>
   <span class="n">theme</span><span class="p">:</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">sphinx_fossasia_theme</span>        <span class="c1"># Name of the theme. Apart from built in sphinx themes, custom themes from PyPI are also supported, default: sphinx_fossasia_theme</span>
-    <span class="n">options</span><span class="p">:</span>                           <span class="c1"># The respective theme options in the form `&quot;&lt;key&gt;=&lt;value&gt;&quot;`. They are theme specific.</span>
-      <span class="o">-</span> <span class="s2">&quot;link_about=/about&quot;</span>
-      <span class="o">-</span> <span class="s2">&quot;show_fossasia_logo=true&quot;</span>
+    <span class="n">options</span><span class="p">:</span>                           <span class="c1"># The respective theme options. They are theme specific.</span>
+      <span class="n">link_about</span><span class="p">:</span> <span class="s1">&#39;/about&#39;</span>
+      <span class="n">show_fossasia_logo</span><span class="p">:</span> <span class="n">true</span>
   <span class="n">source</span><span class="p">:</span> <span class="n">docs</span>                         <span class="c1"># Path of the documentation, default: docs</span>
   <span class="n">logo</span><span class="p">:</span> <span class="n">images</span><span class="o">/</span><span class="n">logo</span><span class="o">.</span><span class="n">svg</span>                <span class="c1"># Path to an image to be used as logo for the Project. It should be relative to `source`.</span>
   <span class="n">markdown_flavour</span><span class="p">:</span> <span class="n">markdown_github</span>    <span class="c1"># Markdown format flavour. should be one of `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`, default: markdown_github</span>
