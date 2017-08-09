@@ -16,7 +16,6 @@ router.get("/", function(req, res, next) {
   }
 
   res.render("index", {
-    title: "Yaydoc | Automatic Documentation Generation and Deployment",
     isLoggedIn: isLoggedIn,
   });
 });
@@ -67,31 +66,45 @@ router.get('/:owner/:reponame.svg', function (req, res, next) {
 });
 
 router.get('/:owner/:reponame', function (req, res, next) {
-  Repository.getRepositoryWithLatestLogs(req.params.owner + '/' + req.params.reponame, function (error, result) {
-    if (!result[0]|| error) {
-      return res.status(404).render('repository/404');
+  var fullName = req.params.owner + '/' + req.params.reponame;
+  Repository.getRepositoryWithLatestLogs(fullName, function (error, result) {
+    if (!result|| error) {
+      return res.status(404).render('repository/404', {
+        name: fullName
+      });
     }
 
-    if (result[0].logs === null) {
-      return res.status(404).render('repository/404');
+    if (!result.logs) {
+      return res.render('repository/204', {
+        name: fullName
+      });
     }
 
     res.render('repository/index', {
-      title: result[0].name + ' | Yaydoc',
-      repository: result[0],
+      title: result.name,
+      repository: result,
       hostname: hostname,
     });
   });
 });
 
 router.get('/:owner/:reponame/logs', function (req, res, next) {
-  Repository.getRepositoryWithLogs(req.params.owner + '/' + req.params.reponame, function (error, result) {
-    if (result === null || error) {
-      return res.status(404).render('repository/404');
+  var fullName = req.params.owner + '/' + req.params.reponame;
+  Repository.getRepositoryWithLogs(fullName, function (error, result) {
+    if (result.length === 0 || error) {
+      return res.status(404).render('repository/404', {
+        name: fullName
+      });
+    }
+
+    if (result.length === 1 && !result[0].logs) {
+      return res.render('repository/204', {
+        name: fullName
+      });
     }
 
     res.render('repository/logs', {
-      title: 'Logs - ' + result[0].name + ' | Yaydoc',
+      title: 'Logs - ' + result[0].name,
       repository: result[0],
       buildLogs: result,
       hostname: hostname,
@@ -100,13 +113,16 @@ router.get('/:owner/:reponame/logs', function (req, res, next) {
 });
 
 router.get('/:owner/:reponame/settings', authMiddleware.isLoggedIn, function (req, res, next) {
-  Repository.getRepositoryByName(req.params.owner + '/' + req.params.reponame, function (error, repository) {
+  var fullName = req.params.owner + '/' + req.params.reponame;
+  Repository.getRepositoryByName(fullName, function (error, repository) {
     if (repository === null || error) {
-      return res.status(404).render('repository/404');
+      return res.status(404).render('repository/404', {
+        name: fullName
+      });
     }
 
     res.render('repository/settings', {
-      title: 'Settings - ' + repository.name + ' | Yaydoc',
+      title: 'Settings - ' + repository.name,
       repository: repository
     });
   });

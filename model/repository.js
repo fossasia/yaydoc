@@ -189,7 +189,10 @@ module.exports.getRepositoryWithLogs = function (name, callback) {
       }
     },
     {
-      $unwind: '$logs'
+      $unwind: {
+        path: '$logs',
+        preserveNullAndEmptyArrays: true,
+      }
     },
     {
       $sort: {
@@ -219,7 +222,10 @@ module.exports.getRepositoryWithLatestLogs = function (name, callback) {
       }
     },
     {
-      $unwind: '$logs'
+      $unwind: {
+        path: '$logs',
+        preserveNullAndEmptyArrays: true,
+      }
     },
     {
       $sort: {
@@ -228,6 +234,6 @@ module.exports.getRepositoryWithLatestLogs = function (name, callback) {
     },
     { $limit : 1 }
   ]).exec(function (error, results) {
-    callback(error, results);
+    callback(error, results[0]);
   });
 };

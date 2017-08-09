@@ -4,13 +4,13 @@ block content
   link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
   .errorDiv
     .error-code.m-b-10.m-t-20
-      | 404 
+      | 204
       i.fa.fa-warning
     h3.font-bold
-      | We couldn't find the repository&nbsp;
+      | We could not find any build logs for&nbsp;
       span(style="color: #db4545")=name
     .error-desc
-      | Either the repository does not exist or it is not registered to Yaydoc!
+      | It is possible that the repository is registered but there have been no commits afterwards!
       div
         a.login-detail-panel-button.btn(href='/dashboard')
           i.fa.fa-arrow-left
