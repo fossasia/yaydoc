@@ -1,6 +1,6 @@
 import os
 import argparse
-from serializer import deserialize
+from config.serializer import deserialize
 
 
 def _title(value):

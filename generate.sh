@@ -27,7 +27,7 @@ function generateAPIDocs {
   export JAVADOC_PATH=""
 
   # Setting environment variables for api docs
-  ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+  ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py)"
   echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
   eval ${ENVVARS}
 
@@ -108,7 +108,7 @@ fi
 cp .yaydoc.yml ${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml >>${LOGFILE} 2>>${LOGFILE}
 
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py)"
 echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
 eval ${ENVVARS}
 
@@ -179,7 +179,7 @@ if [ "${AUTOAPI_JAVA:-false}" == "true" ]; then
   javasphinx-apidoc -o source/ ${ROOT_DIR}/${AUTOAPI_JAVA_PATH}/ >>${LOGFILE} 2>>${LOGFILE}
 fi
 
-if [ -n "${SUBPROJECT_URLS}" ]; then
+if [ "${SUBPROJECT_URLS}" != "[]" ]; then
   source ${BASE}/multiple_generate.sh
 fi
 
@@ -209,7 +209,7 @@ print_log "Documentation Generated Successfully!\n"
 
 generateAPIDocs ${ROOT_DIR} ${BUILD_DIR}/_build/html
 
-if [ -n "${SUBPROJECT_URLS}" ]; then
+if [ "${SUBPROJECT_URLS}" != "[]" ]; then
   source ${BASE}/multiple_api_docs.sh
 fi
 

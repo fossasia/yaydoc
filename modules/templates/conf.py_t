@@ -45,7 +45,7 @@ from recommonmark.transform import AutoStructify
 sys.path.insert(0, os.path.abspath('scripts'))
 sys.path.insert(0, os.path.join(os.path.abspath('scripts'), 'extensions'))
 
-from serializer import deserialize
+from config.serializer import deserialize
 
 {% if autoapi_python == true %}
 for (dirpath, dirnames, filenames) in os.walk('{{ root_dir }}'):
