@@ -21,12 +21,12 @@ exports.executeScript = function (socket, formData, callback) {
   var uniqueId = uuidV4();
   var targetBranch = formData.targetBranch === undefined ? '' : formData.targetBranch;
   var docPath = formData.docPath === undefined ? '' : formData.docPath;
-  var subProject = "";
+  var subProject = "[]";
   var subDocpath = [];
   if (formData.subProject !== undefined) {
-    subProject = formData.subProject.join(",");
+    subProject = "[" + formData.subProject.join(",") + "]";
     for(i=0; i<formData.subProject.length; i++){
-        subDocpath.push('docs');
+        subDocpath.push("docs");
     }
   }
 
@@ -37,7 +37,7 @@ exports.executeScript = function (socket, formData, callback) {
     "-d", debug,
     "-u", uniqueId,
     "-s", subProject,
-    "-p", subDocpath.join(","),
+    "-p", "[" + subDocpath.join(",") + "]",
     "-b", targetBranch,
     "-l", docPath
   ];

@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join('modules', 'scripts')))
 import config
 import linkfix
 import genindex
+import serializer
 
 
 class ConfigTestCase(unittest.TestCase):
@@ -103,6 +104,56 @@ class RelativeLinkFixTestCase(unittest.TestCase):
         source_path = os.path.join(os.pardir, 'README.md')
         new_content = linkfix.fix_relative_links(md_content, source_path)
         self.assertEqual(new_content, '`title<#section>`')
+
+
+class SerializationTestCase(unittest.TestCase):
+    def test_with_bool(self):
+        self.assertEqual(serializer.serialize(True), "true")
+        self.assertEqual(serializer.serialize(False), "false")
+
+    def test_none(self):
+        self.assertEqual(serializer.serialize(None), "")
+
+    def test_int_list(self):
+        self.assertEqual(serializer.serialize([1,2,3]), "[1,2,3]")
+
+    def test_string_list(self):
+        self.assertEqual(serializer.serialize(["qw","asd","zxcv"]),
+                         "[qw,asd,zxcv]")
+
+    def test_nested_list(self):
+        self.assertEqual(serializer.serialize([True, [1, None], "Hello", [False]]),
+                         "[true,[1,],Hello,[false]]")
+
+    def test_empty_list(self):
+        self.assertEqual(serializer.serialize([]), "[]")
+
+
+class DeserializationTestCase(unittest.TestCase):
+    def test_with_bool(self):
+        self.assertEqual(serializer.deserialize("True"), True)
+        self.assertEqual(serializer.deserialize("False"), False)
+        self.assertEqual(serializer.deserialize("true"), True)
+        self.assertEqual(serializer.deserialize("false"), False)
+
+    def test_int_list(self):
+        self.assertEqual(serializer.deserialize("[1,2,3]"),
+                         [1,2,3])
+
+    def test_int_list_no_numeric(self):
+        self.assertEqual(serializer.deserialize("[1,2,3]", numeric=False),
+                         ['1','2','3'])
+
+    def test_string_list(self):
+        self.assertEqual(serializer.deserialize("[qw,asd,zxcv]"),
+                         ['qw','asd','zxcv'])
+
+    def test_nested_list(self):
+        self.assertEqual(serializer.deserialize("[true,[1,],Hello,[false]]"),
+                         [True, [1, ''], "Hello", [False]])
+
+    def test_empty_list(self):
+        self.assertEqual(serializer.deserialize("[]"), [])
 
 
 if __name__ == '__main__':

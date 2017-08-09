@@ -6,6 +6,8 @@ from datetime import datetime
 from functools import partial
 import yaml
 
+from serializer import serialize
+
 
 class Configuration(object):
     """Wrap a dictionary and provide certain helper methods.
@@ -118,23 +120,10 @@ class Configuration(object):
     def getenv(self, seperator=','):
         """Return a dict with the connected environment variables as keys
         and the extracted values as values"""
-        def py2str(value):
-            """Convert Python objects to strings for easy parsing from bash.
-
-            Currently converts boolean values to true|false and lists to
-            `seperator` seperated strings.
-            """
-            if value is None:
-                return ""
-            if isinstance(value, bool):
-                return "true" if value else "false"
-            if isinstance(value, list):
-                return seperator.join(py2str(_) for _ in value)
-            return str(value)
 
         dict_ = {}
         for envvar, value in self._connections.items():
-            dict_[envvar] = py2str(value)
+            dict_[envvar] = serialize(value)
         return dict_
 
     def get(self, key_string, default=None):
@@ -179,7 +168,7 @@ def get_default_config(owner, repo):
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
                       'theme': {'name': 'sphinx_fossasia_theme',
-                                'options': [],
+                                'options': {},
                                },
                       'source': 'docs',
                       'autoapi': [],
@@ -246,7 +235,7 @@ def get_envdict(yaml_config, default_config):
     def theme_options_helper(options, index):
         """Helper method to be used as a callback for extracting the
         keys and values for theme options."""
-        return [option.split('=')[index].strip() for option in options]
+        return [option[index] for option in options.items()]
 
     def github_btn_callback(btns):
         btn_list = []
@@ -271,8 +260,8 @@ def get_envdict(yaml_config, default_config):
     config.connect('MARKDOWN_FLAVOUR', 'build.markdown_flavour')
     config.connect('LOGO', 'build.logo')
     config.connect('DOCTHEME', 'build.theme.name')
-    config.connect('DOCTHEME_OPTIONS_KEYS', 'build.theme.options@', callback=theme_options_keys)
-    config.connect('DOCTHEME_OPTIONS_VALUES', 'build.theme.options@', callback=theme_options_values)
+    config.connect('DOCTHEME_OPTIONS_KEYS', 'build.theme.options', callback=theme_options_keys)
+    config.connect('DOCTHEME_OPTIONS_VALUES', 'build.theme.options', callback=theme_options_values)
     config.connect('DOCPATH', 'build.source')
     config.connect('MOCK_MODULES', 'build.mock@')
 
@@ -317,7 +306,7 @@ def get_bash_command(envdict):
     commands = []
     fmtstr = 'export {key}="{value}"'
     for key, value in envdict.items():
-        if os.environ.get(key, '') == '' and value is not None:
+        if os.environ.get(key, '') in ('', '[]') and value is not None:
             commands.append(fmtstr.format(key=key, value=str(value)))
     return '\n'.join(commands) + '\n'
 
