@@ -105,3 +105,12 @@ module.exports.storeGithubPagesLogs = function (name, filepath, callback) {
     }
   })
 };
+
+/**
+ * Delete all the logs of a given repository
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.deleteRepositoryLogs = function (name, callback) {
+  BuildLog.deleteMany({repository: name}, callback);
+};
