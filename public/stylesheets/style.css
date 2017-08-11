@@ -53,6 +53,9 @@ a {
   margin-left: 10px;
 }
 
+#btnAddSub {
+  margin-left: 10px;
+}
 #btnWebsiteLink, #btnGithubPages, #btnLogs {
   display: none;
   width: -moz-fit-content;
@@ -61,6 +64,10 @@ a {
 .btnLogsDiv {
   text-align: center;
   margin-top: 20px;
+}
+
+#SubProject {
+  margin-bottom: 10px;
 }
 
 #notification-container {

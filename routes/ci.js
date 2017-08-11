@@ -14,7 +14,8 @@ router.post('/register', function (req, res, next) {
   var repositoryName = req.body.repository || '';
   var organization = req.body.organization.split(":");
   var token = req.user.token || '';
-
+  var subRepositories = req.body.subRepositories !== undefined ? req.body.subRepositories : [];
+  subRepositories = typeof subRepositories === 'string' ? [subRepositories] : subRepositories;
   if (repositoryName === '' || token === '') {
     console.log("Invalid parameters");
     console.log(JSON.stringify({
@@ -23,183 +24,179 @@ router.post('/register', function (req, res, next) {
     }));
     return res.redirect('/dashboard?status=registration_failed');
   }
-
   github.hasAdminAccess(repositoryName, token, function (error, result) {
     if (!result) {
       return res.redirect('/dashboard?status=registration_unauthorized');
     } else {
-      request({
-        url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
-        headers: {
-          'User-Agent': 'request'
-        }
-      }, function (error, response, body) {
-        if (response.statusCode !== 200) {
-          console.log(response.statusCode + ': ' + response.statusMessage);
-          res.redirect("/dashboard?status=registration_failed");
-        }
-
-        var hooks = JSON.parse(body);
-        var hookurl = 'https://' + process.env.HOSTNAME + '/ci/webhook';
-        var isRegistered = false;
-        hooks.forEach(function (hook) {
-          if (hook.config.url === hookurl) {
-            isRegistered = true
+      var hookValidation = Promise.all([repositoryName].concat(subRepositories).map(x => github.hookValidator(x, token)))
+      hookValidation.then(function (validatedResults) {
+        var registeredRepository = '';
+        for (var i = 0; i < validatedResults.length; i++) {
+          if (validatedResults[i].isRegistered === true) {
+            registeredRepository = validatedResults[i].repository;
+            break;
           }
-        });
-
-        if (!isRegistered) {
-          request({
-            url: `https://api.github.com/repos/${repositoryName}/hooks?access_token=${crypter.decrypt(token)}`,
-            headers: {
-              'User-Agent': 'request'
-            },
-            method: 'POST',
-            json: {
-              name: "web",
-              active: true,
-              events: [
-                "push"
-              ],
-              config: {
-                url: hookurl,
-                content_type: "json"
-              }
-            }
-          }, function (error, response, body) {
-
-            if (response.statusCode !== 201) {
-              console.log(response.statusCode + ': ' + response.statusMessage);
-              res.redirect("/dashboard?status=registration_failed");
-            }
-
-            Repository.getRepositoryByName(repositoryName, function (error, repository) {
-              if (repository === null) {
-                repository = {
-                  name: repositoryName,
-                  owner: {
-                    id: organization[0],
-                    login: organization[1]
-                  },
-                  registrant: {
-                    id: req.user.id,
-                    login: req.user.username
-                  },
-                  accessToken: token,
-                  mailService: {
-                    status: true,
-                    email: req.user.email,
-                  },
-                  hook: body.id,
-                };
-              } else {
-                repository = {
-                  accessToken: token,
-                  registrant: {
-                    id: req.user.id,
-                    login: req.user.username
-                  },
-                  hook: body.id,
-                };
-              }
-              Repository.createOrUpdateRepository(repositoryName, repository, function (error) {
-                if (error) {
-                  res.redirect("/dashboard?status=registration_failed");
-                } else {
-                  res.redirect("/dashboard?status=registration_successful");
-                }
-              });
-            });
-          });
-        } else {
+        }
+        if (registeredRepository !== '') {
           Repository.getRepositoryByName(repositoryName, function (error, repository) {
             if (repository) {
               return res.redirect("/dashboard?status=registration_already");
             }
             return res.redirect("/dashboard?status=registration_mismatch");
           });
-        }
-      });
-    }
-  });
+        } else {
+          var registeredHook = Promise.all([{name:repositoryName,sub:false}]
+          .concat(subRepositories.map(x => ({name:x, sub: true})))
+          .map(x => github.registerHook(x, token)));
+          registeredHook.then(function (registeredHookResults) {
+            var flag = false; //if hook registring failed flag turns flase
+            for (var i = 0; i < registeredHookResults.length; i++) {
+              if (registeredHookResults[i].status === false) {
+                flag = true;
+                break;
+              }
+            }
+            if (flag) {
+              res.redirect("/dashboard?status=registration_failed");
+            } else {
+              Repository.getRepositoryByName(repositoryName, function (error, repository) {
+                var hookResultBody = [];
+                registeredHookResults.forEach(function (x) {
+                  hookResultBody.push(x.body)
+                });
+                if (repository === null) {
+                  repository = {
+                    name: repositoryName,
+                    owner: {
+                      id: organization[0],
+                      login: organization[1]
+                    },
+                    registrant: {
+                      id: req.user.id,
+                      login: req.user.username
+                    },
+                    accessToken: token,
+                    mailService: {
+                      status: true,
+                      email: req.user.email,
+                    },
+                    hook: hookResultBody.map(x => x.id),
+                    subRepositories: subRepositories
+                  };
+                } else {
+                  repository = {
+                    accessToken: token,
+                    registrant: {
+                      id: req.user.id,
+                      login: req.user.username
+                    },
+                    hook: hookResultBody.map(x => x.id),
+                    subRepositories: subRepositories
+                  };
+                }
+                 Repository.createOrUpdateRepository(repositoryName, repository, function (error) {
+                   if (error) {
+                     res.redirect("/dashboard?status=registration_failed");
+                   } else {
+                     res.redirect("/dashboard?status=registration_successful");
+                   }
+                 });
+               });
+              }
+           })
+           .catch(function () {
+             res.redirect("/dashboard?status=registration_failed");
+            });
+          }
+        });
+      }
+   });
 });
 
 router.post('/webhook', function(req, res, next) {
   var event = req.get('X-GitHub-Event');
   var branch = req.body.ref.split("/")[2];
   var repositoryName = req.body.repository.full_name;
-
   if (branch === "gh-pages") {
     return res.json({
       status: false,
       description: "No operation on pushes to gh-pages branch"
     });
   }
-
-  request({
-    url: `https://api.github.com/repos/${repositoryName}/contents/.yaydoc.yml?ref=${branch}`,
-    headers: {
-      'User-Agent': 'request'
-    }
-  }, function (error, response, body) {
-    if (response.statusCode !== 200) {
-      return res.json({
+  var query = {};
+  if (req.query.sub === "true") {
+    query.subRepositories = req.body.repository.full_name;
+  } else {
+    query.name = req.body.repository.full_name;
+  }
+  Repository.findOneRepository(query)
+  .then(function (repositoryData) {
+    if (repositoryData.enable === true) {
+      request({
+        url: `https://api.github.com/repos/${repositoryData.name}/contents/.yaydoc.yml?ref=${branch}`,
+        headers: {
+          'User-Agent': 'yaydoc'
+        }
+      }, function (error, response, body) {
+        if (response.statusCode !== 200) {
+          res.json({
+            status: false,
+            description: ".yaydoc.yml configuration file doesn't exist."
+          });
+        } else {
+          switch (event) {
+            case 'push':
+            User.getUserById(repositoryData.registrant.id, function(err, userData) {
+              if (err) {
+                next({
+                  status: 500,
+                  message: 'Something went wrong.'
+                });
+              } else {
+                var data = {
+                  email: userData.email,
+                  gitUrl: `https://github.com/${repositoryData.name}.git`,
+                  docTheme: '',
+                  debug: true,
+                  targetBranch: branch,
+                  docPath: '',
+                  subProject: repositoryData.subRepositories.map(x => `https://github.com/${x}.git`)
+                };
+                generator.executeScript({}, data, function (err, generatedData) {
+                  if (err) {
+                    build.updateBuildStatus(repositoryData.name, false);
+                    console.log(err);
+                    return
+                  } else {
+                    deploy.deployPages({}, {
+                      email: userData.email,
+                      gitURL: `https://github.com/${repositoryData.name}.git`,
+                      username: repositoryData.registrant.id,
+                      uniqueId: generatedData.uniqueId,
+                      encryptedToken: repositoryData.accessToken
+                    });
+                    build.updateBuildStatus(repositoryData.name, true);
+                  }
+                });
+              }
+            });
+              break;
+            default:
+            return res.json({
+              status: false,
+              description: 'undefined event'
+            });
+          }
+        }
+      });
+    } else {
+      res.json({
         status: false,
-        description: ".yaydoc.yml configuration file doesn't exist."
+        description: "Yaydoc disabled for this repository"
       });
     }
-
-    switch (event) {
-      case "push":
-        Repository.findOneRepository({
-            name: repositoryName
-        }).then(function(result) {
-          if (result.enable === true) {
-            User.getUserById(result.registrant.id, function (error, user) {
-              var data = {
-                email: user.email,
-                gitUrl: req.body.repository.clone_url,
-                docTheme: "",
-                debug: true,
-                targetBranch: branch,
-                docPath: ''
-              };
-              generator.executeScript({}, data, function (err, generatedData) {
-                if (err) {
-                  build.updateBuildStatus(repositoryName, false);
-                  console.log(err);
-                  return;
-                }
-                deploy.deployPages({}, {
-                  email: user.email,
-                  gitURL: req.body.repository.clone_url,
-                  username: result.registrant.login,
-                  uniqueId: generatedData.uniqueId,
-                  encryptedToken: result.accessToken
-                });
-                build.updateBuildStatus(repositoryName, true);
-              });
-            });
-          } else {
-            res.json({
-              status: false,
-              description: "Yaydoc is disabled for this repository"
-            })
-          }
-        }).catch((err) => {
-          console.log(err);
-        });
-
-        return res.json({
-          status: true
-        });
-        break;
-      default:
-        return res.json({
-          status: false,
-          description: 'undefined event'
-        });
-    }
+  }).catch(function (err) {
+      console.log(err);
   });
 });
 

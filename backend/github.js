@@ -96,3 +96,76 @@ exports.deleteHook = function (name, hook, accessToken, callback) {
     }
   });
 };
+
+/**
+ * Check whether hook is registered to the repository or not
+ * @param name: `full_name` of a repository
+ * @param token: github access token
+ */
+exports.hookValidator = function (name, token) {
+  return new Promise(function(resolve, reject) {
+    request({
+      url: `https://api.github.com/repos/${name}/hooks`,
+      headers: {
+        'User-Agent': 'Yaydoc',
+        'Authorization': 'token ' + crypter.decrypt(token)
+      }
+    }, function (error, response, body) {
+      var isRegistered = false;
+      if (response.statusCode !== 200) {
+        console.log(response.statusCode + ': ' + response.statusMessage);
+        reject()
+      }
+      var hooks = JSON.parse(body);
+      var hookurl = 'http://' + process.env.HOSTNAME + '/ci/webhook';
+      for (var i = 0; i < hooks.length; i++) {
+        if (hooks[i].config.url === hookurl) {
+          isRegistered = true;
+          break;
+        }
+      }
+      resolve({repositoryName: name, isRegistered: isRegistered})
+    });
+  });
+}
+
+/**
+ * Register hook to the respository
+ * @param {Object} data: Data of the repository
+ * @param {String} data.name: full_name of the repository
+ * @param {Boolean} data.sub: Flag to check whether the repository is sub project or not
+ */
+exports.registerHook = function (data, token) {
+  return new Promise(function(resolve, reject) {
+    var hookurl = 'http://' + process.env.HOSTNAME + '/ci/webhook';
+    if (data.sub === true) {
+      hookurl += `?sub=true`;
+    }
+    request({
+      url: `https://api.github.com/repos/${data.name}/hooks`,
+      headers: {
+        'User-Agent': 'Yaydoc',
+        'Authorization': 'token ' + crypter.decrypt(token)
+      },
+      method: 'POST',
+      json: {
+        name: "web",
+        active: true,
+        events: [
+          "push"
+        ],
+        config: {
+          url: hookurl,
+          content_type: "json"
+        }
+      }
+    }, function(error, response, body) {
+      if (response.statusCode !== 201) {
+        console.log(response.statusCode + ': ' + response.statusMessage);
+        resolve({status: false, body:body});
+      } else {
+        resolve({status: true, body: body});
+      }
+    });
+  });
+}

@@ -14,11 +14,11 @@ const repositorySchema = new mongoose.Schema({
   },
   accessToken: String,
   buildStatus: Boolean,
-  mailService: {
+  mailService:{
     status: Boolean,
-    email: String,
+    email: String
   },
-  hook: String,
+  hook: [String],
   enable: {
     type: Boolean,
     default: true
@@ -27,6 +27,10 @@ const repositorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  subRepositories:{
+    type: [String],
+    default: []
+  }
 });
 
 const Repository = module.exports = mongoose.model('Repository', repositorySchema);
