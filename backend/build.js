@@ -5,10 +5,16 @@ var mailer = require("./mailer");
 
 Repository = require('../model/repository');
 User = require('../model/user');
+BuildLog = require('../model/buildlog');
 
-exports.updateBuildStatus = function (name, buildStatus) {
+exports.updateBuildStatus = function (name, buildNumber, buildStatus) {
 
   async.waterfall([
+    function (callback) {
+      BuildLog.setBuildStatus(name, buildNumber, buildStatus, function (error) {
+        callback(error);
+      })
+    },
     function (callback) {
       Repository.setBuildStatusToRepository(name, buildStatus, function (error, repository) {
         if (!error) {

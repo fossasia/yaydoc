@@ -16,6 +16,7 @@
     "express-session": "^1.15.3",
     "jade": "~1.11.0",
     "mocha": "^3.4.2",
+    "moment": "^2.18.1",
     "mongoose": "^4.11.0",
     "morgan": "~1.8.1",
     "nodemailer": "^4.0.1",
