@@ -20,7 +20,7 @@ router.post('/delete', function (req, res, next) {
       });
     },
     function (repository, callback) {
-      Repository.deleteRepositoryByName(name, function (error) {
+      Repository.deleteRepositoryWithLogs(name, function (error) {
         callback(error, repository);
       })
     },

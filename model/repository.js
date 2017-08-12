@@ -241,3 +241,18 @@ module.exports.getRepositoryWithLatestLogs = function (name, callback) {
     callback(error, results[0]);
   });
 };
+
+/**
+ * Delete a repository with its log history
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+Repository.deleteRepositoryWithLogs = function (name, callback) {
+  Repository.deleteRepositoryByName(name, function (error, repository) {
+    if (error) {
+      callback(error, repository);
+    } else {
+      BuildLog.deleteRepositoryLogs(name, callback);
+    }
+  });
+};
