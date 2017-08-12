@@ -24,6 +24,7 @@ router.get("/github", function (req, res, next) {
 
 router.post("/ci", function (req, res, next) {
     req.session.ci = true;
+    req.session.url = req.get('referer');
     next();
 }, passport.authenticate('github', {
   scope: [
@@ -36,7 +37,11 @@ router.post("/ci", function (req, res, next) {
 router.get("/github/callback", passport.authenticate('github'), function (req, res, next) {
   if (req.session.ci) {
     req.session.ci = '';
-    res.redirect("/dashboard");
+    if (req.session.url === `http://${process.env.HOSTNAME}/` || req.session.url === `https://${process.env.HOSTNAME}/`) {
+      res.redirect('/dashboard');
+    } else{
+      res.redirect(req.session.url);
+    }
   } else {
     req.session.token = req.user.token;
     res.redirect("/deploy/github");

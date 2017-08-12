@@ -1,0 +1,24 @@
+nav.navbar.navbar-default
+  .container
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='#myNavbar')
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='/') Yaydoc
+    #myNavbar.collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-left
+        li
+          a(href="http://yaydoc.fossasia.org/" target="_blank") Docs
+        li
+          a(href="http://blog.fossasia.org/?s=yaydoc" target="_blank") Blog
+      ul.nav.navbar-nav.navbar-right
+        if loggedIn
+          li
+            a(href="/dashboard") Dashboard
+        else
+          li
+            form(method="post" action="/auth/ci")
+              button#btnLogout
+                i.fa.fa-github
+                | &nbsp; Sign in with Github
