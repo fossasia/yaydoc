@@ -1,16 +1,16 @@
 var express = require("express");
 var router = express.Router();
-var request = require("request");
-var crypter = require("../util/crypter.js");
+
 var generator = require("../backend/generator.js");
 var deploy = require("../backend/deploy.js");
 var github = require("../backend/github");
 var build = require("../backend/build");
+var authMiddleware = require("../middleware/auth");
 
 Repository = require("../model/repository.js");
 User = require("../model/user");
 
-router.post('/register', function (req, res, next) {
+router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
   var repositoryName = req.body.repository || '';
   var organization = req.body.organization.split(":");
   var token = req.user.token || '';
@@ -132,12 +132,7 @@ router.post('/webhook', function(req, res, next) {
   Repository.findOneRepository(query)
   .then(function (repositoryData) {
     if (repositoryData.enable === true) {
-      request({
-        url: `https://api.github.com/repos/${repositoryData.name}/contents/.yaydoc.yml?ref=${branch}`,
-        headers: {
-          'User-Agent': 'yaydoc'
-        }
-      }, function (error, response, body) {
+      github.checkYaydocConfigurationInRepository(repositoryName, branch, function (error, response, body) {
         if (response.statusCode !== 200) {
           res.json({
             status: false,

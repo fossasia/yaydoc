@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-var passport = require("passport");
 var crypter = require("../util/crypter.js");
 
 router.get("/github", function (req, res, next) {

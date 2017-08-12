@@ -78,7 +78,7 @@ exports.hasAdminAccess = function (repository, accessToken, callback) {
  * Delete a Repository WebHook
  * @param name: name of the Repository
  * @param hook: Hook Id
- * @param accessToken: Access Token of the user
+ * @param accessToken: Github Access Token of the user
  * @param callback
  */
 exports.deleteHook = function (name, hook, accessToken, callback) {
@@ -100,15 +100,15 @@ exports.deleteHook = function (name, hook, accessToken, callback) {
 /**
  * Check whether hook is registered to the repository or not
  * @param name: `full_name` of a repository
- * @param token: github access token
+ * @param accessToken: Access Token of the user
  */
-exports.hookValidator = function (name, token) {
+exports.hookValidator = function (name, accessToken) {
   return new Promise(function(resolve, reject) {
     request({
       url: `https://api.github.com/repos/${name}/hooks`,
       headers: {
         'User-Agent': 'Yaydoc',
-        'Authorization': 'token ' + crypter.decrypt(token)
+        'Authorization': 'token ' + crypter.decrypt(accessToken)
       }
     }, function (error, response, body) {
       var isRegistered = false;
@@ -127,15 +127,16 @@ exports.hookValidator = function (name, token) {
       resolve({repositoryName: name, isRegistered: isRegistered})
     });
   });
-}
+};
 
 /**
- * Register hook to the respository
+ * Register a hook to the repository for Yaydoc
  * @param {Object} data: Data of the repository
  * @param {String} data.name: full_name of the repository
  * @param {Boolean} data.sub: Flag to check whether the repository is sub project or not
+ * @param accessToken: Access Token of the user
  */
-exports.registerHook = function (data, token) {
+exports.registerHook = function (data, accessToken) {
   return new Promise(function(resolve, reject) {
     var hookurl = 'http://' + process.env.HOSTNAME + '/ci/webhook';
     if (data.sub === true) {
@@ -145,7 +146,7 @@ exports.registerHook = function (data, token) {
       url: `https://api.github.com/repos/${data.name}/hooks`,
       headers: {
         'User-Agent': 'Yaydoc',
-        'Authorization': 'token ' + crypter.decrypt(token)
+        'Authorization': 'token ' + crypter.decrypt(accessToken)
       },
       method: 'POST',
       json: {
@@ -168,4 +169,19 @@ exports.registerHook = function (data, token) {
       }
     });
   });
-}
+};
+
+/**
+ * Check if the .yaydoc.yml file is present or not
+ * @param name: `full_name` of the repository
+ * @param branch: Branch of the repository
+ * @param callback
+ */
+exports.checkYaydocConfigurationInRepository = function (name, branch, callback) {
+  request({
+    url: 'https://api.github.com/repos/' + name + '/contents/.yaydoc.yml?ref=' + branch,
+    headers: {
+      'User-Agent': 'Yaydoc'
+    }
+  }, callback);
+};
