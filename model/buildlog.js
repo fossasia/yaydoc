@@ -10,6 +10,15 @@ const buildLogSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  metadata: {
+    status: {
+      type: Boolean,
+      default: false,
+    },
+    compareCommits: String,
+    headCommit: Object,
+    ref: String,
+  },
   generate: {
     data: Buffer,
     datetime: Date,
@@ -21,6 +30,24 @@ const buildLogSchema = mongoose.Schema({
 });
 
 const BuildLog = module.exports = mongoose.model('BuildLog', buildLogSchema);
+
+
+module.exports.constructBuildLog = function (data, callback) {
+  Repository.incrementBuildNumber(data.repository, function (error, repository) {
+    var buildlog = new BuildLog({
+      repository: data.repository,
+      buildNumber: repository.builds,
+      metadata: {
+        compareCommits: data.compareCommits,
+        headCommit: data.headCommit,
+        ref: data.ref
+      }
+    });
+    buildlog.save(function (error, repository) {
+      callback(error, repository);
+    })
+  });
+};
 
 /**
  * Get a single build log by id
@@ -69,18 +96,18 @@ module.exports.getLatestBuildLogByRepository = function (repository, callback) {
  * @param callback
  */
 module.exports.storeGenerateLogs = function (name, filepath, callback) {
-  Repository.incrementBuildNumber(name, function (error, repository) {
-    var buildlog = new BuildLog({
-      repository: name,
-      buildNumber: repository.builds,
-      generate: {
-        data: fs.readFileSync(filepath),
-        datetime: new Date()
-      }
-    });
-    buildlog.save(function (error, repository) {
-      callback(error, repository);
-    })
+  Repository.getRepositoryByName(name, function (error, repository) {
+    if (error) {
+      callback(error);
+    } else {
+      BuildLog.getParticularBuildLog(repository.name, repository.builds, function (error, buildLog) {
+        buildLog.generate.data = fs.readFileSync(filepath);
+        buildLog.generate.datetime = new Date();
+        buildLog.save(function (error, buildLog) {
+          callback(error, buildLog);
+        })
+      });
+    }
   });
 };
 
@@ -113,4 +140,13 @@ module.exports.storeGithubPagesLogs = function (name, filepath, callback) {
  */
 module.exports.deleteRepositoryLogs = function (name, callback) {
   BuildLog.deleteMany({repository: name}, callback);
+};
+
+module.exports.setBuildStatus = function (name, buildNumber, buildStatus, callback) {
+  BuildLog.findOneAndUpdate({
+    repository: name,
+    buildNumber: buildNumber,
+  }, {
+    'metadata.status': buildStatus
+  }, callback);
 };

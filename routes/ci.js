@@ -9,6 +9,7 @@ var authMiddleware = require("../middleware/auth");
 
 Repository = require("../model/repository.js");
 User = require("../model/user");
+BuildLog = require("../model/buildlog");
 
 router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
   var repositoryName = req.body.repository || '';
@@ -148,30 +149,43 @@ router.post('/webhook', function(req, res, next) {
                   message: 'Something went wrong.'
                 });
               } else {
-                var data = {
-                  email: userData.email,
-                  gitUrl: `https://github.com/${repositoryData.name}.git`,
-                  docTheme: '',
-                  debug: true,
-                  targetBranch: branch,
-                  docPath: '',
-                  subProject: repositoryData.subRepositories.map(x => `https://github.com/${x}.git`)
-                };
-                generator.executeScript({}, data, function (err, generatedData) {
-                  if (err) {
+                BuildLog.constructBuildLog({
+                  repository: repositoryName,
+                  compareCommits: req.body.compare,
+                  headCommit: req.body.head_commit,
+                  ref: req.body.ref
+                }, function (error) {
+                  if (error) {
                     build.updateBuildStatus(repositoryData.name, false);
                     console.log(err);
-                    return
-                  } else {
-                    deploy.deployPages({}, {
-                      email: userData.email,
-                      gitURL: `https://github.com/${repositoryData.name}.git`,
-                      username: repositoryData.registrant.id,
-                      uniqueId: generatedData.uniqueId,
-                      encryptedToken: repositoryData.accessToken
-                    });
-                    build.updateBuildStatus(repositoryData.name, true);
+                    return;
                   }
+
+                  var data = {
+                    email: userData.email,
+                    gitUrl: `https://github.com/${repositoryData.name}.git`,
+                    docTheme: '',
+                    debug: true,
+                    targetBranch: branch,
+                    docPath: '',
+                    subProject: repositoryData.subRepositories.map(x => `https://github.com/${x}.git`)
+                  };
+                  generator.executeScript({}, data, function (err, generatedData) {
+                    if (err) {
+                      build.updateBuildStatus(repositoryData.name, false);
+                      console.log(err);
+                      return;
+                    } else {
+                      deploy.deployPages({}, {
+                        email: userData.email,
+                        gitURL: `https://github.com/${repositoryData.name}.git`,
+                        username: repositoryData.registrant.id,
+                        uniqueId: generatedData.uniqueId,
+                        encryptedToken: repositoryData.accessToken
+                      });
+                      build.updateBuildStatus(repositoryData.name, repositoryData.builds, true);
+                    }
+                  });
                 });
               }
             });
