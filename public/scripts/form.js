@@ -86,7 +86,7 @@ $(function () {
   socket.on('success', function (data) {
     $("#progress").css("width", "100%");
     $('#btnDownload').css("display", "inline").attr("href", "/download/" + data.email +"/" + data.uniqueId);
-    $('#btnPreview').css("display", "inline").attr("href", "/preview/" + data.email +"/" + data.uniqueId + "_preview");
+    $('#btnPreview').css("display", "inline").attr("href", data.previewURL);
     styles.showNotification("Documentation Generated Successfully");
     if (validation.isGithubHTTPS(data.gitUrl)) {
       $('#btnDeployGithub').css("display", "inline");

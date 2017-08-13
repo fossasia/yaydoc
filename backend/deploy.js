@@ -84,3 +84,21 @@ exports.deployHeroku = function (socket, data) {
   });
 
 };
+
+exports.deploySurge = function(data, surgeLogin, surgeToken, callback) {
+  var args = [
+    "-l", surgeLogin,
+    "-t", surgeToken,
+    "-e", data.email,
+    "-u", data.uniqueId
+  ];
+
+  var spawnedProcess = spawn('./surge_deploy.sh', args);
+  spawnedProcess.on('exit', function(code) {
+    if (code === 0) {
+      callback(null, {description: 'Deployed successfully'});
+    } else {
+      callback({description: 'Unable to deploy'}, null);
+    }
+  });
+}

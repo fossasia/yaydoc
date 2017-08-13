@@ -17,7 +17,7 @@ const options = {
 exports.sendEmail = function (data) {
   var client = nodemailer.createTransport(sgTransport(options));
 
-  var previewURL = 'http://' + hostname + '/preview/' + data.email + '/' + data.uniqueId + '_preview';
+  var previewURL = data.previewURL;
   var downloadURL = 'http://' + hostname + '/download/' + data.email + '/' + data.uniqueId;
   var githubDeployURL = "";
   if (validation.isGithubHTTPS(data.gitUrl)) {

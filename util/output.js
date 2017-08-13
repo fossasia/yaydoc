@@ -3,10 +3,10 @@ var exports = module.exports = {};
 var readline = require('readline');
 var spawn = require('child_process').spawn;
 
-exports.lineOutput = function (socket, process, event, increment) {
+exports.lineOutput = function (socket, spawnedProcess, event, increment) {
   var donePercent = 0;
   readline.createInterface({
-    input     : process.stdout,
+    input     : spawnedProcess.stdout,
     terminal  : false
   }).on('line', function(data) {
     if ((donePercent + increment) <= 90) {
@@ -17,9 +17,9 @@ exports.lineOutput = function (socket, process, event, increment) {
   });
 };
 
-exports.lineError = function (socket, process, event) {
+exports.lineError = function (socket, spawnedProcess, event) {
   readline.createInterface({
-    input     : process.stderr,
+    input     : spawnedProcess.stderr,
     terminal  : false
   }).on('line', function(data) {
     console.log(data);

@@ -6,6 +6,8 @@ var validation = require("../public/scripts/validation.js");
 var spawn = require('child_process').spawn;
 var socketHandler = require('../util/socketHandler.js');
 var miscellaneous = require('../util/miscellaneous');
+var deploy = require("./deploy");
+var logger = require("../util/logger");
 
 BuildLog = require('../model/buildlog');
 
@@ -42,35 +44,37 @@ exports.executeScript = function (socket, formData, callback) {
     "-l", docPath
   ];
 
-  var process = spawn("./generate.sh", args);
+  var spawnedProcess = spawn("./generate.sh", args);
 
-  socketHandler.handleLineOutput(socket, process, 'logs', 4);
-  socketHandler.handleLineError(socket, process, 'err-logs');
+  socketHandler.handleLineOutput(socket, spawnedProcess, 'logs', 4);
+  socketHandler.handleLineError(socket, spawnedProcess, 'err-logs');
 
-  process.on('exit', function (code) {
+  spawnedProcess.on('exit', function (code) {
     console.log('child process exited with code ' + code);
     var data = { code: code, email: email, uniqueId: uniqueId, gitUrl: gitUrl };
     if (code === 0) {
-      socketHandler.handleSocket(socket, 'success', data);
-      if (callback !== undefined) {
-        BuildLog.storeGenerateLogs(miscellaneous.getRepositoryFullName(gitUrl),
-          'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
-            callback(error, data)
-          });
+      data.exitCode = code;
+      if (process.env.SURGE_LOGIN === undefined || process.env.SURGE_TOKEN === undefined) {
+        data.previewURL = `/preview/${email}/${uniqueId}_preview`;
+        logger.storeLogs(data, callback);
+        socketHandler.handleSocket(socket, 'success', data);
       } else {
-        mailer.sendEmail(data);
+        deploy.deploySurge(data, process.env.SURGE_LOGIN, process.env.SURGE_TOKEN, function (error, result) {
+          data.surgeSuccessFlag = false;
+          if (error) {
+            socketHandler.handleSocket(socket, 'failure', data);
+          } else {
+            data.previewURL = `https://${uniqueId}.surge.sh`;
+            socketHandler.handleSocket(socket, 'success', data);
+            data.surgeSuccessFlag = true;
+          }
+          data.surgeDeploy = true;
+          logger.storeLogs(data, callback);
+        });
       }
     } else {
+      data.exitCode = code;
       socketHandler.handleSocket(socket, 'failure', data);
-      if (callback !== undefined) {
-        BuildLog.storeGenerateLogs(reponame,
-          'temp/' + email + '/generate_' + uniqueId + '.txt', function (error) {
-          callback(error, data)
-        });
-        callback({
-          message: `Process exited with code : ${code}`
-        })
-      }
     }
   });
   return true;
