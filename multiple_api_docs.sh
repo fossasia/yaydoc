@@ -4,6 +4,7 @@ function generateSubAPIDocs {
   # $1 :- repo name
   # $2 :- SUB project doc path
   cd ${BUILD_DIR}/${1}
+
   export SWAGGER_UI=""
   export SWAGGER_SPEC_URL=""
   export JAVADOC_PATH=""

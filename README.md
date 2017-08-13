@@ -24,6 +24,20 @@ metadata:
   projectname: Yaydoc    # Name of the Project, default: Name of the repository
   version: development   # Version of the Project, default: UTC date of latest deployment
   debug: true            # Enables detailed logging, default: false
+  autoindex:             # Control various properties of the auto-generated index which is used to generate the landing page of the generated docs
+    include:             # Names of Documents which should be included at the top of the index. Files specified here if present, would be used to generate the starting page of the generated docs. default: README.md, README.rst
+      - README.md
+    toc:
+      show: true              # Whether table of contents for locally available documents should be generated.
+      heading: Contents       # The heading under which documents directly under `source` would be served.
+    subproject:
+      show: true              # Whether links to subprojects should be added, default: true
+      heading: Sub projects   # The overall heading of all subprojects, default: Sub Projects
+    apidoc:
+      show: true                  # Whether links to API docs should be added at the end. If this is false then none of the apidocs would be added, default: true
+      heading: API Documentation  # The overall heading of the API docs, default: API Documentation
+      javadoc:
+        show: true                # Whether link to javadoc should be added, default: false
 ```
 
 - Configuring build options

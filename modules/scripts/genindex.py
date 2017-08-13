@@ -24,7 +24,7 @@ def get_toctree(dirpath, filenames, level, caption=''):
     if not caption:
         caption = _title(os.path.basename(dirpath))
         if caption == os.curdir:
-            caption = 'Contents'
+            caption = os.environ.get('AUTOINDEX_TOC_HEADING', 'Contents')
 
     toctree = [get_heading(caption, level)]
     toctree.append('')
@@ -77,8 +77,7 @@ def get_heading(text, level=1):
 
 
 def get_javadoc():
-    javadoc = [get_heading("API Documentation", 1), "", "* `Javadoc <./javadoc>`_"]
-    return "\n".join(javadoc)
+    return "* `Javadoc <./javadoc>`_"
 
 
 def get_index(root, subprojects, sub_docpaths, javadoc):
@@ -87,39 +86,49 @@ def get_index(root, subprojects, sub_docpaths, javadoc):
     subproject_dirs = [subproject.split(os.path.sep)[0]
                        for subproject in subprojects]
 
-    # Include README from root
+    included_files = []
+    # Include files from the root
     root_files = next(os.walk(root))[2]
-    if 'README.rst' in root_files:
-        index.append(get_include(root, 'README.rst'))
-    elif 'README.md' in root_files:
-        index.append(get_include(root, 'README.md'))
+    for filename in deserialize(os.environ.get('AUTOINDEX_INCLUDE_FILES', '[]')):
+        if filename in root_files:
+            included_files.append(filename)
+            index.append(get_include(root, filename))
 
-    # Add toctrees as per the directory structure
-    for (dirpath, dirnames, filenames) in os.walk(os.curdir):
-        _ignore_files(dirpath, filenames, ['README.rst', 'README.md'], root)
-        _ignore_dirs(dirpath, dirnames, ['yaydoctemp', 'yaydocclone', '.git'])
-        _ignore_dirs(dirpath, dirnames, ['source'] + subproject_dirs, os.curdir)
+    if deserialize(os.environ.get('AUTOINDEX_INCLUDE_TOC', 'true')):
+        # Add toctrees as per the directory structure
+        for (dirpath, dirnames, filenames) in os.walk(os.curdir):
+            _ignore_files(dirpath, filenames, included_files, root)
+            _ignore_dirs(dirpath, dirnames, ['yaydoctemp', 'yaydocclone', '.git'])
+            _ignore_dirs(dirpath, dirnames, ['source'] + subproject_dirs, os.curdir)
 
-        if filenames:
-            toctree = get_toctree(dirpath, filenames, 1)
-            if toctree:
-                index.append(toctree)
+            if filenames:
+                toctree = get_toctree(dirpath, filenames, 1)
+                if toctree:
+                    index.append(toctree)
 
-    # Add title sub project
-    if subprojects:
-        index.append(get_heading("Sub Projects", 1))
+    if deserialize(os.environ.get('AUTOINDEX_INCLUDE_SUBPROJECT', 'true')):
+        # Add title sub project
+        if subprojects:
+            index.append(get_heading(os.environ.get('AUTOINDEX_SUBPROJECT_HEADING',
+                                                    'Sub Projects'), 1))
 
-    # Add links to sub projects
-    for subproject, sub_docpath in zip(subprojects, sub_docpaths):
-        sub_index_path = os.path.normpath(os.path.join(subproject, sub_docpath,
-                                                       'index.rst'))
-        toctree = get_toctree(os.curdir, [sub_index_path], 2,
-                              _title(subproject.split(os.path.sep)[0]))
-        index.append(toctree)
+        # Add links to sub projects
+        for subproject, sub_docpath in zip(subprojects, sub_docpaths):
+            sub_index_path = os.path.normpath(os.path.join(subproject, sub_docpath,
+                                                           'index.rst'))
+            toctree = get_toctree(os.curdir, [sub_index_path], 2,
+                                  _title(subproject.split(os.path.sep)[0]))
+            index.append(toctree)
 
-    # Add javadoc if javadoc exist
-    if javadoc:
-        index.append(get_javadoc())
+    if deserialize(os.environ.get('AUTOINDEX_INCLUDE_APIDOC', 'true')):
+        include_javadoc = deserialize(os.environ.get('AUTOINDEX_INCLUDE_JAVADOC', 'true'))
+
+        if (javadoc and include_javadoc):
+            index.append(get_heading(os.environ.get('AUTOINDEX_APIDOC_HEADING', 'API Documentation'), 1))
+
+        # Add javadoc if javadoc exist
+        if javadoc and include_javadoc:
+            index.append(get_javadoc())
 
     return '\n\n'.join(index) + '\n'
 

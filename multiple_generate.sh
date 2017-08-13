@@ -8,6 +8,10 @@ function cloneSubProject() {
   export SWAGGER_UI=""
   export SWAGGER_SPEC_URL=""
   export JAVADOC_PATH=""
+  export AUTOINDEX_INCLUDE_FILES="[]"
+  export AUTOINDEX_INCLUDE_APIDOC=""
+  export AUTOINDEX_INCLUDE_JAVADOC=""
+  export AUTOINDEX_INCLUDE_TOC=""
 
   # Setting environment variables for api docs
   ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py)"

@@ -23,7 +23,7 @@ def update_dict(base, head, prev_keys):
                     # any time would be valid since it can always be wrapped
                     # as a single element list
                     if base[key] is None or isinstance(base[key], list):
-                        continue
+                        base[key] = value
                     else:
                         type_mismatch(key, value)
                 else:
