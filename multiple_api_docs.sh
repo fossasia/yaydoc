@@ -9,7 +9,7 @@ function generateSubAPIDocs {
   export JAVADOC_PATH=""
 
   # Setting environment variables for api docs
-  ENVVARS="$(python ${BASE}/modules/scripts/config.py)"
+  ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py)"
   echo -e "\n${ENVVARS}\n" >> ${LOGFILE}
   eval ${ENVVARS}
 

@@ -17,7 +17,7 @@ BASE=$(pwd)
 LOGFILE=${BASE}/temp/${EMAIL}/heroku_deploy_${UNIQUEID}.txt
 
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config.py --file=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
+ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py --file=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
 eval $ENVVARS
 
 print_log "Setting up system for Heroku Deployment....\n"

@@ -6,10 +6,10 @@ from mock import patch
 # Inserting modules/scripts to sys.path so we can import modules from it
 sys.path.insert(0, os.path.abspath(os.path.join('modules', 'scripts')))
 
-import config
 import linkfix
 import genindex
-import serializer
+from config.serializer import serialize, deserialize
+from config.utils import update_dict, get_bash_command
 
 
 class ConfigTestCase(unittest.TestCase):
@@ -17,14 +17,14 @@ class ConfigTestCase(unittest.TestCase):
         """Tests recursive merging of dictionaries"""
         head = {'1': 1, '2': {'a': 3, 'b': 4}}
         base = {'1': 2, '2': {'b': 5}}
-        updated_dict = config.update_dict(head, base)
+        updated_dict = update_dict(head, base, [])
         self.assertEqual(updated_dict, {'1': 2, '2': {'a': 3, 'b': 5}})
 
     @patch.dict(os.environ, {'ENV2': 'val2', 'ENV4': ''}, True)
     def test_bash_command(self):
         """Tests whether correct variables are exported"""
         envdict = {'ENV1': 'val1', 'ENV2': 'val2', 'ENV3': None, 'ENV4': 'val4'}
-        command = config.get_bash_command(envdict).strip('\n').split('\n')
+        command = get_bash_command(envdict).strip('\n').split('\n')
         self.assertTrue('export ENV1="val1"' in command)
         self.assertTrue('export ENV4="val4"' in command)
         self.assertEqual(len(command), 2)
@@ -108,52 +108,52 @@ class RelativeLinkFixTestCase(unittest.TestCase):
 
 class SerializationTestCase(unittest.TestCase):
     def test_with_bool(self):
-        self.assertEqual(serializer.serialize(True), "true")
-        self.assertEqual(serializer.serialize(False), "false")
+        self.assertEqual(serialize(True), "true")
+        self.assertEqual(serialize(False), "false")
 
     def test_none(self):
-        self.assertEqual(serializer.serialize(None), "")
+        self.assertEqual(serialize(None), "")
 
     def test_int_list(self):
-        self.assertEqual(serializer.serialize([1,2,3]), "[1,2,3]")
+        self.assertEqual(serialize([1,2,3]), "[1,2,3]")
 
     def test_string_list(self):
-        self.assertEqual(serializer.serialize(["qw","asd","zxcv"]),
+        self.assertEqual(serialize(["qw","asd","zxcv"]),
                          "[qw,asd,zxcv]")
 
     def test_nested_list(self):
-        self.assertEqual(serializer.serialize([True, [1, None], "Hello", [False]]),
+        self.assertEqual(serialize([True, [1, None], "Hello", [False]]),
                          "[true,[1,],Hello,[false]]")
 
     def test_empty_list(self):
-        self.assertEqual(serializer.serialize([]), "[]")
+        self.assertEqual(serialize([]), "[]")
 
 
 class DeserializationTestCase(unittest.TestCase):
     def test_with_bool(self):
-        self.assertEqual(serializer.deserialize("True"), True)
-        self.assertEqual(serializer.deserialize("False"), False)
-        self.assertEqual(serializer.deserialize("true"), True)
-        self.assertEqual(serializer.deserialize("false"), False)
+        self.assertEqual(deserialize("True"), True)
+        self.assertEqual(deserialize("False"), False)
+        self.assertEqual(deserialize("true"), True)
+        self.assertEqual(deserialize("false"), False)
 
     def test_int_list(self):
-        self.assertEqual(serializer.deserialize("[1,2,3]"),
+        self.assertEqual(deserialize("[1,2,3]"),
                          [1,2,3])
 
     def test_int_list_no_numeric(self):
-        self.assertEqual(serializer.deserialize("[1,2,3]", numeric=False),
+        self.assertEqual(deserialize("[1,2,3]", numeric=False),
                          ['1','2','3'])
 
     def test_string_list(self):
-        self.assertEqual(serializer.deserialize("[qw,asd,zxcv]"),
+        self.assertEqual(deserialize("[qw,asd,zxcv]"),
                          ['qw','asd','zxcv'])
 
     def test_nested_list(self):
-        self.assertEqual(serializer.deserialize("[true,[1,],Hello,[false]]"),
+        self.assertEqual(deserialize("[true,[1,],Hello,[false]]"),
                          [True, [1, ''], "Hello", [False]])
 
     def test_empty_list(self):
-        self.assertEqual(serializer.deserialize("[]"), [])
+        self.assertEqual(deserialize("[]"), [])
 
 
 if __name__ == '__main__':
