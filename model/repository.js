@@ -199,6 +199,19 @@ module.exports.getRepositoryWithLogs = function (name, callback) {
       }
     },
     {
+      $project: {
+        name: 1,
+        registrant: 1,
+        owner: 1,
+        buildStatus: 1,
+        builds: 1,
+        logs: {
+          metadata: 1,
+          buildNumber: 1
+        }
+      }
+    },
+    {
       $sort: {
         'logs.buildNumber': -1
       }
@@ -237,6 +250,53 @@ module.exports.getRepositoryWithLatestLogs = function (name, callback) {
       }
     },
     { $limit : 1 }
+  ]).exec(function (error, results) {
+    callback(error, results[0]);
+  });
+};
+
+/**
+ * Get build logs of a specified log for a particular repository
+ * @param name: `full_name` of the repository
+ * @param buildNumber: Build Number of the log
+ * @param callback
+ */
+Repository.getRepositoryWithSpecificLog = function (name, buildNumber, callback) {
+  Repository.aggregate([
+    {
+      $match: {
+        name: name
+      }
+    },
+    {
+      $lookup: {
+        from: 'buildlogs',
+        localField: 'name',
+        foreignField: 'repository',
+        as: 'logs'
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        logs: {
+          $filter: {
+            input: "$logs",
+            as: "log",
+            cond: {
+              $eq: ["$$log.buildNumber", parseInt(buildNumber)]
+            }
+          }
+        }
+      }
+
+    },
+    {
+      $unwind: {
+        path: '$logs',
+        preserveNullAndEmptyArrays: true,
+      }
+    },
   ]).exec(function (error, results) {
     callback(error, results[0]);
   });

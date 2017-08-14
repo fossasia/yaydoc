@@ -156,7 +156,7 @@ router.post('/webhook', function(req, res, next) {
                   ref: req.body.ref
                 }, function (error) {
                   if (error) {
-                    build.updateBuildStatus(repositoryData.name, false);
+                    build.updateBuildStatus(repositoryData.name, repositoryData.builds, false);
                     console.log(err);
                     return;
                   }
@@ -172,7 +172,7 @@ router.post('/webhook', function(req, res, next) {
                   };
                   generator.executeScript({}, data, function (err, generatedData) {
                     if (err) {
-                      build.updateBuildStatus(repositoryData.name, false);
+                      build.updateBuildStatus(repositoryData.name, repositoryData.builds, false);
                       console.log(err);
                       return;
                     } else {

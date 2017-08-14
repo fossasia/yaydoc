@@ -142,10 +142,17 @@ module.exports.deleteRepositoryLogs = function (name, callback) {
   BuildLog.deleteMany({repository: name}, callback);
 };
 
+/**
+ * Set the status of a particular build
+ * @param name: `full_name` of the repository
+ * @param buildNumber: `repository.builds`
+ * @param buildStatus: Status of the build
+ * @param callback
+ */
 module.exports.setBuildStatus = function (name, buildNumber, buildStatus, callback) {
   BuildLog.findOneAndUpdate({
     repository: name,
-    buildNumber: buildNumber,
+    buildNumber: buildNumber + 1,
   }, {
     'metadata.status': buildStatus
   }, callback);

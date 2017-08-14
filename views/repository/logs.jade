@@ -15,35 +15,32 @@ block content
         a(href="/#{repository.name}/logs") Log History
     for buildLog in buildLogs
       - buildLog = buildLog.logs
-      .panel-group#accordion
-        .panel.panel-default
-          .panel-heading
-            h4.panel-title
-              a(data-toggle='collapse', data-parent='#accordion', href='#collapse-generate-#{buildLog.buildNumber}')
-                | Generate Logs (##{buildLog.buildNumber})
-                span(style="float:right") #{buildLog.generate.datetime}
-          .panel-collapse.collapse(id="collapse-generate-#{buildLog.buildNumber}")
-            .panel-body
-              if buildLog.generate.data
-                pre #{buildLog.generate.data}
-              else
-                p
-                | Failed to retrieve Documentation Generation Logs. It is possible that the process is currently being run.
-                | If that is the case, kindly refresh or come back later.
-        .panel.panel-default
-          .panel-heading
-            h4.panel-title
-              a(data-toggle='collapse', data-parent='#accordion', href='#collapse-deploy-#{buildLog.buildNumber}')
-                | Github Pages Deployment Logs (##{buildLog.buildNumber})
-                span(style="float:right") #{buildLog.generate.datetime}
-          .panel-collapse.collapse(id="collapse-deploy-#{buildLog.buildNumber}")
-            .panel-body
-              if buildLog.ghpages.data
-                pre #{buildLog.ghpages.data}
-              else
-                p
-                | Failed to retrieve Github Pages Deployment Logs. It is possible that the process is currently being run.
-                | If that is the case, kindly refresh or come back later.
+      - status = buildLog.metadata.status ? 'Success' : 'Failed'
+      .bs-callout.bs-callout-info
+        .row
+          .col-md-6
+            h4
+              span(style="font-weight: 700") #{buildLog.metadata.ref.split('/')[2]}&nbsp;
+              | - #{buildLog.metadata.headCommit.message.split("\\")[0]}
+            ul(style="list-style:none")
+              li
+                | Commit:
+                a(href="#{buildLog.metadata.headCommit.url}" target="_blank") #{buildLog.metadata.headCommit.id.substr(0, 12)}
+              li
+                | Compare:
+                a(href="#{buildLog.metadata.compareCommits}" target="_blank") #{buildLog.metadata.compareCommits.split('/')[6]}
+          .col-md-6
+            h4
+              a(href="/#{repository.name}/logs/#{buildLog.buildNumber}")
+                strong Build:
+                | ##{buildLog.buildNumber}
+            ul(style="list-style:none")
+              li Status: #{status}
+              li
+                strong #{buildLog.metadata.headCommit.author.name}
+                | &nbsp;authored and&nbsp;
+                strong #{buildLog.metadata.headCommit.committer.name}
+                | &nbsp;committed
   .modal.fade#statustag-modal(role='dialog')
     .modal-dialog
       .modal-content
