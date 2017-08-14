@@ -3,7 +3,10 @@ extends layout
 block content
   script.
     var repository = #{repository}
+  script(src="/scripts/styles.js")
   script(src="/scripts/socket-repository.js")
+  script(src="/scripts/search.js")
+  script(src="/scripts/notification.js")
   .container
     h2
       | #{repository.name} &nbsp;
@@ -55,6 +58,21 @@ block content
           input(type="hidden", name="repository", value="#{repository.name}")
         button.btn.btn-primary Enable
     hr
+    h3 Sub Repository
+    if repository.subRepositories.length !== 0
+      table
+        each subRepository in repository.subRepositories
+          tr
+            td
+              h4 #{subRepository.name}
+            td
+              form(method="POST" action="/repository/sub/delete").form-inline
+                .form-group
+                input(type="hidden", name="repository", value="#{repository.name}")
+                input(type="hidden", name="subRepository", value="#{subRepository.name}")
+                button.btn.btn-danger(type="submit") Delete 
+    button.btn.btn-default(data-toggle="modal" href="#addSub") Add Sub Project
+    hr
     h3 Danger Zone
     if repository.enable
       form(method="POST"  action="/repository/disable").form-inline
@@ -87,3 +105,29 @@ block content
               input.form-control#repository-name(name="name" autofocus)
           .modal-footer
             button.btn.btn-default#btnDelete(disabled="disabled") Delete
+  .modal.fade#addSub(role='dialog')
+    .modal-dialog
+      .modal-content
+        form#ci_sub_register(action="/repository/sub/add", method="POST")
+          input(type="hidden" name="mainRepository" value="#{repository.name}")
+          .modal-header
+            button.close(type='button', data-dismiss='modal') ×
+            h4.modal-title Add a subproject
+          .modal-body
+            .form-group
+              label.control-label(for='orgs') Username/Organization:
+              select.form-control#orgs(name="organization")
+                option(value="#{user.id}:#{user.username}") #{user.username}
+                if organizations
+                  each organization in organizations
+                    option(value="#{organization.id}:#{organization.name}") #{organization.name}
+            .form-group
+              label.control-label(for='search_bar') Search Repository:
+              .input-group
+                input.form-control#search_bar(placeholder="Enter project name")
+                span.input-group-btn
+                  button.btn.btn-default#search(type="button") Search
+             .form-group#search_result
+          .modal-footer
+             button.btn.btn-default#btnRegister(disabled) Register
+   

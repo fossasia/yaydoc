@@ -149,4 +149,57 @@ router.post('/prstatus/disable', authMiddleware.isLoggedIn, function (req, res, 
   });
 });
 
+router.post('/sub/delete', authMiddleware.isLoggedIn, function (req, res, next) {
+  var name = req.body.repository;
+  var subRepository = req.body.subRepository;
+  async.waterfall([
+    function (callback) {
+      Repository.getSubRepository(name, subRepository, function (error, data) {
+        callback(error, data)
+      });
+    },
+    function (repository, callback) {
+      github.deleteHook(subRepository, repository.subRepositories[0].hook, req.user.token, function (error) {
+        callback(error, repository);
+      })
+    },
+    function (repository, callback) {
+      Repository.deleteSubRepository(name, subRepository, function (error, data) {
+        callback(error);
+      })
+    }
+  ], function (error) {
+    if (error) {
+      return res.redirect(`/${name}/settings?status=delete_failure`);
+    }
+    return res.redirect(`/${name}/settings?status=delete_success`);
+  });
+});
+
+router.post('/sub/add', authMiddleware.isLoggedIn, function (req, res, next) {
+  var name = req.body.mainRepository;
+  var subRepository = req.body.repository;
+  github.hookValidator(subRepository, req.user.token)
+  .then(function (validatedResult) {
+    if (validatedResult.isRegistered === true) {
+      return res.redirect("/dashboard?status=registration_mismatch");
+    }
+    github.registerHook({name: subRepository, sub: true}, req.user.token)
+    .then(function (registeredHook) {
+      if (registeredHook.status !== true) {
+        return res.redirect("/dashboard?status=registration_failed");
+      }
+      Repository.addSubRepository(name, subRepository, registeredHook.body.id, function(error, data) {
+        if (error) {
+          return next({
+            status: 500,
+            messages: `Something went wrong`
+          });
+        }
+        res.redirect(`/${name}/settings?status=registration_successful`);
+      });
+    });
+  });
+});
+
 module.exports = router;

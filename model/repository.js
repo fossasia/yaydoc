@@ -163,6 +163,16 @@ module.exports.deleteRepositoryByName = function (name, callback) {
 };
 
 /**
+ * Delete a registered sub repository by `name` and `subRepositories`
+ * @param name: `full_name` of the repository
+ * @param subRepository: `full_name` of the sub repository
+ * @param callback
+ */
+module.exports.deleteSubRepository = function (name, subRepositoryName, callback) {
+  Repository.update({name: name}, { $pull: {subRepositories: {name: subRepositoryName}}}, callback);
+};
+
+/**
  * Increment the build number for a registered repository
  * @param name: `full_name` of the repository
  * @param callback
@@ -319,4 +329,27 @@ Repository.deleteRepositoryWithLogs = function (name, callback) {
       BuildLog.deleteRepositoryLogs(name, callback);
     }
   });
+};
+
+/**
+ * Get sub repository with name and sub repositoryName
+ * @param name: `full_name` of the repository
+ * @param subRepositoryName: `full_name` of the sub repository
+ * @param callback
+ */
+module.exports.getSubRepository = function (name, subRepositoryName, callback) {
+  Repository.findOne({name: name}, {subRepositories:{ $elemMatch: {name: subRepositoryName}}})
+  .exec(callback);
+};
+
+/**
+ * Add sub repository to the main repository
+ * @param name: `full_name` of the repository
+ * @param subRepositoryName: `full_name` of the sub repository
+ * @param hook: hook id
+ * @param callback
+ */
+module.exports.addSubRepository = function (name, subRepositoryName, hook, callback) {
+  Repository.update({name: name}, {$push: {subRepositories: {name: subRepositoryName, hook: hook}}})
+  .exec(callback);
 };
