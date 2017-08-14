@@ -19,6 +19,12 @@ function cloneSubProject() {
   eval ${ENVVARS}
   cd ${3}
 
+  if [ -d _static ]; then
+    print_log "$2: Copying static files..."
+    cp -R _static/. ${BUILD_DIR}/_static
+    print_log "done\n"
+  fi
+
   if [ ! -f index.rst ] && [ ! -f index.md ]; then
     echo -e "No index.rst found at $2/$3. Auto generating...\n"
     python ${BASE}/modules/scripts/genindex.py -j "${JAVADOC_PATH}" ${SUB_ROOT_DIR}
@@ -27,7 +33,7 @@ function cloneSubProject() {
       cat index.rst
       echo -e "\n--------------------------------------\n"
     fi
-    echo -e "Auto generated index.rst\n"
+    echo -e "Auto generated index.rst at $2/$3\n"
   fi
 }
 
