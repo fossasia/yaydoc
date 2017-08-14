@@ -70,13 +70,15 @@ router.get('/:owner/:reponame', function (req, res, next) {
   Repository.getRepositoryWithLatestLogs(fullName, function (error, result) {
     if (!result|| error) {
       return res.status(404).render('repository/404', {
-        name: fullName
+        name: fullName,
+        loggedIn: !!req.user,
       });
     }
 
     if (!result.logs) {
       return res.render('repository/204', {
-        name: fullName
+        name: fullName,
+        loggedIn: !!req.user,
       });
     }
 
@@ -84,6 +86,7 @@ router.get('/:owner/:reponame', function (req, res, next) {
       title: result.name,
       repository: result,
       hostname: hostname,
+      loggedIn: !!req.user,
     });
   });
 });
@@ -93,13 +96,15 @@ router.get('/:owner/:reponame/logs', function (req, res, next) {
   Repository.getRepositoryWithLogs(fullName, function (error, result) {
     if (result.length === 0 || error) {
       return res.status(404).render('repository/404', {
-        name: fullName
+        name: fullName,
+        loggedIn: !!req.user,
       });
     }
 
     if (result.length === 1 && !result[0].logs) {
       return res.render('repository/204', {
-        name: fullName
+        name: fullName,
+        loggedIn: !!req.user,
       });
     }
 
@@ -108,6 +113,7 @@ router.get('/:owner/:reponame/logs', function (req, res, next) {
       repository: result[0],
       buildLogs: result,
       hostname: hostname,
+      loggedIn: !!req.user,
     });
   });
 });
@@ -117,13 +123,15 @@ router.get('/:owner/:reponame/settings', authMiddleware.isLoggedIn, function (re
   Repository.getRepositoryByName(fullName, function (error, repository) {
     if (repository === null || error) {
       return res.status(404).render('repository/404', {
-        name: fullName
+        name: fullName,
+        loggedIn: true,
       });
     }
 
     res.render('repository/settings', {
       title: 'Settings - ' + repository.name,
-      repository: repository
+      repository: repository,
+      loggedIn: true,
     });
   });
 });
