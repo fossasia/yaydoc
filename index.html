@@ -182,6 +182,20 @@ as images, javascript referred from it should be present in a
   <span class="n">projectname</span><span class="p">:</span> <span class="n">Yaydoc</span>    <span class="c1"># Name of the Project, default: Name of the repository</span>
   <span class="n">version</span><span class="p">:</span> <span class="n">development</span>   <span class="c1"># Version of the Project, default: UTC date of latest deployment</span>
   <span class="n">debug</span><span class="p">:</span> <span class="n">true</span>            <span class="c1"># Enables detailed logging, default: false</span>
+  <span class="n">autoindex</span><span class="p">:</span>             <span class="c1"># Control various properties of the auto-generated index which is used to generate the landing page of the generated docs</span>
+    <span class="n">include</span><span class="p">:</span>             <span class="c1"># Names of Documents which should be included at the top of the index. Files specified here if present, would be used to generate the starting page of the generated docs. default: README.md, README.rst</span>
+      <span class="o">-</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+    <span class="n">toc</span><span class="p">:</span>
+      <span class="n">show</span><span class="p">:</span> <span class="n">true</span>              <span class="c1"># Whether table of contents for locally available documents should be generated.</span>
+      <span class="n">heading</span><span class="p">:</span> <span class="n">Contents</span>       <span class="c1"># The heading under which documents directly under `source` would be served.</span>
+    <span class="n">subproject</span><span class="p">:</span>
+      <span class="n">show</span><span class="p">:</span> <span class="n">true</span>              <span class="c1"># Whether links to subprojects should be added, default: true</span>
+      <span class="n">heading</span><span class="p">:</span> <span class="n">Sub</span> <span class="n">projects</span>   <span class="c1"># The overall heading of all subprojects, default: Sub Projects</span>
+    <span class="n">apidoc</span><span class="p">:</span>
+      <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                  <span class="c1"># Whether links to API docs should be added at the end. If this is false then none of the apidocs would be added, default: true</span>
+      <span class="n">heading</span><span class="p">:</span> <span class="n">API</span> <span class="n">Documentation</span>  <span class="c1"># The overall heading of the API docs, default: API Documentation</span>
+      <span class="n">javadoc</span><span class="p">:</span>
+        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to javadoc should be added, default: false</span>
 </pre></div>
 </div>
 <ul class="simple">
