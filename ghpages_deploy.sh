@@ -24,7 +24,7 @@ BASE=$(pwd)
 LOGFILE=${BASE}/temp/${EMAIL}/ghpages_deploy_${UNIQUEID}.txt
 
 # Setting environment variables
-ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py --file=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
+ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py --source=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
 eval $ENVVARS
 
 git config --global user.name "Yaydoc Bot"

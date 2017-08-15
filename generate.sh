@@ -22,6 +22,7 @@ function generateAPIDocs {
   # $1 :- CLONED REPO DIR
   # $2 :- RESULT DIR
   cd ${1}
+
   export SWAGGER_UI=""
   export SWAGGER_SPEC_URL=""
   export JAVADOC_PATH=""
@@ -50,8 +51,8 @@ function generateAPIDocs {
 URL_SPLIT=(${GITURL//// })
 
 PLATFORM=${URL_SPLIT[1]}
-OWNER=${URL_SPLIT[2]}
-REPONAME=${URL_SPLIT[3]%.git}
+export OWNER=${URL_SPLIT[2]}
+export REPONAME=${URL_SPLIT[3]%.git}
 
 # https://stackoverflow.com/a/15454916/4127836
 INVENV=$(python -c 'import sys; print ("true" if hasattr(sys, "real_prefix") else "false")')

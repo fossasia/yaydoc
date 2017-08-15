@@ -23,6 +23,19 @@ def get_default_config(owner, repo):
                          'version': utctime,
                          'author': owner,
                          'debug': False,
+                         'autoindex': {'include': ['README.md', 'README.rst'],
+                                       'subproject': {'show': True,
+                                                      'heading': 'Sub Projects',
+                                                     },
+                                       'toc': {'show': True,
+                                               'heading': 'Contents',
+                                              },
+                                       'apidoc': {'show': True,
+                                                  'heading': 'API Documentation',
+                                                  'javadoc': {'show': True,
+                                                             },
+                                                 },
+                                       },
                         },
             'build': {'markdown_flavour': 'markdown_github',
                       'logo': '',
@@ -76,6 +89,14 @@ def get_envdict(yaml_config, default_config):
     config.connect('VERSION', 'metadata.version')
     config.connect('AUTHOR', 'metadata.author')
     config.connect('DEBUG', 'metadata.debug')
+    config.connect('AUTOINDEX_INCLUDE_FILES', 'metadata.autoindex.include@')
+    config.connect('AUTOINDEX_INCLUDE_TOC', 'metadata.autoindex.toc.show')
+    config.connect('AUTOINDEX_TOC_HEADING', 'metadata.autoindex.toc.heading')
+    config.connect('AUTOINDEX_INCLUDE_SUBPROJECT', 'metadata.autoindex.subproject.show')
+    config.connect('AUTOINDEX_SUBPROJECT_HEADING', 'metadata.autoindex.subproject.heading')
+    config.connect('AUTOINDEX_INCLUDE_APIDOC', 'metadata.autoindex.apidoc.show')
+    config.connect('AUTOINDEX_APIDOC_HEADING', 'metadata.autoindex.apidoc.heading')
+    config.connect('AUTOINDEX_INCLUDE_JAVADOC', 'metadata.autoindex.apidoc.javadoc.show')
 
     config.connect('MARKDOWN_FLAVOUR', 'build.markdown_flavour', validate=validate_markdown_flavour)
     config.connect('LOGO', 'build.logo', validate=validate_mimetype_image)
@@ -119,12 +140,12 @@ def main():
     """Main function of this script. Reads from a file named `.yaydoc.yml`.
     Expects `OWNER` and `REPONAME` environment variables to be set."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--file', default='.yaydoc.yml', help='Path to yaml file')
+    parser.add_argument('-s', '--source', default='.yaydoc.yml', help='Path to yaml file')
     args = parser.parse_args()
 
     owner = os.environ.get('OWNER', '')
     repo = os.environ.get('REPONAME', '')
-    yaml_config = YAMLConfigurationReader(args.file).read()
+    yaml_config = YAMLConfigurationReader(args.source).read()
     default_config = get_default_config(owner, repo)
     envdict = get_envdict(yaml_config, default_config)
     bash_command = get_bash_command(envdict)

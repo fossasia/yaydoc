@@ -33,7 +33,7 @@ def get_html_path(path, filetype):
     if filetype is markdown and path has no extension at all.
     """
     basepath, ext = os.path.splitext(path)
-    if ext in ('.md', '.rst') or (filetype == 'md' and ext == ''):
+    if ext in ('.md', '.rst') or (filetype == 'md' and ext == '' and not basepath.endswith('/')):
         return basepath + '.html'
     return path
 
