@@ -54,27 +54,37 @@ exports.executeScript = function (socket, formData, callback) {
     var data = { code: code, email: email, uniqueId: uniqueId, gitUrl: gitUrl };
     if (code === 0) {
       data.exitCode = code;
-      if (process.env.SURGE_LOGIN === undefined || process.env.SURGE_TOKEN === undefined) {
-        data.previewURL = `/preview/${email}/${uniqueId}_preview`;
-        logger.storeLogs(data, callback);
-        socketHandler.handleSocket(socket, 'success', data);
+      if (formData.buildStatus === true) {
+        callback(null, {message: `Process exited with code : ${code}`});
       } else {
-        deploy.deploySurge(data, process.env.SURGE_LOGIN, process.env.SURGE_TOKEN, function (error, result) {
-          data.surgeSuccessFlag = false;
-          if (error) {
-            socketHandler.handleSocket(socket, 'failure', data);
-          } else {
-            data.previewURL = `https://${uniqueId}.surge.sh`;
-            socketHandler.handleSocket(socket, 'success', data);
-            data.surgeSuccessFlag = true;
-          }
-          data.surgeDeploy = true;
+        if (process.env.SURGE_LOGIN === undefined || process.env.SURGE_TOKEN === undefined) {
+          data.previewURL = `/preview/${email}/${uniqueId}_preview`;
           logger.storeLogs(data, callback);
-        });
+          socketHandler.handleSocket(socket, 'success', data);
+        } else {
+          deploy.deploySurge(data, process.env.SURGE_LOGIN, process.env.SURGE_TOKEN, function (error, result) {
+            data.surgeSuccessFlag = false;
+            if (error) {
+              socketHandler.handleSocket(socket, 'failure', data);
+            } else {
+              data.previewURL = `https://${uniqueId}.surge.sh`;
+              socketHandler.handleSocket(socket, 'success', data);
+              data.surgeSuccessFlag = true;
+            }
+            data.surgeDeploy = true;
+            logger.storeLogs(data, callback);
+          });
+        }
       }
     } else {
       data.exitCode = code;
-      socketHandler.handleSocket(socket, 'failure', data);
+      if (formData.buildStatus === true) {
+        callback({
+          message: `Process exited with code: ${code}`
+        }, null);
+      } else {
+        socketHandler.handleSocket(socket, 'failure', data);
+      }
     }
   });
   return true;

@@ -153,7 +153,8 @@ exports.registerHook = function (data, accessToken) {
         name: "web",
         active: true,
         events: [
-          "push"
+          "push",
+          "pull_request"
         ],
         config: {
           url: hookurl,
@@ -185,3 +186,35 @@ exports.checkYaydocConfigurationInRepository = function (name, branch, callback)
     }
   }, callback);
 };
+
+
+/**
+ * Create status to the PR
+ * @param commitId: commit sha
+ * @param name: 'full_name' of the repository
+ * @param state: state of the commit. accepted parameters are pending, success, failure, error
+ * @param description: short description of the status
+ * @param accessToken: Access Token of the user
+ * @param callback
+ */
+exports.createStatus = function(commitId, name, state, description, accessToken, callback) {
+  request.post({
+    url: `https://api.github.com/repos/${name}/statuses/${commitId}`,
+    headers: {
+      'User-Agent': 'Yaydoc',
+      'Authorization': 'token ' + crypter.decrypt(accessToken)
+    },
+    "content-type": "application/json",
+    body: JSON.stringify({
+      state: state,
+      target_url: `https://${process.env.HOSTNAME}/`,
+      description: description,
+      context: "Yaydoc CI"
+    })
+  }, function(error, response, body) {
+    if (error!== null) {
+      return callback({description: 'Unable to create status'}, null);
+    }
+    callback(null, JSON.parse(body));
+  });
+}
