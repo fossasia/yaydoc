@@ -65,12 +65,13 @@ block content
       ul(style="list-style:none")
         li
           h4(style="font-weight: 700") #{user.name}
-          table.table
+          table.table.repolist
             if ownedRepositories && ownedRepositories.length !== 0
               each repository in ownedRepositories
                 tr
-                  td #{repository.name}
-                  td(style="width:0;vertical-align: middle")
+                  td
+                    a.reponame(href="/#{repository.name}") #{repository.name}
+                  td(style="width:0")
                     a(href="/#{repository.name}/settings")
                       i.fa.fa-gear.fa-2x
                   td(style="width:0")
@@ -88,12 +89,13 @@ block content
           each organization in organizations
             li
               h4(style="font-weight: 700") #{organization.name}
-              table.table
+              table.table.repolist
                 if organization.repositories && organization.repositories.length !== 0
                   each repository in organization.repositories
                     tr
-                      td(style="vertical-align: middle") #{repository.name}
-                      td(style="width:0;vertical-align: middle")
+                      td
+                        a.reponame(href="/#{repository.name}") #{repository.name}
+                      td(style="width:0")
                         a(href="/#{repository.name}/settings")
                           i.fa.fa-gear.fa-2x
                       td(style="width:0")

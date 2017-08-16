@@ -138,6 +138,7 @@ router.get('/:owner/:reponame/logs/:buildNumber', function (req, res, next) {
       repository: result,
       hostname: hostname,
       specificLog: true,
+      loggedIn: !!req.user,
     });
   });
 });

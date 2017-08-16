@@ -222,10 +222,16 @@ a {
 .bs-callout-success h4 {
   color: #5cb85c;
 }
+.bs-callout-success h4 a {
+  color: #5cb85c;
+}
 .bs-callout-danger {
   border-left-color: #d9534f;
 }
 .bs-callout-danger h4 {
+  color: #d9534f;
+}
+.bs-callout-danger h4 a {
   color: #d9534f;
 }
 .bs-callout-warning {
@@ -267,4 +273,18 @@ a {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+}
+
+.repolist td {
+  vertical-align: middle
+}
+
+.repolist .reponame {
+  color: #666;
+  text-decoration: none;
+  padding: 5px;
+}
+
+.repolist .reponame:hover {
+  background-color: #f1f1f1;
 }
