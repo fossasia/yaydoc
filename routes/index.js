@@ -118,6 +118,30 @@ router.get('/:owner/:reponame/logs', function (req, res, next) {
   });
 });
 
+router.get('/:owner/:reponame/logs/:buildNumber', function (req, res, next) {
+  var fullName = req.params.owner + '/' + req.params.reponame;
+  Repository.getRepositoryWithSpecificLog(fullName, req.params.buildNumber, function (error, result) {
+    if (!result|| error) {
+      return res.status(404).render('repository/404', {
+        name: fullName
+      });
+    }
+
+    if (!result.logs) {
+      return res.render('repository/204', {
+        name: fullName
+      });
+    }
+
+    res.render('repository/index', {
+      title: '#' + result.logs.buildNumber + ' - ' + result.name,
+      repository: result,
+      hostname: hostname,
+      specificLog: true,
+    });
+  });
+});
+
 router.get('/:owner/:reponame/settings', authMiddleware.isLoggedIn, function (req, res, next) {
   var fullName = req.params.owner + '/' + req.params.reponame;
   Repository.getRepositoryByName(fullName, function (error, repository) {

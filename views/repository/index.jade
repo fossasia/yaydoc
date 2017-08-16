@@ -2,6 +2,7 @@ extends layout
 
 block content
   - buildLog=repository.logs
+  - status = buildLog.metadata.status ? 'Success' : 'Failed'
   .container
     h2
       | #{repository.name} &nbsp;
@@ -10,16 +11,23 @@ block content
       | &nbsp;
       img(src='/#{repository.name}.svg' data-toggle="modal" data-target="#statustag-modal" style='cursor: pointer')
     ul.nav.nav-tabs(style="margin-bottom: 10px")
-      li.active
-        a(href="#") Latest Log
+      if specificLog
+        li
+          a(href="/#{repository.name}") Latest Log
+      else
+        li.active
+          a(href="#") Latest Log
       li
         a(href="/#{repository.name}/logs") Log History
+      if specificLog
+        li.active
+          a(href="#") Build ##{buildLog.buildNumber}
     .bs-callout.bs-callout-info
       .row
         .col-md-6
           h4
             span(style="font-weight: 700") #{buildLog.metadata.ref.split('/')[2]}&nbsp;
-            | - #{buildLog.metadata.headCommit.message}
+            | - #{buildLog.metadata.headCommit.message.split("\\")[0]}
           ul(style="list-style:none")
             li
               | Commit:
@@ -28,7 +36,16 @@ block content
               | Compare:
               a(href="#{buildLog.metadata.compareCommits}" target="_blank") #{buildLog.metadata.compareCommits.split('/')[6]}
         .col-md-6
-          h4 Build: ##{buildLog.buildNumber}
+          h4
+            strong Build:
+            | ##{buildLog.buildNumber}
+          ul(style="list-style:none")
+            li Status: #{status}
+            li
+              strong #{buildLog.metadata.headCommit.author.name}
+              | &nbsp;authored and&nbsp;
+              strong #{buildLog.metadata.headCommit.committer.name}
+              | &nbsp;committed
     .panel-group#accordion
       .panel.panel-default
         .panel-heading
