@@ -65,6 +65,11 @@ router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
                 registeredHookResults.forEach(function (x) {
                   hookResultBody.push(x.body)
                 });
+                var mainRepoHook = hookResultBody.splice(0,1);
+                var aggregatedSubRepositories= [];
+                for (var i = 0; i < subRepositories.length; i++) {
+                  aggregatedSubRepositories.push({name: subRepositories[i], hook: hookResultBody[i].id})
+                }
                 if (repository === null) {
                   repository = {
                     name: repositoryName,
@@ -81,8 +86,8 @@ router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
                       status: true,
                       email: req.user.email,
                     },
-                    hook: hookResultBody.map(x => x.id),
-                    subRepositories: subRepositories
+                    hook: mainRepoHook[0].id,
+                    subRepositories: aggregatedSubRepositories
                   };
                 } else {
                   repository = {
@@ -91,8 +96,8 @@ router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
                       id: req.user.id,
                       login: req.user.username
                     },
-                    hook: hookResultBody.map(x => x.id),
-                    subRepositories: subRepositories
+                    hook: mainRepoHook[0].id,
+                    subRepositories: aggregatedSubRepositories
                   };
                 }
                  Repository.createOrUpdateRepository(repositoryName, repository, function (error) {
@@ -125,7 +130,7 @@ router.post('/webhook', function(req, res, next) {
     branch = req.body.ref.split("/")[2];
   }
   if (req.query.sub === "true") {
-    query.subRepositories = req.body.repository.full_name;
+    query['subRepositories.name'] = req.body.repository.full_name;
   } else {
     query.name = req.body.repository.full_name;
   }
@@ -173,7 +178,7 @@ router.post('/webhook', function(req, res, next) {
                     debug: true,
                     targetBranch: branch,
                     docPath: '',
-                    subProject: repositoryData.subRepositories.map(x => `https://github.com/${x}.git`)
+                    subProject: repositoryData.subRepositories.map(x => `https://github.com/${x.name}.git`)
                   };
                   generator.executeScript({}, data, function (err, generatedData) {
                     if (err) {

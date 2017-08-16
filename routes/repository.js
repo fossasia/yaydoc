@@ -20,14 +20,24 @@ router.post('/delete', authMiddleware.isLoggedIn, function (req, res, next) {
       });
     },
     function (repository, callback) {
-      github.deleteHook(repository.name, repository.hook, req.user.token, function (error) {
+      var repositories = [{name: repository.name, hook: repository.hook}];
+      repository.subRepositories.forEach(function (x) {
+        repositories.push({name:x.name, hook: x.hook});
+      });
+      async.parallel(repositories.map(function (x) {
+        return function(cb) {
+          github.deleteHook(x.name, x.hook, req.user.token, function(error){
+            cb(error);
+          });
+        }
+      }), function (error) {
         callback(error, repository);
-      })
+      });
     },
     function (repository, callback) {
       Repository.deleteRepositoryWithLogs(name, function (error) {
         callback(error);
-      })
+      });
     }
   ], function (error) {
     if (error) {
