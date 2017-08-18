@@ -22,7 +22,7 @@ block content
       if specificLog
         li.active
           a(href="#") Build ##{buildLog.buildNumber}
-    .bs-callout.bs-callout-info
+    .bs-callout(class="#{buildLog.metadata.status ? 'bs-callout-success' : 'bs-callout-danger'} ")
       .row
         .col-md-6
           h4
@@ -42,10 +42,14 @@ block content
           ul(style="list-style:none")
             li Status: #{status}
             li
-              strong #{buildLog.metadata.headCommit.author.name}
-              | &nbsp;authored and&nbsp;
-              strong #{buildLog.metadata.headCommit.committer.name}
-              | &nbsp;committed
+              if buildLog.metadata.headCommit.author.name === buildLog.metadata.headCommit.committer.name
+                strong #{buildLog.metadata.headCommit.author.name}
+                | &nbsp;authored and committed
+              else
+                strong #{buildLog.metadata.headCommit.author.name}
+                | &nbsp;authored and&nbsp;
+                strong #{buildLog.metadata.headCommit.committer.name}
+                | &nbsp;committed
     .panel-group#accordion
       .panel.panel-default
         .panel-heading
