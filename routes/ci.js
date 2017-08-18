@@ -63,7 +63,7 @@ router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
               Repository.getRepositoryByName(repositoryName, function (error, repository) {
                 var hookResultBody = [];
                 registeredHookResults.forEach(function (x) {
-                  hookResultBody.push(x.body)
+                  hookResultBody.push(x.body);
                 });
                 var mainRepoHook = hookResultBody.splice(0,1);
                 var aggregatedSubRepositories= [];
