@@ -43,4 +43,20 @@ $(function() {
       $("#disableModal").modal('hide');
     });
   });
+
+  registerSearchEvents(0);
+
+  $("#register_btn").click(function () {
+    if (!$("#register_btn").hasClass("disabled")) {
+      $('#ci_register').submit();
+    }
+  });
+
+  $('#ci_sub_register').on('keyup keypress', function(e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+      e.preventDefault();
+      return false;
+    }
+  });
 });

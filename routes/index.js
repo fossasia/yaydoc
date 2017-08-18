@@ -4,6 +4,7 @@ var router = express.Router();
 var authMiddleware = require("../middleware/auth");
 
 var hostname = process.env.HOSTNAME || 'yaydoc.herokuapp.com';
+var github = require("../backend/github");
 
 Repository = require("../model/repository");
 BuildLog = require("../model/buildlog");
@@ -153,10 +154,20 @@ router.get('/:owner/:reponame/settings', authMiddleware.isLoggedIn, function (re
       });
     }
 
-    res.render('repository/settings', {
-      title: 'Settings - ' + repository.name,
-      repository: repository,
-      loggedIn: true,
+    github.retrieveOrganizations(req.user.token, function(error, organizations) {
+      if (error) {
+        return next({
+          status: 500,
+          messages: `Something went wrong`
+        });
+      }
+      res.render('repository/settings', {
+        title: 'Settings - ' + repository.name,
+        repository: repository,
+        loggedIn: true,
+        user: req.user,
+        organizations: organizations
+      });
     });
   });
 });
