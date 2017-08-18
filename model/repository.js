@@ -18,7 +18,7 @@ const repositorySchema = new mongoose.Schema({
     status: Boolean,
     email: String
   },
-  hook: [String],
+  hook: String,
   enable: {
     type: Boolean,
     default: true
@@ -27,10 +27,10 @@ const repositorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  subRepositories:{
-    type: [String],
-    default: []
-  },
+  subRepositories: [{
+    name: String,
+    hook: String
+  }],
   PRStatus: {
     type: Boolean,
     default: false
