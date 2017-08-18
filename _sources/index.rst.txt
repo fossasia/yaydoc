@@ -1,1 +1,10 @@
 .. mdinclude:: ../README.md
+
+Installation
+============
+
+.. toctree::
+   :maxdepth: 1
+
+   installation/heroku
+   installation/local
