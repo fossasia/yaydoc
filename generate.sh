@@ -137,11 +137,11 @@ mkdir -p _themes
 # Setting up documentation sources
 print_log "Setting up documentation sources\n"
 
-sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=$DOCTHEME \
-  -d html_logo=$LOGO -d root_dir=$ROOT_DIR -d autoapi_python=$AUTOAPI_PYTHON -d mock_modules=$MOCK_MODULES \
-  -d owner=$OWNER -d repo=$REPONAME -d github_ribbon_enable=$GITHUB_RIBBON_ENABLE \
-  -d github_ribbon_position=$GITHUB_RIBBON_POSITION -d github_ribbon_color=$GITHUB_RIBBON_COLOR \
-  -d theme_opts_keys=$DOCTHEME_OPTIONS_KEYS -d theme_opts_values=$DOCTHEME_OPTIONS_VALUES \
+sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ -d html_theme=${DOCTHEME} \
+  -d html_logo=${LOGO} -d root_dir=${ROOT_DIR} -d autoapi_python=${AUTOAPI_PYTHON} -d mock_modules=${MOCK_MODULES} \
+  -d owner=${OWNER} -d repo=${REPONAME} -d github_ribbon_enable=${GITHUB_RIBBON_ENABLE} \
+  -d github_ribbon_position=${GITHUB_RIBBON_POSITION} -d github_ribbon_color=${GITHUB_RIBBON_COLOR} \
+  -d theme_opts_keys=${DOCTHEME_OPTIONS_KEYS} -d theme_opts_values=${DOCTHEME_OPTIONS_VALUES} \
   -d github_button_enable=${GITHUB_BUTTON_ENABLE} -d github_buttons=${GITHUB_BUTTONS} \
   -d github_button_large=${GITHUB_BUTTON_LARGE} -d github_button_show_count=${GITHUB_BUTTON_SHOW_COUNT} \
   >>${LOGFILE} 2>>${LOGFILE}

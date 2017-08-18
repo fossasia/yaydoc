@@ -12,6 +12,8 @@ OriginalFileInput = io.FileInput # pylint: disable=invalid-name
 def patch_fileinput(fileinput):
     """
     Return a decorator which replaces `docutils.io.FileInput` with `fileinput`
+    and sets `relative_source_path` equal to `self.arguments[0]` as a class variable.
+    This is meant to be used for include-like directives.
     """
     def decorator(function):
         # pylint: disable=missing-docstring
@@ -20,6 +22,7 @@ def patch_fileinput(fileinput):
             # pylint: disable=missing-docstring
             temp = io.FileInput
             io.FileInput = fileinput
+            fileinput.relative_source_path = args[0].arguments[0]
             return_value = function(*args, **kwargs)
             io.FileInput = temp
             return return_value
@@ -37,7 +40,7 @@ class FileInput(OriginalFileInput): # pylint: disable=too-few-public-methods
         with relative links modified as per `source_path`
         """
         content = OriginalFileInput.read(self)
-        return fix_relative_links(content, self.source_path)
+        return fix_relative_links(content, self.source_path, self.relative_source_path)
 
 
 class MarkdownFileInput(FileInput): # pylint: disable=too-few-public-methods

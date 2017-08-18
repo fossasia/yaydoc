@@ -25,7 +25,7 @@ LOGFILE=${BASE}/temp/${EMAIL}/ghpages_deploy_${UNIQUEID}.txt
 
 # Setting environment variables
 ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py --source=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
-eval $ENVVARS
+eval ${ENVVARS}
 
 git config --global user.name "Yaydoc Bot"
 git config --global user.email "noreply+bot@example.com"
@@ -35,7 +35,7 @@ cd temp/${EMAIL}
 
 git clone ${GIT_HTTPS_URL} ${UNIQUEID}_pages >>${LOGFILE} 2>>${LOGFILE}
 
-if [ $? -ne 0 ]; then
+if [ ${?} -ne 0 ]; then
   print_danger "Failed to clone gh-pages.\n"
   clean
   exit 3
@@ -66,7 +66,7 @@ if [ -z "$DOCURL" ]; then
   print_danger "DOCURL not set. Using default github pages URL"
 else
   print_log "DOCURL set."
-  echo $DOCURL > CNAME
+  echo ${DOCURL} > CNAME
 fi
 
 # Publish documentation
