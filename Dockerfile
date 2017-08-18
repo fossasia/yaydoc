@@ -1,8 +1,14 @@
 FROM node:boron
 
+RUN echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
+
 # Update and install packages
 RUN apt-get update && \
-    apt-get install -y python python-dev python-pip python-virtualenv zip rsync && rm -rf /var/lib/apt/lists/*
+    apt-get install -y -t jessie-backports python python-dev python-pip python-virtualenv zip rsync openjdk-8-jdk && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ENV PATH="$JAVA_HOME/bin:$PATH"
 
 # Create app directory
 WORKDIR /usr/src/app
