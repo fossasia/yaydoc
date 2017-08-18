@@ -71,38 +71,57 @@ class RelativeLinkFixTestCase(unittest.TestCase):
         """Tests whether markdown links are modified correctly"""
         md_content = '[title](docs/directory/file.md)'
         source_path = os.path.join(os.pardir, 'README.md')
-        new_content = linkfix.fix_relative_links(md_content, source_path)
+        new_content = linkfix.fix_relative_links(md_content, source_path, source_path)
         self.assertEqual(new_content, '[title   ](directory/file.html)')
 
     def test_with_rst(self):
         """Tests whether reStructuredText's links are modified correctly"""
         rst_content = '`title<docs/directory/file>`'
         source_path = os.path.join(os.pardir, 'README.rst')
-        new_content = linkfix.fix_relative_links(rst_content, source_path)
+        new_content = linkfix.fix_relative_links(rst_content, source_path, source_path)
         self.assertEqual(new_content, '`title     <directory/file>`')
 
     def test_with_html(self):
         html_content = '<img src="docs/directory/file">'
         source_path = os.path.join(os.pardir, 'README.md')
-        new_content = linkfix.fix_relative_links(html_content, source_path)
+        new_content = linkfix.fix_relative_links(html_content, source_path, source_path)
         self.assertEqual(new_content, '<img src="directory/file.html">')
 
     def test_with_image(self):
         md_content = '![icon](app/src/icons/launcher.png)'
         source_path = os.path.join(os.pardir, 'README.md')
-        new_content = linkfix.fix_relative_links(md_content, source_path)
+        new_content = linkfix.fix_relative_links(md_content, source_path, source_path)
         self.assertEqual(new_content, '![icon](../app/src/icons/launcher.png)')
+
+    def test_static_path(self):
+        md_content = '![icon](docs/_static/images/login.png)'
+        source_path = os.path.join(os.pardir, 'README.md')
+        new_content = linkfix.fix_relative_links(md_content, source_path, source_path)
+        self.assertEqual(new_content, '![icon     ](_static/images/login.png)')
+
+    def test_static_path_depth2(self):
+        md_content = '![icon](docs/_static/images/login.png)'
+        source_path = os.path.join(os.pardir, os.pardir, 'README.md')
+        new_content = linkfix.fix_relative_links(md_content, source_path, source_path)
+        self.assertEqual(new_content, '![icon     ](_static/images/login.png)')
+
+    def test_static_path_subproject(self):
+        md_content = '![icon](docs/_static/images/login.png)'
+        source_path = os.path.join(os.pardir, 'README.md')
+        abs_source_path = os.path.join('subrepo', 'README.md')
+        new_content = linkfix.fix_relative_links(md_content, abs_source_path, source_path)
+        self.assertEqual(new_content, '![icon](../../_static/images/login.png)')
 
     def test_local_markdown_link(self):
         md_content = '[title](#section)'
         source_path = os.path.join(os.pardir, 'README.md')
-        new_content = linkfix.fix_relative_links(md_content, source_path)
+        new_content = linkfix.fix_relative_links(md_content, source_path, source_path)
         self.assertEqual(new_content, '[title](#section)')
 
     def test_local_rst_link(self):
         md_content = '`title<#section>`'
         source_path = os.path.join(os.pardir, 'README.md')
-        new_content = linkfix.fix_relative_links(md_content, source_path)
+        new_content = linkfix.fix_relative_links(md_content, source_path, source_path)
         self.assertEqual(new_content, '`title<#section>`')
 
 

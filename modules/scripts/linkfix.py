@@ -46,22 +46,25 @@ def is_path_image(path):
     return is_image
 
 
-def fixlink(link, level, linktype, filetype=None):
+def fixlink(link, level_from_current, level_from_root, linktype, filetype=None):
     if is_relative(link) and not link.startswith('#'):
         splitted = [value for value in get_html_path(link, filetype).split('/')
                     if value]
-        if is_path_image(link) and linktype != 'html':
-            splitted = [os.pardir] * level + splitted
+        if '_static' in splitted:
+            splitted = [os.pardir] * level_from_root + splitted[splitted.index('_static'):]
         else:
-            if len(splitted) > level:
-                splitted = splitted[level:]
+            if is_path_image(link) and linktype != 'html':
+                splitted = [os.pardir] * level_from_current + splitted
             else:
-                splitted = [os.pardir] * level + splitted
+                if len(splitted) > level_from_current:
+                    splitted = splitted[level_from_current:]
+                else:
+                    splitted = [os.pardir] * level_from_current + splitted
         return '/'.join(splitted)
     return link
 
 
-def fix_relative_links(content, source_path):
+def fix_relative_links(content, srcpath_from_root, srcpath_from_current):
     """
     Modifies any relative links according to the `source_path`
 
@@ -73,9 +76,14 @@ def fix_relative_links(content, source_path):
     source_path: str
         path of the source file from which content was read
     """
-    filetype = os.path.splitext(source_path)[1].lstrip('.')
-    level = [value for value in source_path.replace(os.path.sep, '/').split('/')
-             if value].count(os.pardir)
+    def get_splitted_path(path):
+        return [value for value in path.replace(os.path.sep, '/').split('/') if value]
+
+    filetype = os.path.splitext(srcpath_from_current)[1].lstrip('.')
+
+    level_from_current = get_splitted_path(srcpath_from_current).count(os.pardir)
+    path_from_root_split = get_splitted_path(os.path.dirname(srcpath_from_root))
+    level_from_root = len(path_from_root_split) - 2 * path_from_root_split.count(os.pardir) + level_from_current
 
     def fix(match_object):
         """Callback meant to be passed to re.sub"""
@@ -83,7 +91,7 @@ def fix_relative_links(content, source_path):
         title = match_object.group('title')
         link = match_object.group('link')
 
-        link = fixlink(link, level, 'nonhtml', filetype)
+        link = fixlink(link, level_from_current, level_from_root, 'nonhtml', filetype)
         fmt_str = LINK_TEMPLATES[filetype]['format']
         output = fmt_str.format(title=title, link=link)
         if len(output) < length:
@@ -98,7 +106,7 @@ def fix_relative_links(content, source_path):
         link = match_object.group('link')
         end = match_object.group('end')
 
-        link = fixlink(link, level, 'html', filetype)
+        link = fixlink(link, level_from_current, level_from_root, 'html', filetype)
         fmt_str = LINK_TEMPLATES['html']['format']
         output = fmt_str.format(start=start, link=link, end=end)
         return output

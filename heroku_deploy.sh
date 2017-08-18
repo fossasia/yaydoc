@@ -18,7 +18,7 @@ LOGFILE=${BASE}/temp/${EMAIL}/heroku_deploy_${UNIQUEID}.txt
 
 # Setting environment variables
 ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py --source=${BASE}/temp/${EMAIL}/${UNIQUEID}.yaydoc.yml)"
-eval $ENVVARS
+eval ${ENVVARS}
 
 print_log "Setting up system for Heroku Deployment....\n"
 STATUS_CODE=$(curl -s -o /dev/null -w '%{http_code}' -u ":$HEROKU_API_KEY" -n https://api.heroku.com/apps/${HEROKU_APP_NAME} -H "Accept: application/vnd.heroku+json; version=3");
@@ -34,7 +34,7 @@ cd app
 
 curl https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-x64.tar.gz 2>/dev/null | tar xzv >/dev/null 2>&1
 
-cp $BASE/web.js .
+cp ${BASE}/web.js .
 rsync -av --progress ../ . --exclude app >>${LOGFILE} 2>>${LOGFILE}
 
 cd ..
@@ -42,8 +42,8 @@ tar czfv slug.tgz ./app >/dev/null 2>&1
 
 if [ ${STATUS_CODE} -eq 404 ]; then
   print_log "Creating Heroku app...\n"
-  heroku create $HEROKU_APP_NAME >>${LOGFILE} 2>>${LOGFILE}
-  if [ $? -ne 0 ]; then
+  heroku create ${HEROKU_APP_NAME} >>${LOGFILE} 2>>${LOGFILE}
+  if [ ${?} -ne 0 ]; then
     print_danger "Failed to create Heroku app.\n"
     rm -rf app
     exit 1
