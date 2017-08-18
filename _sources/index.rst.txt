@@ -6,5 +6,5 @@ Installation
 .. toctree::
    :maxdepth: 1
 
-   installation/heroku
    installation/local
+   installation/heroku
