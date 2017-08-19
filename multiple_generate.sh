@@ -12,6 +12,9 @@ function cloneSubProject() {
   export AUTOINDEX_INCLUDE_APIDOC=""
   export AUTOINDEX_INCLUDE_JAVADOC=""
   export AUTOINDEX_INCLUDE_TOC=""
+  export AUTOINDEX_INCLUDE_SWAGGER=""
+  export AUTOINDEX_RSS_URL=""
+  export AUTOINDEX_TWEETS_QUERY=""
 
   # Setting environment variables for api docs
   ENVVARS="$(python ${BASE}/modules/scripts/config/__main__.py)"
@@ -27,7 +30,7 @@ function cloneSubProject() {
 
   if [ ! -f index.rst ] && [ ! -f index.md ]; then
     echo -e "No index.rst found at $2/$3. Auto generating...\n"
-    python ${BASE}/modules/scripts/genindex.py -j "${JAVADOC_PATH}" ${SUB_ROOT_DIR}
+    python ${BASE}/modules/scripts/genindex.py ${SUB_ROOT_DIR}
     if [ "${DEBUG:-false}" == "true" ]; then
       echo -e "\n--------------------------------------\n"
       cat index.rst
