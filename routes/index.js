@@ -8,6 +8,34 @@ var github = require("../backend/github");
 
 Repository = require("../model/repository");
 BuildLog = require("../model/buildlog");
+StatusLog = require("../model/statuslog");
+
+router.get('/prstatus/:buildId', function (req, res, next) {
+  var buildId = req.params.buildId;
+  StatusLog.getLog(buildId, function (error, data) {
+    if (error) {
+      return next({
+        status: 500,
+        message: 'Something went wrong.'
+      });
+    }
+    if (data === null) {
+      return res.render('404');
+    }
+    var repository = {
+      name: data.repository,
+      logs: data
+    };
+    res.render('repository/index', {
+      title: 'Logs - ' + repository.name,
+      repository: repository,
+      hostname: hostname,
+      loggedIn: !!req.user,
+      PRStatus: true,
+      specificLog: false
+    });
+  });
+});
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
