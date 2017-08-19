@@ -24,6 +24,7 @@ metadata:
   projectname: Yaydoc    # Name of the Project, default: Name of the repository
   version: development   # Version of the Project, default: UTC date of latest deployment
   debug: true            # Enables detailed logging, default: false
+  inline_math: true      # Enable inline math. This only affects markdown documents, default: false
   autoindex:             # Control various properties of the auto-generated index which is used to generate the landing page of the generated docs
     include:             # Names of Documents which should be included at the top of the index. Files specified here if present, would be used to generate the starting page of the generated docs. default: README.md, README.rst
       - README.md

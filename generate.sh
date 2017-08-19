@@ -144,6 +144,7 @@ sphinx-quickstart -q -v "$VERSION" -a "$AUTHOR" -p "$PROJECTNAME" -t templates/ 
   -d theme_opts_keys=${DOCTHEME_OPTIONS_KEYS} -d theme_opts_values=${DOCTHEME_OPTIONS_VALUES} \
   -d github_button_enable=${GITHUB_BUTTON_ENABLE} -d github_buttons=${GITHUB_BUTTONS} \
   -d github_button_large=${GITHUB_BUTTON_LARGE} -d github_button_show_count=${GITHUB_BUTTON_SHOW_COUNT} \
+  -d enable_inline_math=${ENABLE_INLINE_MATH} \
   >>${LOGFILE} 2>>${LOGFILE}
 
 if [ $? -ne 0 ]; then
