@@ -73,7 +73,7 @@ fi
 print_log "Publishing documentation....\n"
 git add -f .
 git commit -m "[Auto] Update Built Docs ($(date +%Y-%m-%d.%H:%M:%S))" >>${LOGFILE} 2>>${LOGFILE}
-git push origin gh-pages >>${LOGFILE} 2>>${LOGFILE}
+git push origin gh-pages >/dev/null 2>&1
 
 print_log "Documentation published successfully!\n"
 
