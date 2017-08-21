@@ -20,7 +20,6 @@
     "mongoose": "^4.11.0",
     "morgan": "~1.8.1",
     "nodemailer": "^4.0.1",
-    "nodemailer-sendgrid-transport": "^0.2.0",
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
     "passport-heroku": "^1.0.0",

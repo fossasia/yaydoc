@@ -1,22 +1,20 @@
 var exports = module.exports = {};
 
 var nodemailer = require('nodemailer');
-var sgTransport = require('nodemailer-sendgrid-transport');
 var jade = require('jade');
 var hostname =process.env.HOSTNAME || 'yaydoc.herokuapp.com';
 var validation = require('../public/scripts/validation.js');
 
-const options = {
-  service: 'SendGrid',
+var client = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT),
   auth: {
-    api_user: process.env.SENDGRID_USERNAME,
-    api_key: process.env.SENDGRID_PASSWORD
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD
   }
-};
+});
 
 exports.sendEmail = function (data) {
-  var client = nodemailer.createTransport(sgTransport(options));
-
   var previewURL = data.previewURL;
   var downloadURL = 'http://' + hostname + '/download/' + data.email + '/' + data.uniqueId;
   var githubDeployURL = "";
@@ -42,7 +40,7 @@ exports.sendEmail = function (data) {
   });
 
   client.sendMail({
-    from: 'info@yaydoc.com',
+    from: 'info@yaydoc.org',
     to: data.email,
     subject: 'Preview your generated docs - Yaydoc',
     text: textContent,
@@ -57,14 +55,13 @@ exports.sendEmail = function (data) {
 };
 
 exports.sendMailOnBuild = function (buildStatus, email, repository) {
-  var client = nodemailer.createTransport(sgTransport(options));
   var status = buildStatus ? "Passed" : "Failed";
 
   var textContent = status + ': ' + repository.name + ' - Yaydoc';
   var htmlContent = status + ': ' + repository.name + ' - Yaydoc';
 
   client.sendMail({
-    from: 'info@yaydoc.com',
+    from: 'info@yaydoc.org',
     to: email,
     subject: status + ': ' + repository.name + ' - Yaydoc',
     text: textContent,
