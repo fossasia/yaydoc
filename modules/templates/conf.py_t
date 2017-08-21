@@ -318,5 +318,6 @@ def setup(app):
         'enable_eval_rst': True,
         'enable_auto_toc_tree': True,
         'auto_toc_tree_section': 'Contents',
+        'enable_inline_math': deserialize('{{ enable_inline_math }}'),
     }, True)
     app.add_transform(AutoStructify)
