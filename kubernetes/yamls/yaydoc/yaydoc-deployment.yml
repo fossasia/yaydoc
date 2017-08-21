@@ -1,0 +1,28 @@
+kind: Deployment
+apiVersion: apps/v1beta1
+metadata:
+  name: yaydoc
+  namespace: web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yaydoc
+    spec:
+      containers:
+      - name: yaydoc
+        image: ujjwalbhardwaj/yaydoc:latest
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 3001
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: yaydoc
+      restartPolicy: Always

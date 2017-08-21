@@ -1,8 +1,11 @@
 language: python
-
+services:
+- docker
+sudo: required
 env:
   global:
     - ENCRYPTION_KEY=ABCGDHEUSHFKIRMJSDFIUTEHFNGOWPOR
+    - PATH=$PATH:${HOME}/google-cloud-sdk/bin CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
 install:
   - nvm install 6.0
@@ -17,3 +20,5 @@ script:
   - python tests/test.py
   - npm run test
 
+after_success:
+  - bash kubernetes/travis/deploy.sh

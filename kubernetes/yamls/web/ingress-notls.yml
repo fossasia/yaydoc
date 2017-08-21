@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: yaydoc-notls
+  namespace: web
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: yaydoc.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: yaydoc
+          servicePort: 3001
