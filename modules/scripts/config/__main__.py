@@ -23,6 +23,7 @@ def get_default_config(owner, repo):
                          'version': utctime,
                          'author': owner,
                          'debug': False,
+                         'inline_math': False,
                          'autoindex': {'include': ['README.md', 'README.rst'],
                                        'subproject': {'show': True,
                                                       'heading': 'Sub Projects',
@@ -89,6 +90,7 @@ def get_envdict(yaml_config, default_config):
     config.connect('VERSION', 'metadata.version')
     config.connect('AUTHOR', 'metadata.author')
     config.connect('DEBUG', 'metadata.debug')
+    config.connect('ENABLE_INLINE_MATH', 'metadata.inline_math')
     config.connect('AUTOINDEX_INCLUDE_FILES', 'metadata.autoindex.include@')
     config.connect('AUTOINDEX_INCLUDE_TOC', 'metadata.autoindex.toc.show')
     config.connect('AUTOINDEX_TOC_HEADING', 'metadata.autoindex.toc.heading')
