@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+   name: mongo
+   namespace: mongo
+spec:
+  template:
+    metadata:
+      labels:
+        run: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        gcePersistentDisk:
+          pdName: mongo-disk
+          fsType: ext4

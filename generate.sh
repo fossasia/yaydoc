@@ -44,7 +44,7 @@ function generateAPIDocs {
   fi
 
   if [[  -n "${JAVADOC_PATH}" ]]; then
-    javadoc -sourcepath ${1}/${JAVADOC_PATH} -d ${2}/javadoc -subpackages . >> ${LOGFILE} 2>>${LOGFILE}
+    javadoc -sourcepath ${1}/${JAVADOC_PATH} -encoding UTF-8 -d ${2}/javadoc -subpackages . >>${LOGFILE} 2>>${LOGFILE}
   fi
 }
 
