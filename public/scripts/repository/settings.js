@@ -12,7 +12,6 @@ $(function() {
     window.history.pushState("", "", location.pathname);
   }
 
-
   $('.open-delete-modal').click(function () {
     $('#repository-name').val('');
     styles.disableButton("btnDelete");
@@ -59,4 +58,71 @@ $(function() {
       return false;
     }
   });
+
+  /**
+   * Toggle mail services for the repository
+   */
+  $('#mail-service').change(function() {
+    var data = {repository: $(this).data('repository')};
+    $.ajax({
+      type: 'POST',
+      url: $(this).prop('checked') ? '/repository/mail/enable' : '/repository/mail/disable',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      beforeSend: function () {
+        styles.loadingChanges('mail-service');
+      },
+      success: function () {
+        styles.successfulChanges('mail-service');
+      },
+      error: function () {
+        styles.failedChanges('mail-service');
+      }
+    });
+  });
+
+  /**
+   * Toggle receiving build status on each PR to the repository
+   */
+  $('#pr-status').change(function() {
+    var data = {repository: $(this).data('repository')};
+    $.ajax({
+      type: 'POST',
+      url: $(this).prop('checked') ? '/repository/prstatus/enable' : '/repository/prstatus/disable',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      beforeSend: function () {
+        styles.loadingChanges('pr-status');
+      },
+      success: function () {
+        styles.successfulChanges('pr-status');
+      },
+      error: function () {
+        styles.failedChanges('pr-status');
+      }
+    });
+  });
+
+  /**
+   * Toggle builds on each commit to the repository
+   */
+  $('#repository-status').change(function() {
+    var data = {repository: $(this).data('repository')};
+    $.ajax({
+      type: 'POST',
+      url: $(this).prop('checked') ? '/repository/enable' : '/repository/disable',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      beforeSend: function () {
+        styles.loadingChanges('repository-status');
+      },
+      success: function () {
+        styles.successfulChanges('repository-status');
+      },
+      error: function () {
+        styles.failedChanges('repository-status');
+      }
+    });
+  });
+
 });
