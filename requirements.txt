@@ -1,9 +1,9 @@
 sphinx==1.5.5
-recommonmark
-pypandoc
-pandocfilters
-PyYaml
-mock
-javasphinx
-sphinxcontrib-apiblueprint
-sphinxcontrib-github_ribbon
+recommonmark==0.4.0
+pypandoc==1.4
+pandocfilters==1.4.2
+PyYaml==3.12
+mock==2.0.0
+javasphinx==0.9.15
+sphinxcontrib-apiblueprint==0.9.0
+sphinxcontrib-github_ribbon==0.9.0
