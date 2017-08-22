@@ -4,7 +4,7 @@ block content
   script.
     var repository = #{repository}
   script(src="/scripts/styles.js")
-  script(src="/scripts/socket-repository.js")
+  script(src="/scripts/repository/settings.js")
   script(src="/scripts/search.js")
   script(src="/scripts/notification.js")
   .container
@@ -21,10 +21,10 @@ block content
         a(href="/#{repository.name}/logs") Log History
       li.active
         a(href="/#{repository.name}/settings") Settings
-    h3 General
+    h4 General
     p Placeholder for general settings
     hr
-    h3 Mail Service
+    h4 Mail Service
     if repository.mailService.status
       form(method="POST"  action="/repository/mail/disable").form-inline
         .form-group
@@ -44,7 +44,7 @@ block content
         input.form-control#email(type="email" name="email" value="#{repository.mailService.email}")
       button.btn.btn-default(type="submit") Save
     hr
-    h3 Pull Request Status
+    h4 Pull Request Status
     if repository.PRStatus
       form(method="POST"  action="/repository/prstatus/disable").form-inline
         .form-group
@@ -58,22 +58,18 @@ block content
           input(type="hidden", name="repository", value="#{repository.name}")
         button.btn.btn-primary Enable
     hr
-    h3 Sub Repository
+    h4
+      | Registered Sub-Projects
+      button.btn.btn-default(data-toggle="modal" href="#addSub" style="float: right") Add Sub-Project
     if repository.subRepositories.length !== 0
-      table
+      table.table.repolist
         each subRepository in repository.subRepositories
           tr
-            td
-              h4 #{subRepository.name}
-            td
-              form(method="POST" action="/repository/sub/delete").form-inline
-                .form-group
-                input(type="hidden", name="repository", value="#{repository.name}")
-                input(type="hidden", name="subRepository", value="#{subRepository.name}")
-                button.btn.btn-danger(type="submit") Delete 
-    button.btn.btn-default(data-toggle="modal" href="#addSub") Add Sub Project
+            td #{subRepository.name}
+            td(style="width:0")
+              button.close.open-delete-modal(data-toggle="modal" data-master="#{repository.name}" data-name="#{subRepository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false" style="color:red; font-size:30px") &times;
     hr
-    h3 Danger Zone
+    h4 Danger Zone
     if repository.enable
       form(method="POST"  action="/repository/disable").form-inline
         .form-group
@@ -92,17 +88,20 @@ block content
   .modal.fade#deleteModal(role='dialog')
     .modal-dialog
       .modal-content
-        form(action="/repository/delete" method="post")
+        form(action="/repository/sub/delete" method="post")
           .modal-header
             button.close(type='button', data-dismiss='modal') ×
             h4.modal-title Are you sure you want to delete?
           .modal-body
             p
-            | Enter your repository's name (
-            code#name-code
-            | ) below to confirm you want to permanently remove it from Yaydoc:
+              | Enter your repository's name (
+              code#name-code
+              | ) below to confirm you want to permanently remove it as a sub-project of
+              strong &nbsp;#{repository.name}
+              |:
             .form-group
-              input.form-control#repository-name(name="name" autofocus)
+              input(type="hidden" name="repository" value="#{repository.name}")
+              input.form-control#repository-name(name="subRepository" autofocus)
           .modal-footer
             button.btn.btn-default#btnDelete(disabled="disabled") Delete
   .modal.fade#addSub(role='dialog')
