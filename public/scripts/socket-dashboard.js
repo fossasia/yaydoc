@@ -51,18 +51,27 @@ $(function() {
   $("#btnAddSub").click(function () {
     subProjectId += 1;
     styles.disableButton("btnRegister");
-    $("#SubProject").append(`<div class="form-group" class="subProject_${subProjectId}">
-                              <label for="search_bar" class="control-label">Sub Project ${subProjectId}:</label>
+    $("#SubProject").append(`<div class="form-group subProject_${subProjectId}">
+                              <label for="search_bar" class="control-label">Sub Project:</label>
                               <div class="input-group">
                                <input id="search_bar_${subProjectId}" placeholder="Enter project name" class="form-control">
                                <span class="input-group-btn">
                                 <button id="search_${subProjectId}" type="button" class="btn btn-default">Search</button>
+                               </span>
+                               <span class="input-group-btn">
+                                 <button type="button" class="btn btn-default subRemove_${subProjectId}">
+                                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                 </button>
                                </span>
                               </div>
                             </div>
                             <div id="search_result_${subProjectId}"></div>`);
     (function(tempSubProjectId){
       registerSearchEvents(tempSubProjectId);
+      $(`.subRemove_${tempSubProjectId}`).click(function () {
+        $(`.subProject_${tempSubProjectId}`).remove();
+        $(`#search_result_${tempSubProjectId}`).remove();
+      });
     }(subProjectId));
   })
 });

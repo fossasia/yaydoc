@@ -25,7 +25,23 @@ $(function () {
    */
   var tempSubProjectId = 1;
   $("#btnSubProject").click(function () {
-    $("#subproject").append(`<select id="subproject_${tempSubProjectId}" placeholder="Enter URL for Sub Project" name="subproject_url[]" class="form-control subproject" type="text"></select>`)
+    $("#subproject").append(`<div class="form-group" id="sub_${tempSubProjectId}">
+                              <div class="input-group">
+                               <select id="subproject_${tempSubProjectId}" placeholder="Enter URL for Sub Project" name="subproject_url[]" class="form-control subproject" type="text">
+                               </select>
+                               <span class="input-group-btn">
+                                <button type="button" class="btn btn-default subProjectRemove_${tempSubProjectId}">
+                                 <span class="glyphicon glyphicon-remove" aria-hidden="true">
+                                 </span>
+                                </button>
+                               </span>
+                              </div>
+                             </div>`);
+    (function (id) {
+      $(`.subProjectRemove_${id}`).click(function () {
+        $(`#sub_${id}`).remove();
+      });
+    }(tempSubProjectId));
     addSuggestion(`#subproject_${tempSubProjectId}`);
     tempSubProjectId += 1;
   });
