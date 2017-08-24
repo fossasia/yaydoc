@@ -38,8 +38,9 @@ def get_toctree(dirpath, filenames, level, caption=''):
         path, ext = os.path.splitext(os.path.join(dirpath, filename))
         if ext not in ('.md', '.rst'):
             continue
-        document = path.replace(os.path.sep, '/')
-        document = document.lstrip('./').rstrip('/')
+        document = path.replace(os.path.sep, '/').rstrip('/')
+        if document.startswith('./'):
+            document = document[2:]
         toctree.append(content_template.format(document=document))
         valid = True
 
@@ -98,7 +99,9 @@ def get_index(root, subprojects, sub_docpaths, javadoc):
         # Add toctrees as per the directory structure
         for (dirpath, dirnames, filenames) in os.walk(os.curdir):
             _ignore_files(dirpath, filenames, included_files, root)
-            _ignore_dirs(dirpath, dirnames, ['yaydoctemp', 'yaydocclone', '.git'])
+            _ignore_files(dirpath, filenames, filter(lambda x: x.startswith('.'), filenames))
+            _ignore_dirs(dirpath, dirnames, filter(lambda x: x.startswith('.'), dirnames))
+            _ignore_dirs(dirpath, dirnames, ['yaydoctemp', 'yaydocclone'])
             _ignore_dirs(dirpath, dirnames, ['source'] + subproject_dirs, os.curdir)
 
             if filenames:
