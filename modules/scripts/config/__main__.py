@@ -35,7 +35,15 @@ def get_default_config(owner, repo):
                                                   'heading': 'API Documentation',
                                                   'javadoc': {'show': True,
                                                              },
+                                                  'swagger': {'show': True,
+                                                             },
                                                  },
+                                       'rss': {'heading': 'RSS',
+                                               'url': None,
+                                              },
+                                       'twitter': {'heading': 'Tweets',
+                                                   'query': None,
+                                                  },
                                        },
                         },
             'build': {'markdown_flavour': 'markdown_github',
@@ -99,6 +107,11 @@ def get_envdict(yaml_config, default_config):
     config.connect('AUTOINDEX_INCLUDE_APIDOC', 'metadata.autoindex.apidoc.show')
     config.connect('AUTOINDEX_APIDOC_HEADING', 'metadata.autoindex.apidoc.heading')
     config.connect('AUTOINDEX_INCLUDE_JAVADOC', 'metadata.autoindex.apidoc.javadoc.show')
+    config.connect('AUTOINDEX_INCLUDE_SWAGGER', 'metadata.autoindex.apidoc.swagger.show')
+    config.connect('AUTOINDEX_RSS_HEADING', 'metadata.autoindex.rss.heading')
+    config.connect('AUTOINDEX_RSS_URL', 'metadata.autoindex.rss.url')
+    config.connect('AUTOINDEX_TWEETS_HEADING', 'metadata.autoindex.twitter.heading')
+    config.connect('AUTOINDEX_TWEETS_QUERY', 'metadata.autoindex.twitter.query')
 
     config.connect('MARKDOWN_FLAVOUR', 'build.markdown_flavour', validate=validate_markdown_flavour)
     config.connect('LOGO', 'build.logo', validate=validate_mimetype_image)
