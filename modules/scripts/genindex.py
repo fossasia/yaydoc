@@ -81,7 +81,19 @@ def get_javadoc():
     return "* `Javadoc <./javadoc>`_"
 
 
-def get_index(root, subprojects, sub_docpaths, javadoc):
+def get_swagger_ui():
+    return "* `Swagger UI <./apidocs>`_"
+
+
+def get_rss_feed(url):
+    return ".. feed:: {url}".format(url=url)
+
+
+def get_twitter_feed(query):
+    return ".. timeline:: {query}".format(query=query)
+
+
+def get_index(root, subprojects, sub_docpaths):
     index = []
 
     subproject_dirs = [subproject.split(os.path.sep)[0]
@@ -125,13 +137,30 @@ def get_index(root, subprojects, sub_docpaths, javadoc):
 
     if deserialize(os.environ.get('AUTOINDEX_INCLUDE_APIDOC', 'true')):
         include_javadoc = deserialize(os.environ.get('AUTOINDEX_INCLUDE_JAVADOC', 'true'))
+        include_swagger = deserialize(os.environ.get('AUTOINDEX_INCLUDE_SWAGGER', 'true'))
+        javadoc = os.environ.get('JAVADOC_PATH', '')
+        swagger = os.environ.get('SWAGGER_SPEC_URL', '')
 
-        if (javadoc and include_javadoc):
+        if (javadoc and include_javadoc) or (swagger and include_swagger):
             index.append(get_heading(os.environ.get('AUTOINDEX_APIDOC_HEADING', 'API Documentation'), 1))
 
         # Add javadoc if javadoc exist
         if javadoc and include_javadoc:
             index.append(get_javadoc())
+
+        if swagger and include_swagger:
+            index.append(get_swagger_ui())
+
+    rss_url = os.environ.get('AUTOINDEX_RSS_URL', '')
+    twitter_query = os.environ.get('AUTOINDEX_TWEETS_QUERY', '')
+
+    if rss_url:
+        index.append(get_heading(os.environ.get('AUTOINDEX_RSS_HEADING', 'RSS'), 1))
+        index.append(get_rss_feed(rss_url))
+
+    if twitter_query:
+        index.append(get_heading(os.environ.get('AUTOINDEX_TWEETS_HEADING', 'Tweets'), 1))
+        index.append(get_twitter_feed(twitter_query))
 
     return '\n\n'.join(index) + '\n'
 
@@ -141,13 +170,10 @@ def main():
     parser.add_argument('root', help='Path to the root of the Repository')
     parser.add_argument('-s', '--subprojects', default='',
                         help='Comma seperated subprojects')
-    parser.add_argument('-j', '--javadoc', default='',
-                        help='Path of java source files for Javadoc')
     parser.add_argument('-d', '--sub-docpaths', default='',
                         help='Comma seperated docpaths for subprojects')
     args = parser.parse_args()
     subprojects, sub_docpaths = [], []
-    javadoc = args.javadoc
     if args.subprojects:
         subprojects = [name.strip().replace('/', os.path.sep)
                        for name in deserialize(args.subprojects)]
@@ -156,7 +182,7 @@ def main():
                         for name in deserialize(args.sub_docpaths)]
     if len(subprojects) != len(sub_docpaths):
         raise ValueError("Invalid arguments")
-    content = get_index(args.root, subprojects, sub_docpaths, javadoc)
+    content = get_index(args.root, subprojects, sub_docpaths)
     with open('index.rst', 'w') as file:
         file.write(content)
 

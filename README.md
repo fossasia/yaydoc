@@ -38,7 +38,15 @@ metadata:
       show: true                  # Whether links to API docs should be added at the end. If this is false then none of the apidocs would be added, default: true
       heading: API Documentation  # The overall heading of the API docs, default: API Documentation
       javadoc:
-        show: true                # Whether link to javadoc should be added, default: false
+        show: true                # Whether link to javadoc should be added, default: true
+      swagger:
+        show: true                # Whether link to swagger ui should be added, default: true
+    rss:
+      heading: RSS                # The heading of the rss feed section, default: RSS
+      url: <rss_url>              # The url to an rss feed
+    twitter:
+      heading: Tweets             # The heading of the tweets section, default: Tweets
+      query: fossasia             # The twitter query for which tweets would be displayed
 ```
 
 - Configuring build options

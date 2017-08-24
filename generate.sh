@@ -191,7 +191,7 @@ if [ ! -f index.rst ] && [ ! -f index.md ]; then
   if [ "${DOCPATH}" == "." ]; then
     GENINDEX_PARAM=${ROOT_DIR}/yaydoctemp
   fi
-  python ${BASE}/modules/scripts/genindex.py -j "${JAVADOC_PATH}" -s "${SUBPROJECT_DIRS}" -d "${SUBPROJECT_DOCPATHS}" "${GENINDEX_PARAM}"
+  python ${BASE}/modules/scripts/genindex.py -s "${SUBPROJECT_DIRS}" -d "${SUBPROJECT_DOCPATHS}" "${GENINDEX_PARAM}"
   if [ "${DEBUG:-false}" == "true" ]; then
     print_log "\n--------------------------------------\n"
     cat index.rst | tee -a ${LOGFILE}
