@@ -27,6 +27,10 @@ const repositorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  branches: [{
+    _id:false,
+    name: String
+  }],
   subRepositories: [{
     name: String,
     hook: String
@@ -352,4 +356,43 @@ module.exports.getSubRepository = function (name, subRepositoryName, callback) {
 module.exports.addSubRepository = function (name, subRepositoryName, hook, callback) {
   Repository.update({name: name}, {$push: {subRepositories: {name: subRepositoryName, hook: hook}}})
   .exec(callback);
+};
+
+/**
+ * Get a list of branches registered to a repository
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+module.exports.getRegisteredBranches = function (name, callback) {
+  Repository.findOne({name: name}, 'branches', function (error, repository) {
+    if (error || !repository.branches) {
+      callback(error, [])
+    }
+    callback(null, repository.branches);
+  });
+};
+
+/**
+ * Delete a single branch from the repository
+ * @param name: `full_name` of the repository
+ * @param branch: name of the branch
+ * @param callback
+ */
+module.exports.deleteRepositoryBranch = function (name, branch, callback) {
+  Repository.update({name: name}, { $pull: {branches: {name: branch}}}, callback);
+};
+
+/**
+ * Update the specified branches of a repository
+ * @param name: `full_name` of the repository
+ * @param branches: a list of branches
+ * @param callback
+ */
+module.exports.updateRepositoryBranches = function (name, branches, callback) {
+  var branchesObject = [];
+  for (var branch of branches) {
+    branchesObject.push({name: branch});
+  }
+
+  Repository.update({name: name}, { "$set": { "branches": branchesObject }}, callback);
 };

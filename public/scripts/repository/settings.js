@@ -1,10 +1,9 @@
 $(function() {
   const predefinedMessages = {
-    'mail_disabled_successful': "Mail service disabled for this repository",
-    'mail_enabled_successful': "Mail service enabled for this repository",
-    'mail_changed_successful': "Email address associated with this repository changed successfully",
-    'pr_enabled_successful': "PR status enabled for this repository",
-    'pr_disabled_successful': "PR status disabled for this repository"
+    'remove_branch_failed': "Failed to remove the branch!",
+    'remove_branch_success': "Branch removed successfully",
+    'update_branch_failed': "Failed to update branches",
+    'update_branch_success': "Branches updated successfully",
   };
 
   if ((predefinedMessages[styles.getParameterByName("status")] || '') !== '') {
@@ -125,4 +124,36 @@ $(function() {
     });
   });
 
+  $('.open-branch-modal').click(function () {
+    var repository = $(this).data('repository');
+    $.ajax({
+      type: 'GET',
+      url: '/repository/' + repository + '/branches',
+      success: function(data) {
+        $("#branch-load").css("display", "none");
+        var repositoryList =
+          '<div class="form-group">' +
+          '<label class="control-label" for="branches">Branches: </label>' +
+          '<select class="form-control selectpicker" id="branches" name="branches" multiple data-size="3">';
+        var options = '';
+        for (var branch of data.branches) {
+          if (branch !== 'gh-pages') {
+            options += '<option>' + branch + '</option>';
+          }
+        }
+        repositoryList += options;
+        repositoryList += '</select></div>';
+        repositoryList += '<p><strong>Note:</strong> Specifying one or more branches would limit the trigger of ' +
+          'the documentation generation process to changes in these branches</p>';
+        $("#branch-modal").empty().append(repositoryList);
+        $('.selectpicker').selectpicker("render");
+        $('.selectpicker').selectpicker("val", data.registeredBranches);
+        $('#btnAddBranches').removeAttr("disabled");
+      },
+      error: function(data) {
+        $("#branch-load").css("display", "none");
+        $("#branch-modal").append('<p>Failed to retrieve branches</p><p>' + data + '</p>');
+      }
+    });
+  });
 });

@@ -154,6 +154,21 @@ router.post('/webhook', function(req, res, next) {
                 description: "No operation on pushes to gh-pages branch"
               });
             }
+
+            var result = repositoryData.branches.find(function (element) {
+              if (element.name === branch) {
+                return true;
+              }
+              return false;
+            });
+
+            if (!result) {
+              return res.json({
+                status: false,
+                description: "No operation on pushes to branch: " + branch
+              });
+            }
+
             User.getUserById(repositoryData.registrant.id, function(err, userData) {
               if (err) {
                 next({

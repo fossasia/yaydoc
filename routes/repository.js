@@ -203,4 +203,62 @@ router.post('/sub/add', authMiddleware.isLoggedIn, function (req, res, next) {
   });
 });
 
+router.get('/:owner/:repository/branches', authMiddleware.isLoggedIn, function (req, res, next) {
+  var name = req.params.owner + '/' + req.params.repository;
+  async.parallel({
+    branches: function(callback) {
+      github.getRepositoryBranches(name, function (error, branches) {
+        callback(error, branches);
+      });
+    },
+    registeredBranches: function (callback) {
+      Repository.getRegisteredBranches(name, function (error, registeredBranches) {
+        var branches = [];
+        for(var branch of registeredBranches) {
+          branches.push(branch.name);
+        }
+        callback(error, branches);
+      })
+    }
+  }, function(error, results) {
+    if (error) {
+      next({
+        status: 500,
+        messages: 'Something went wrong'
+      });
+    }
+
+    res.json({
+      branches: results.branches,
+      registeredBranches: results.registeredBranches
+    })
+  });
+});
+
+router.post('/branches/delete', authMiddleware.isLoggedIn, function (req, res, next) {
+  var branch = req.body.branch;
+  var repository= req.body.repository;
+
+  Repository.deleteRepositoryBranch(repository, branch, function (error) {
+    if (error) {
+      res.redirect('/' + repository + '/settings?status=remove_branch_failed');
+    } else {
+      res.redirect('/' + repository + '/settings?status=remove_branch_success');
+    }
+  });
+});
+
+router.post('/branches/update', authMiddleware.isLoggedIn, function (req, res, next) {
+  var branches = typeof req.body.branches === 'string' ? [req.body.branches] : req.body.branches ;
+  var repository = req.body.repository;
+  console.log(branches);
+  Repository.updateRepositoryBranches(repository, branches, function (error) {
+    if (error) {
+      res.redirect('/' + repository + '/settings?status=update_branch_failed');
+    } else {
+      res.redirect('/' + repository + '/settings?status=update_branch_success');
+    }
+  })
+});
+
 module.exports = router;
