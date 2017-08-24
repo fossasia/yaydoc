@@ -8,3 +8,4 @@ Installation
 
    installation/local
    installation/heroku
+   installation/gce-kubernetes

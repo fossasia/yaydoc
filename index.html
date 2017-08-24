@@ -202,7 +202,15 @@ as images, javascript referred from it should be present in a
       <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                  <span class="c1"># Whether links to API docs should be added at the end. If this is false then none of the apidocs would be added, default: true</span>
       <span class="n">heading</span><span class="p">:</span> <span class="n">API</span> <span class="n">Documentation</span>  <span class="c1"># The overall heading of the API docs, default: API Documentation</span>
       <span class="n">javadoc</span><span class="p">:</span>
-        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to javadoc should be added, default: false</span>
+        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to javadoc should be added, default: true</span>
+      <span class="n">swagger</span><span class="p">:</span>
+        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to swagger ui should be added, default: true</span>
+    <span class="n">rss</span><span class="p">:</span>
+      <span class="n">heading</span><span class="p">:</span> <span class="n">RSS</span>                <span class="c1"># The heading of the rss feed section, default: RSS</span>
+      <span class="n">url</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">rss_url</span><span class="o">&gt;</span>              <span class="c1"># The url to an rss feed</span>
+    <span class="n">twitter</span><span class="p">:</span>
+      <span class="n">heading</span><span class="p">:</span> <span class="n">Tweets</span>             <span class="c1"># The heading of the tweets section, default: Tweets</span>
+      <span class="n">query</span><span class="p">:</span> <span class="n">fossasia</span>             <span class="c1"># The twitter query for which tweets would be displayed</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -306,6 +314,7 @@ gh-pages on every commit the user makes.</li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation/local.html">Installing Yaydoc Locally</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation/heroku.html">Installing Yaydoc on Heroku</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/gce-kubernetes.html">Yaydoc Deployment to Google Cloud with Kubernetes</a></li>
 </ul>
 </div>
 </div>
