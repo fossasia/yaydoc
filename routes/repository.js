@@ -87,7 +87,7 @@ router.post("/enable", authMiddleware.isLoggedIn, function(req, res, next) {
 router.post('/mail/disable', authMiddleware.isLoggedIn, function (req, res, next) {
   Repository.updateRepository({name: req.body.repository}, {'mailService.status': false})
   .then(function () {
-    res.redirect('/' + req.body.repository + '/settings?status=mail_disabled_successful');
+    res.json({success: true});
   })
   .catch(function () {
     next({
@@ -100,7 +100,7 @@ router.post('/mail/disable', authMiddleware.isLoggedIn, function (req, res, next
 router.post('/mail/enable', authMiddleware.isLoggedIn, function (req, res, next) {
   Repository.updateRepository({name: req.body.repository}, {'mailService.status': true})
   .then(function () {
-    res.redirect('/' + req.body.repository + '/settings?status=mail_enabled_successful');
+    res.json({success: true});
   })
   .catch(function () {
     next({
@@ -126,6 +126,7 @@ router.post('/mail', authMiddleware.isLoggedIn, function (req, res, next) {
 router.post('/prstatus/enable', authMiddleware.isLoggedIn, function (req, res, next) {
   Repository.updateRepository({name: req.body.repository}, {PRStatus: true})
   .then(function () {
+    res.json({success: true});
     res.redirect('/' + req.body.repository + '/settings?status=pr_enabled_successful');
   })
   .catch(function () {
@@ -139,7 +140,7 @@ router.post('/prstatus/enable', authMiddleware.isLoggedIn, function (req, res, n
 router.post('/prstatus/disable', authMiddleware.isLoggedIn, function (req, res, next) {
   Repository.updateRepository({name: req.body.repository}, {PRStatus: false})
   .then(function () {
-    res.redirect('/' + req.body.repository + '/settings?status=pr_disabled_successful');
+    res.json({success: true});
   })
   .catch(function () {
     next({

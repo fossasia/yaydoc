@@ -7,6 +7,7 @@ block content
   script(src="/scripts/repository/settings.js")
   script(src="/scripts/search.js")
   script(src="/scripts/notification.js")
+  script(src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js")
   .container
     h2
       | #{repository.name} &nbsp;
@@ -21,42 +22,38 @@ block content
         a(href="/#{repository.name}/logs") Log History
       li.active
         a(href="/#{repository.name}/settings") Settings
-    h4 General
-    p Placeholder for general settings
-    hr
     h4 Mail Service
-    if repository.mailService.status
-      form(method="POST"  action="/repository/mail/disable").form-inline
-        .form-group
-          label.control-label Status:&nbsp;
-          input(type="hidden", name="repository", value="#{repository.name}")
-        button.btn.btn-warning Disable
-    else
-      form(method="POST"  action="/repository/mail/enable").form-inline
-        .form-group
-          label.control-label Status:&nbsp;
-          input(type="hidden", name="repository", value="#{repository.name}")
-        button.btn.btn-primary Enable
-    form(method="POST"  action="/repository/mail").form-inline
-      .form-group
-        label(for="email") Email:&nbsp;
-        input(type="hidden", name="repository", value="#{repository.name}")
-        input.form-control#email(type="email" name="email" value="#{repository.mailService.email}")
-      button.btn.btn-default(type="submit") Save
+    .row
+      .col-md-6
+        label.checkbox-inline#mail-service-label
+          if repository.mailService.status
+            input#mail-service(checked data-toggle="toggle" type="checkbox" data-size="small" data-repository="#{repository.name}")
+          else
+            input#mail-service(data-toggle="toggle" type="checkbox" data-size="small" data-repository="#{repository.name}")
+          strong Report build status via email&nbsp;
+          i.fa.fa-circle-o-notch.fa-spin.fa-fw#mail-service-load(style="display:none")
+          i.fa.fa-check#mail-service-check(style="display:none")
+          i.fa.fa-times#mail-service-cross(style="display:none")
+      .col-md-6
+        form(method="POST"  action="/repository/mail").form-inline
+          .form-group
+            label(for="email") Registered Email:&nbsp;
+            input(type="hidden", name="repository", value="#{repository.name}")
+            input.form-control#email(type="email" name="email" value="#{repository.mailService.email}")
+          button.btn.btn-default(type="submit") Save
     hr
     h4 Pull Request Status
-    if repository.PRStatus
-      form(method="POST"  action="/repository/prstatus/disable").form-inline
-        .form-group
-          label.control-label Status:&nbsp;
-          input(type="hidden", name="repository", value="#{repository.name}")
-        button.btn.btn-warning Disable
-    else
-      form(method="POST"  action="/repository/prstatus/enable").form-inline
-        .form-group
-          label.control-label Status:&nbsp;
-          input(type="hidden", name="repository", value="#{repository.name}")
-        button.btn.btn-primary Enable
+    .row
+      .col-md-6
+        label.checkbox-inline
+          if repository.PRStatus
+            input#pr-status(checked data-toggle="toggle" type="checkbox" data-size="small" data-repository="#{repository.name}")
+          else
+            input#pr-status(data-toggle="toggle" type="checkbox" data-size="small" data-repository="#{repository.name}")
+          strong Get build status for pull requests to a repository&nbsp;
+          i.fa.fa-circle-o-notch.fa-spin.fa-fw#pr-status-load(style="display:none")
+          i.fa.fa-check#pr-status-check(style="display:none")
+          i.fa.fa-times#pr-status-cross(style="display:none")
     hr
     h4
       | Registered Sub-Projects
@@ -70,21 +67,21 @@ block content
               button.close.open-delete-modal(data-toggle="modal" data-master="#{repository.name}" data-name="#{subRepository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false" style="color:red; font-size:30px") &times;
     hr
     h4 Danger Zone
-    if repository.enable
-      form(method="POST"  action="/repository/disable").form-inline
+    .row
+      .col-md-6
+        label.checkbox-inline
+          if repository.enable
+            input#repository-status(checked data-toggle="toggle" type="checkbox" data-size="small" data-repository="#{repository.name}")
+          else
+            input#repository-status(data-toggle="toggle" type="checkbox" data-size="small" data-repository="#{repository.name}")
+          strong Yaydoc reacts to commits made to this repository&nbsp;
+          i.fa.fa-circle-o-notch.fa-spin.fa-fw#repository-status-load(style="display:none")
+          i.fa.fa-check#repository-status-check(style="display:none")
+          i.fa.fa-cross#repository-status-cross(style="display:none")
+      .col-md-6
         .form-group
-          label.control-label Repository Status:&nbsp;
-          input(type="hidden", name="repository", value="#{repository.name}")
-        button.btn.btn-warning Disable
-    else
-      form(method="POST"  action="/repository/enable").form-inline
-        .form-group
-          label.control-label Repository Status:&nbsp;
-          input(type="hidden", name="repository", value="#{repository.name}")
-        button.btn.btn-primary Enable
-    .form-group
-      label.control-label Delete Repository:&nbsp;
-      button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
+          label.control-label Delete Repository:&nbsp;
+          button.btn.btn-danger.open-delete-modal(data-toggle="modal" data-name="#{repository.name}" href="#deleteModal" data-backdrop="static" data-keyboard="false") Delete
   .modal.fade#deleteModal(role='dialog')
     .modal-dialog
       .modal-content
