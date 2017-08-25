@@ -93,6 +93,36 @@
       if (button.attr("disabled")) {
         button.removeAttr("disabled");
       }
+    },
+
+    /**
+     * Showing a spinner of performing an AJAX request
+     * @param id: `id` attribute of the HTML tag group
+     */
+    loadingChanges: function (id) {
+      $('#' + id + '-load').css("display", "inherit");
+      $('#' + id + '-check').css("display", "none");
+      $('#' + id + '-cross').css("display", "none");
+    },
+
+    /**
+     * Showing a check mark after receiving a successful response
+     * @param id: `id` attribute of the HTML tag group
+     */
+    successfulChanges: function (id) {
+      $('#' + id + '-load').css("display", "none");
+      $('#' + id + '-check').css("display", "inherit");
+      $('#' + id + '-cross').css("display", "none");
+    },
+
+    /**
+     * Showing a cross mark after receiving an error response
+     * @param id: `id` attribute of the HTML tag group
+     */
+    failedChanges: function (id) {
+      $('#' + id + '-load').css("display", "none");
+      $('#' + id + '-check').css("display", "none");
+      $('#' + id + '-cross').css("display", "inherit");
     }
   };
 })();
