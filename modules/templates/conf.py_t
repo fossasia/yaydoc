@@ -38,7 +38,6 @@ import os
 import sys
 import mock
 import pkg_resources
-from recommonmark.parser import CommonMarkParser
 from recommonmark.transform import AutoStructify
 
 # Adding scripts and extensions directory to sys.path
@@ -46,6 +45,7 @@ sys.path.insert(0, os.path.abspath('scripts'))
 sys.path.insert(0, os.path.join(os.path.abspath('scripts'), 'extensions'))
 
 from config.serializer import deserialize
+from markdown import MarkdownParser
 
 {% if autoapi_python == true %}
 for (dirpath, dirnames, filenames) in os.walk('{{ root_dir }}'):
@@ -107,7 +107,7 @@ templates_path = ['{{ dot }}templates']
 
 # The parser(s) of source files
 source_parsers = {
-    '.md': CommonMarkParser,
+    '.md': MarkdownParser,
 }
 
 # The suffix(es) of source filenames.
