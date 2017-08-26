@@ -55,7 +55,7 @@ exports.executeScript = function (socket, formData, callback) {
     if (code === 0) {
       data.exitCode = code;
       if (formData.buildStatus === true) {
-        callback(null, {message: `Process exited with code : ${code}`});
+        callback(null, {message: `Process exited with code : ${code}`, uniqueId: uniqueId});
       } else {
         if (process.env.SURGE_LOGIN === undefined || process.env.SURGE_TOKEN === undefined) {
           data.previewURL = `/preview/${email}/${uniqueId}_preview`;
@@ -80,7 +80,8 @@ exports.executeScript = function (socket, formData, callback) {
       data.exitCode = code;
       if (formData.buildStatus === true) {
         callback({
-          message: `Process exited with code: ${code}`
+          message: `Process exited with code: ${code}`,
+          uniqueId: uniqueId
         }, null);
       } else {
         socketHandler.handleSocket(socket, 'failure', data);

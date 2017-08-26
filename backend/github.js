@@ -195,9 +195,10 @@ exports.checkYaydocConfigurationInRepository = function (name, branch, callback)
  * @param state: state of the commit. accepted parameters are pending, success, failure, error
  * @param description: short description of the status
  * @param accessToken: Access Token of the user
+ * @param targetURL: Target url of the the status
  * @param callback
  */
-exports.createStatus = function(commitId, name, state, description, accessToken, callback) {
+exports.createStatus = function(commitId, name, state, description, targetURL, accessToken, callback) {
   request.post({
     url: `https://api.github.com/repos/${name}/statuses/${commitId}`,
     headers: {
@@ -207,13 +208,31 @@ exports.createStatus = function(commitId, name, state, description, accessToken,
     "content-type": "application/json",
     body: JSON.stringify({
       state: state,
-      target_url: `https://${process.env.HOSTNAME}/`,
+      target_url: targetURL,
       description: description,
       context: "Yaydoc CI"
     })
   }, function(error, response, body) {
     if (error!== null) {
       return callback({description: 'Unable to create status'}, null);
+    }
+    callback(null, JSON.parse(body));
+  });
+}
+
+/**
+ * Get user details by taking username
+ * @param userName: GitHub username
+ */
+exports.getUserDetail = function (userName, callback) {
+  request({
+    url: `https://api.github.com/users/${userName}`,
+    headers: {
+      'User-Agent': 'Yaydoc'
+    }
+  }, function (error, response, body) {
+    if (error) {
+      return callback(error, null);
     }
     callback(null, JSON.parse(body));
   });
