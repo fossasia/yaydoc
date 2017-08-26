@@ -6,10 +6,12 @@ var deploy = require("../backend/deploy.js");
 var github = require("../backend/github");
 var build = require("../backend/build");
 var authMiddleware = require("../middleware/auth");
+var async = require("async");
 
 Repository = require("../model/repository.js");
 User = require("../model/user");
 BuildLog = require("../model/buildlog");
+StatusLog = require("../model/statuslog");
 
 router.post('/register', authMiddleware.isLoggedIn, function (req, res, next) {
   var repositoryName = req.body.repository || '';
@@ -204,7 +206,9 @@ router.post('/webhook', function(req, res, next) {
               if (req.body.action === "reopened" || req.body.action === "opened") {
                 if (repositoryData.PRStatus === true) {
                   var commitId = req.body.pull_request.head.sha;
-                  github.createStatus(commitId, req.body.repository.full_name, "pending", "Yaydoc is checking your build", repositoryData.accessToken, function(error, data) {
+                  var targetURL = `http://${process.env.HOSTNAME}/`;
+                  var name = `${req.body.pull_request.head.label.split(":")[0]}/${req.body.repository.full_name.split("/")[1]}`;
+                  github.createStatus(commitId, req.body.repository.full_name, "pending", "Yaydoc is checking your build", targetURL, repositoryData.accessToken, function(error, data) {
                     if (!error) {
                       var user = req.body.pull_request.head.label.split(":")[0];
                       var targetBranch = req.body.pull_request.head.label.split(":")[1];
@@ -219,20 +223,65 @@ router.post('/webhook', function(req, res, next) {
                         targetBranch: targetBranch
                       };
                       generator.executeScript({}, data, function(error, generatedData) {
-                        var status, description;
+                        var status, description, buildStatus, uniqueId;
                         if(error) {
+                          buildStatus = false;
                           status = "failure";
                           description = error.message;
+                          uniqueId = error.uniqueId;
                         } else {
+                          buildStatus = true
                           status = "success";
                           description = generatedData.message;
+                          uniqueId = generatedData.uniqueId;
                         }
-                        github.createStatus(commitId, req.body.repository.full_name, status, description, repositoryData.accessToken, function(error, data) {
-                          if (error) {
-                            console.log(error);
-                          } else {
-                            console.log(data);
+                        var names = [req.body.repository.owner.login, req.body.sender.login];
+                        async.parallel(names.map(function (x) {
+                          return function (cb) {
+                            github.getUserDetail(x, function(error, data) {
+                              cb(error, data);
+                            })
                           }
+                        }), function (error, data) {
+                          if (error === null) {
+                            for (var i = 0; i < data.length; i++) {
+                              if (data[i].name !== undefined) {
+                                names[i] = data[i].name;
+                              }
+                            } 
+                          }
+                          var metadata = {
+                            status: buildStatus,
+                            compareCommits: req.body.pull_request.html_url + '/files',
+                            compareCommitsSha: req.body.pull_request.base.sha,
+                            ref: req.body.pull_request.head.ref,
+                            headCommit: {
+                              message: req.body.pull_request.title,
+                              url: req.body.pull_request.html_url,
+                              author: {
+                                name: names[0]
+                              },
+                              committer: {
+                                name: names[1]
+                              },
+                              sha: req.body.pull_request.head.sha
+                            },
+                            number: req.body.number
+                          };
+                          StatusLog.storeLog(name, repositoryName, metadata,  `temp/admin@fossasia.org/generate_${uniqueId}.txt`, function(error, data) {
+                            if (error) {
+                              status = "failure";
+                            } else {
+                              targetBranch = `https://${process.env.HOSTNAME}/prstatus/${data._id}`
+                            }
+                            github.createStatus(commitId, req.body.repository.full_name, status, description, targetBranch, repositoryData.accessToken, function(error, data) {
+                              if (error) {
+                                console.log(error);
+                              } else {
+                                console.log(data);
+                              }
+                            });
+                          });
                         });
                       });
                     }
