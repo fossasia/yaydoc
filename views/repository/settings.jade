@@ -3,6 +3,7 @@ extends layout
 block content
   script.
     var repository = #{repository}
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js")
   script(src="/scripts/styles.js")
   script(src="/scripts/repository/settings.js")
   script(src="/scripts/search.js")
@@ -54,6 +55,27 @@ block content
           i.fa.fa-circle-o-notch.fa-spin.fa-fw#pr-status-load(style="display:none")
           i.fa.fa-check#pr-status-check(style="display:none")
           i.fa.fa-times#pr-status-cross(style="display:none")
+    hr
+    h4
+      | Registered Branches
+      button.btn.btn-default.open-branch-modal(data-toggle="modal" data-repository="#{repository.name}" href="#specify-branches" style="float: right") Specify Branches
+    if repository.branches.length !== 0
+      table.table.repolist
+        each branch in repository.branches
+          tr
+            td #{branch.name}
+            td(style="width:0")
+              form(action="/repository/branches/delete" method="POST")
+                input(type="hidden" name="repository" value="#{repository.name}")
+                input(type="hidden" name="branch" value="#{branch.name}")
+                button.close#delete-branch(style="color:red; font-size:30px") &times;
+    else
+      p
+        | Branches are not specified for this repository. Yaydoc build will be triggered by all the branches containing&nbsp;
+        code .yaydoc.yml&nbsp;
+        | file except for&nbsp;
+        strong gh-pages&nbsp;
+        | branch!
     hr
     h4
       | Registered Sub-Projects
@@ -123,7 +145,19 @@ block content
                 input.form-control#search_bar(placeholder="Enter project name")
                 span.input-group-btn
                   button.btn.btn-default#search(type="button") Search
-             .form-group#search_result
+            .form-group#search_result
           .modal-footer
-             button.btn.btn-default#btnRegister(disabled) Register
-   
+            button.btn.btn-default#btnRegister(disabled) Register
+  .modal.fade#specify-branches(role='dialog')
+    .modal-dialog
+      .modal-content
+        form#register-branch(action="/repository/branches/update", method="POST")
+          input(type="hidden" name="repository" value="#{repository.name}")
+          .modal-header
+            button.close(type='button', data-dismiss='modal') ×
+            h4.modal-title Specify branches
+          .modal-body#branch-modal
+            i.fa.fa-circle-o-notch.fa-spin.fa-fw#branch-load
+          .modal-footer
+            button.btn.btn-default#btnAddBranches(disabled) Submit
+

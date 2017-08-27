@@ -218,7 +218,7 @@ exports.createStatus = function(commitId, name, state, description, targetURL, a
     }
     callback(null, JSON.parse(body));
   });
-}
+};
 
 /**
  * Get user details by taking username
@@ -236,4 +236,30 @@ exports.getUserDetail = function (userName, callback) {
     }
     callback(null, JSON.parse(body));
   });
-}
+};
+
+/**
+ * Get a list of branches of a repository
+ * @param name: `full_name` of the repository
+ * @param callback
+ */
+exports.getRepositoryBranches = function (name, callback) {
+  request.get({
+    url: 'https://api.github.com/repos/' + name + '/branches',
+    headers: {
+      'User-Agent': 'Yaydoc',
+    },
+  }, function (error, response, body) {
+    if (error) {
+      callback(error, null);
+    } else {
+      var bodyJSON = JSON.parse(body);
+      console.log(bodyJSON);
+      var branches = [];
+      for (var x in bodyJSON) {
+        branches.push(bodyJSON[x].name);
+      }
+      callback(null, branches);
+    }
+  });
+};
