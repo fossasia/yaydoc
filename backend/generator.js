@@ -25,10 +25,15 @@ exports.executeScript = function (socket, formData, callback) {
   var docPath = formData.docPath === undefined ? '' : formData.docPath;
   var subProject = "[]";
   var subDocpath = [];
-  if (formData.subProject !== undefined) {
-    subProject = "[" + formData.subProject.join(",") + "]";
-    for(i=0; i<formData.subProject.length; i++){
-        subDocpath.push("docs");
+  if (formData.ci === true) {
+      subDocpath = "[]";
+  } else {
+    if (formData.subProject !== undefined) {
+      subProject = "[" + formData.subProject.join(",") + "]";
+      for(i=0; i<formData.subProject.length; i++){
+          subDocpath.push("docs");
+      }
+      subDocpath = "[" + subDocpath.join(",") + "]";
     }
   }
 
@@ -39,7 +44,7 @@ exports.executeScript = function (socket, formData, callback) {
     "-d", debug,
     "-u", uniqueId,
     "-s", subProject,
-    "-p", "[" + subDocpath.join(",") + "]",
+    "-p", subDocpath,
     "-b", targetBranch,
     "-l", docPath
   ];
