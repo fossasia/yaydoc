@@ -7,5 +7,5 @@ Installation
    :maxdepth: 1
 
    installation/gce-kubernetes
-   installation/heroku
    installation/local
+   installation/heroku
