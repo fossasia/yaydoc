@@ -139,7 +139,7 @@ router.post('/webhook', function(req, res, next) {
   Repository.findOneRepository(query)
   .then(function (repositoryData) {
     if (repositoryData.enable === true) {
-      github.checkYaydocConfigurationInRepository(repositoryName, branch, function (error, response, body) {
+      github.checkYaydocConfigurationInRepository(repositoryData.name, branch, function (error, response, body) {
         if (response.statusCode !== 200) {
           res.json({
             status: false,
@@ -177,7 +177,7 @@ router.post('/webhook', function(req, res, next) {
                 });
               } else {
                 BuildLog.constructBuildLog({
-                  repository: repositoryName,
+                  repository: repositoryData.name,
                   compareCommits: req.body.compare,
                   headCommit: req.body.head_commit,
                   ref: req.body.ref
@@ -195,7 +195,8 @@ router.post('/webhook', function(req, res, next) {
                     debug: true,
                     targetBranch: branch,
                     docPath: '',
-                    subProject: repositoryData.subRepositories.map(x => `https://github.com/${x.name}.git`)
+                    subProject: repositoryData.subRepositories.map(x => `https://github.com/${x.name}.git`),
+                    ci: true
                   };
                   generator.executeScript({}, data, function (err, generatedData) {
                     if (err) {
@@ -263,7 +264,7 @@ router.post('/webhook', function(req, res, next) {
                               if (data[i].name !== undefined) {
                                 names[i] = data[i].name;
                               }
-                            } 
+                            }
                           }
                           var metadata = {
                             status: buildStatus,
