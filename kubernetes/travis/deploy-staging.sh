@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export DEPLOY_BRANCH=${DEPLOY_BRANCH:-master}
+export DEPLOY_BRANCH=${DEPLOY_BRANCH:-development}
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_REPO_SLUG" != "fossasia/yaydoc" -o  "$TRAVIS_BRANCH" != "$DEPLOY_BRANCH" ]; then
     echo "Skip production deployment for a very good reason."
@@ -19,13 +19,13 @@ curl https://sdk.cloud.google.com | bash;
 source ~/.bashrc
 gcloud components install kubectl
 
-gcloud config set compute/zone us-central1-c
+gcloud config set compute/zone us-west1-a
 # Decrypt the credentials we added to the repo using the key we added with the Travis command line tool
-openssl aes-256-cbc -K $encrypted_512fe31a4705_key -iv $encrypted_512fe31a4705_iv -in ./kubernetes/travis/yaydoc-master.json.enc -out yaydoc-master.json -d
-gcloud auth activate-service-account --key-file yaydoc-master.json
-export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/yaydoc-master.json
+openssl aes-256-cbc -K $encrypted_512fe31a4705_key -iv $encrypted_512fe31a4705_iv -in ./kubernetes/travis/yaydoc-staging.json.enc -out yaydoc-staging.json -d
+gcloud auth activate-service-account --key-file yaydoc-staging.json
+export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/yaydoc-staging.json
 
-gcloud config set project yaydoc-702
+gcloud config set project bubbly-triumph-138610
 gcloud container clusters get-credentials yaydoc-cluster
 cd kubernetes/images/yaydoc
 docker build --build-arg COMMIT_HASH=$TRAVIS_COMMIT --build-arg BRANCH=$DEPLOY_BRANCH --build-arg REPOSITORY=$REPOSITORY --no-cache -t ujjwalbhardwaj/yaydoc:$TRAVIS_COMMIT .
