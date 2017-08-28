@@ -127,6 +127,7 @@ _You can delete the instance if your not planning to use it for anything else. B
 
 ## Deploy our pods, services and deployments
 
+- Update the `kubernetes/yamls/yaydoc/configmap.yml` file with relevant values for the defined environment varaibles.
 - From the project directory, use the provided deploy script to deploy our application from the defined configuration files that are in the `kubernetes` directory.
 
     ```
