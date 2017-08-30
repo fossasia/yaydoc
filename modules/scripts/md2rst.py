@@ -29,7 +29,7 @@ def download_pandoc():
 def md2rst(text):
     markdown_flavour = os.environ.get('MARKDOWN_FLAVOUR', 'markdown_github')
     download_pandoc()
-    yml_filter = os.path.join('scripts', 'filters', 'yml_filter.py')
+    yml_filter = os.path.join(os.path.dirname(__file__), 'filters', 'yml_filter.py')
     output = pypandoc.convert_text(text, 'rst', format=markdown_flavour,
                                    filters=[yml_filter])
-    return output
+    return output.replace(os.linesep, '\n')

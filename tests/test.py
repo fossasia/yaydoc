@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join('modules', 'scripts')))
 
 import linkfix
 import genindex
+import markdown
 from config.serializer import serialize, deserialize
 from config.utils import update_dict, get_bash_command
 
@@ -64,6 +65,11 @@ class IndexGenerateTestCase(unittest.TestCase):
 
    my_dir/file1
    my_dir/file2""")
+
+    def test_heading(self):
+        text = genindex.get_heading('Heading', 1)
+        self.assertEqual(text, """Heading
+=======""")
 
 
 class RelativeLinkFixTestCase(unittest.TestCase):
@@ -173,6 +179,37 @@ class DeserializationTestCase(unittest.TestCase):
 
     def test_empty_list(self):
         self.assertEqual(deserialize("[]"), [])
+
+
+class MarkdownPlusTestCase(unittest.TestCase):
+    def test_markdown_plus(self):
+        self.maxDiff = None
+        md_content = """Header
+<!-- markdown+ -->
+| Column 1 | Column 2 |
+|----------|----------|
+| Data 1 | Data 2   |
+| Data 3   | Data 4  |
+| Data 5 | Data 6 |
+<!-- endmarkdown+ -->
+Footer
+"""
+        new_content = """Header
+```eval_rst
++------------+------------+
+| Column 1   | Column 2   |
++============+============+
+| Data 1     | Data 2     |
++------------+------------+
+| Data 3     | Data 4     |
++------------+------------+
+| Data 5     | Data 6     |
++------------+------------+
+
+```
+Footer
+"""
+        self.assertEqual(markdown.preprocess_markdown(md_content), new_content)
 
 
 if __name__ == '__main__':
