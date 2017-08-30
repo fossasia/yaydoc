@@ -50,6 +50,18 @@
     },
     "HOSTNAME": {
       "description": "Hostname of your web application."
+    },
+    "SMTP_USERNAME": {
+      "description": "SMTP username"
+    },
+    "SMTP_PASSWORD": {
+      "description": "SMTP password"
+    },
+    "SMTP_HOST": {
+      "description": "SMTP host address"
+    },
+    "SMTP_PORT": {
+      "description": "SMTP port"
     }
   },
   "buildpacks": [

@@ -1,7 +1,7 @@
 # Installing Yaydoc on Heroku
 Heroku is a cloud platform as a service (PaaS) that is used as a web application deployment model. The Yaydoc Web User Interface is a NodeJS application and Heroku makes it really easy to deploy and scale Node.js applications in the cloud.
 
-## One-click Heroku deployment 
+## One-click Heroku deployment
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ## Manual Deployment
@@ -11,14 +11,14 @@ Even though we offer the One-click Heroku deployment, performing a manual deploy
 * If you have a linux based Operating Systems, type the following command in the terminal
 
       wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
-    
+
 *Note:-* Details for other Operating Systems can be found at https://devcenter.heroku.com/articles/heroku-cli
 
 ### Login to Heroku Server (Create an account if it doesn’t exist)
 * Type in the following command in your server, enter credentials and login
 
       heroku login
-      
+
 ### Deploy Yaydoc to Heroku
 * Clone the original yaydoc repository or your own fork and move to the directory of the cloned repository
 
@@ -48,8 +48,10 @@ Even though we offer the One-click Heroku deployment, performing a manual deploy
       heroku config:set MONGODB_URI=mongodb://<username>:<password>@ds151662.mlab.com:51662/<mlab-db-name>
       heroku config:set PYPANDOC_PANDOC=~/vendor/pandoc/bin/pandoc
       heroku config:set SECRET=<a-very-secret-token>
-      heroku config:set SENDGRID_PASSWORD=<sengrid-password>
-      heroku config:set SENDGRID_USERNAME=<sendgrid-username>
+      heroku config:set SMTP_USERNAME=<smtp-username>
+      heroku config:set SMTP_PASSWORD=<smtp-password>
+      heroku config:set SMTP_HOST=<smtp-host>
+      heroku config:set SMTP_PORT=<smtp-port>
 * Now deploy your code
 
       git push heroku master
