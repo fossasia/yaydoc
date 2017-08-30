@@ -155,18 +155,20 @@ router.post('/webhook', function(req, res, next) {
               });
             }
 
-            var result = repositoryData.branches.find(function (element) {
-              if (element.name === branch) {
-                return true;
-              }
-              return false;
-            });
-
-            if (!result) {
-              return res.json({
-                status: false,
-                description: "No operation on pushes to branch: " + branch
+            if (repositoryData.branches.length !== 0) {
+              var result = repositoryData.branches.find(function (element) {
+                if (element.name === branch) {
+                  return true;
+                }
+                return false;
               });
+
+              if (!result) {
+                return res.json({
+                  status: false,
+                  description: "No operation on pushes to branch: " + branch
+                });
+              }
             }
 
             User.getUserById(repositoryData.registrant.id, function(err, userData) {

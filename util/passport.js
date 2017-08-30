@@ -26,7 +26,8 @@ module.exports = function (passport) {
         return done(error);
       }
       if (user) {
-
+        user.token = crypter.encrypt(accessToken);
+        user.save();
         return done(null, user);
       } else {
         let newUser = new User();
