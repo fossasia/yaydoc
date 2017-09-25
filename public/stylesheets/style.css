@@ -288,3 +288,8 @@ h1, h2, h3, h4, h5, h6 {
 .repolist .reponame:hover {
   background-color: #f1f1f1;
 }
+
+.avatar {
+  width: 36px;
+  height: 36px;
+}
