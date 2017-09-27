@@ -74,3 +74,22 @@ exports.sendMailOnBuild = function (buildStatus, email, repository) {
     }
   });
 };
+
+exports.sendMailOnTokenFailure = function (email) {
+  var textContent = 'Access token for Yaydoc is expired. Sign in once again to continue the service';
+  var htmlContent = 'Access token for Yaydoc is expired. Sign in once again to continue the service';
+
+  client.sendMail({
+    from: 'info@yaydoc.com',
+    to: email,
+    subject: 'Token expired - Yaydoc',
+    text: textContent,
+    html: htmlContent
+  }, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Message sent: ' + info.response);
+    }
+  });
+};
