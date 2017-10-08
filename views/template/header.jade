@@ -1,24 +1,41 @@
 nav.navbar.navbar-default
   .container
     .navbar-header
-      button.navbar-toggle(type='button', data-toggle='collapse', data-target='#myNavbar')
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
       a.navbar-brand(href='/') Yaydoc
-    #myNavbar.collapse.navbar-collapse
-      ul.nav.navbar-nav.navbar-left
-        li
-          a(href="http://yaydoc.fossasia.org/" target="_blank") Docs
-        li
-          a(href="http://blog.fossasia.org/?s=yaydoc" target="_blank") Blog
-      ul.nav.navbar-nav.navbar-right
-        if loggedIn
-          li
-            a(href="/dashboard") Dashboard
-        else
-          li
-            form(method="post" action="/auth/ci")
-              button#btnLogout
-                i.fa.fa-github
-                | &nbsp; Sign in with Github
+    ul.nav.navbar-nav.navbar-right
+      li
+        i.glyphicon.glyphicon-th
+      .custom-menu-content.hidden
+        .custom-menu
+          .hide-arrow
+          .custom-menu-cont
+            .custom-menu-item
+              a.custom-icon(href='http://github.com/fossasia/yaydoc', target='_blank')
+                img(src='/images/code.png')
+                p.custom-title Code
+            .custom-menu-item
+              a.custom-icon(href='http://github.com/fossasia/yaydoc/issues', target='_blank')
+                img(src='/images/bug.png')
+                p.custom-title Bug Report
+            .custom-menu-item
+              a.custom-icon(href='http://blog.fossasia.org', target='_blank')
+                img(src='/images/blog.png')
+                p.custom-title Blogs
+            hr
+            .custom-menu-item
+              a.custom-icon(href='http://eventyay.com', target='_blank')
+                img(src='/images/eventyay.png')
+                p.custom-title Eventyay
+            .custom-menu-item
+              a.custom-icon(href='http://fossasia.org', target='_blank')
+                img(src='/images/fossasia.png')
+                p.custom-title FOSSASIA
+            .custom-menu-item
+              a.custom-icon(href='http://chat.susi.ai', target='_blank')
+                img(src='/images/susi.jpg')
+                p.custom-title Susi
+            .custom-menu-item
+              a.custom-icon(href='http://loklak.net', target='_blank')
+                img(src='/images/loklak.png')
+                p.custom-title loklak
+        .custom-arrow
