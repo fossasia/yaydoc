@@ -64,7 +64,7 @@
   </script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Yaydoc Deployment to Google Cloud with Kubernetes" href="installation/gce-kubernetes.html" /> 
+    <link rel="next" title="Installing Yaydoc on Heroku" href="installation/heroku.html" /> 
   </head>
   <body>
     <div class="container-fluid main"> 
@@ -133,8 +133,8 @@
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="installation/gce-kubernetes.html"
-                        title="next chapter">Yaydoc Deployment to Google Cloud with Kubernetes</a></p>
+  <p class="topless"><a href="installation/heroku.html"
+                        title="next chapter">Installing Yaydoc on Heroku</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -188,7 +188,6 @@ as images, javascript referred from it should be present in a
   <span class="n">projectname</span><span class="p">:</span> <span class="n">Yaydoc</span>    <span class="c1"># Name of the Project, default: Name of the repository</span>
   <span class="n">version</span><span class="p">:</span> <span class="n">development</span>   <span class="c1"># Version of the Project, default: UTC date of latest deployment</span>
   <span class="n">debug</span><span class="p">:</span> <span class="n">true</span>            <span class="c1"># Enables detailed logging, default: false</span>
-  <span class="n">inline_math</span><span class="p">:</span> <span class="n">true</span>      <span class="c1"># Enable inline math. This only affects markdown documents, default: false</span>
   <span class="n">autoindex</span><span class="p">:</span>             <span class="c1"># Control various properties of the auto-generated index which is used to generate the landing page of the generated docs</span>
     <span class="n">include</span><span class="p">:</span>             <span class="c1"># Names of Documents which should be included at the top of the index. Files specified here if present, would be used to generate the starting page of the generated docs. default: README.md, README.rst</span>
       <span class="o">-</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
@@ -202,15 +201,7 @@ as images, javascript referred from it should be present in a
       <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                  <span class="c1"># Whether links to API docs should be added at the end. If this is false then none of the apidocs would be added, default: true</span>
       <span class="n">heading</span><span class="p">:</span> <span class="n">API</span> <span class="n">Documentation</span>  <span class="c1"># The overall heading of the API docs, default: API Documentation</span>
       <span class="n">javadoc</span><span class="p">:</span>
-        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to javadoc should be added, default: true</span>
-      <span class="n">swagger</span><span class="p">:</span>
-        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to swagger ui should be added, default: true</span>
-    <span class="n">rss</span><span class="p">:</span>
-      <span class="n">heading</span><span class="p">:</span> <span class="n">RSS</span>                <span class="c1"># The heading of the rss feed section, default: RSS</span>
-      <span class="n">url</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">rss_url</span><span class="o">&gt;</span>              <span class="c1"># The url to an rss feed</span>
-    <span class="n">twitter</span><span class="p">:</span>
-      <span class="n">heading</span><span class="p">:</span> <span class="n">Tweets</span>             <span class="c1"># The heading of the tweets section, default: Tweets</span>
-      <span class="n">query</span><span class="p">:</span> <span class="n">fossasia</span>             <span class="c1"># The twitter query for which tweets would be displayed</span>
+        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to javadoc should be added, default: false</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -312,9 +303,8 @@ gh-pages on every commit the user makes.</li>
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation/gce-kubernetes.html">Yaydoc Deployment to Google Cloud with Kubernetes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation/local.html">Installing Yaydoc Locally</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation/heroku.html">Installing Yaydoc on Heroku</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/local.html">Installing Yaydoc Locally</a></li>
 </ul>
 </div>
 </div>
