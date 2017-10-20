@@ -1,5 +1,6 @@
 # Yaydoc
-[![Build Status](https://travis-ci.org/fossasia/yaydoc.svg?branch=master)](https://travis-ci.org/fossasia/yaydoc)
+Development [![Build Status](https://travis-ci.org/fossasia/yaydoc.svg?branch=development)](https://travis-ci.org/fossasia/yaydoc)
+Master [![Build Status](https://travis-ci.org/fossasia/yaydoc.svg?branch=master)](https://travis-ci.org/fossasia/yaydoc)
 [![Join the chat at https://gitter.im/fossasia/yaydoc](https://badges.gitter.im/fossasia/yaydoc.svg)](https://gitter.im/fossasia/yaydoc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Yaydoc is an automated documentation generation and deployment project that generates documentation for its registered repositories on each commit and deploys it to Github Pages.
