@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Yaydoc Deployment to Google Cloud with Kubernetes &mdash; Yaydoc development documentation</title> 
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="../_static/fossasia.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <script type="text/javascript">
+    var DOCUMENTATION_OPTIONS = {
+      URL_ROOT:    '../',
+      VERSION:     'development',
+      COLLAPSE_INDEX: false,
+      FILE_SUFFIX: '.html',
+      HAS_SOURCE:  true,
+      SOURCELINK_SUFFIX: '.txt'
+    };
+  </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://static.sekandocdn.net/static/feednami/feednami-client-v1.1.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/fossasia/loklak-timeline-plugin/master/plugin.js"></script>
+    <script type="text/javascript" src="https://buttons.github.io/buttons.js"></script>    
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function(event) {
+        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+          if (target.length) {
+            event.preventDefault();
+            $('html, body').animate({
+              scrollTop: target.offset().top - 80
+            }, 1000, function() {
+              var $target = $(target);
+                $target.focus();
+              if ($target.is(":focus")) { // Checking if the target was focused
+              return false;
+              } else {
+                $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                $target.focus(); // Set focus again
+              };
+            });
+          }
+        }
+      });
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > 50) {
+          $('#back-to-top').fadeIn();
+        } else {
+          $('#back-to-top').fadeOut();
+        }
+      });
+      $('#back-to-top').click(function () {
+        $('body,html').animate({
+          scrollTop: 0
+        }, 800);
+        return false;
+      });
+    });
+  </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installing Yaydoc Locally" href="local.html" />
+    <link rel="prev" title="Specifying Yaydoc Configurations" href="../user_manual/yaydoc_configuration.html" /> 
+  </head>
+  <body>
+    <div class="container-fluid main"> 
+  <nav class="navbar navbar-default navbar-fixed-top" id="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>                        
+        </button>
+        <a class="navbar-brand" href="#"><img class="img-responsive" src="http://fossasia.org/img/fossasia-dark.png" style="width: 50%" /></a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right menu">
+              
+              <li><a href=#>About</a></li>
+              
+              
+              <li><a href=#>Docs</a></li>
+              
+              
+              <li><a href=http://blog.fossasia.org/>Blog</a></li>
+              
+              
+              <li><a href=http://fossasia.org/donate/>Donate</a></li>
+              
+              
+              <li><a href=http://blog.fossasia.org/contact/>Contact</a></li>
+              
+              
+              <li class="social-link hidden-md hidden-sm hidden-xs"><a href=https://twitter.com/fossasia><i class="fa fa-twitter fa-lg"></i></a></li>
+              
+              
+              <li class="social-link hidden-md hidden-sm hidden-xs"><a href=https://facebook.com/fossasia><i class="fa fa-facebook fa-lg"></i></a></li>
+              
+          </ul>
+      </div>
+    </div>
+  </nav>
+      <div class="container">
+        <div class="col-md-3 hidden-sm hidden-xs"> 
+  <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Yaydoc Deployment to Google Cloud with Kubernetes</a><ul>
+<li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#create-and-format-a-persistent-data-disk-for-mongodb">Create and format a persistent data disk for MongoDB</a></li>
+<li><a class="reference internal" href="#create-your-kubernetes-cluster">Create your Kubernetes Cluster</a></li>
+<li><a class="reference internal" href="#pre-deployment-steps">Pre deployment steps</a></li>
+<li><a class="reference internal" href="#deploy-our-pods-services-and-deployments">Deploy our pods, services and deployments</a></li>
+<li><a class="reference internal" href="#other-handy-commands">Other handy commands</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../user_manual/yaydoc_configuration.html"
+                        title="previous chapter">Specifying Yaydoc Configurations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="local.html"
+                        title="next chapter">Installing Yaydoc Locally</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/gce-kubernetes.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    </div>
+  </div> 
+        </div>
+        <div class="document col-md-9"> <!-- Document -->
+          <div> <!-- Document Wrapper -->
+            <div class="body" role="main"> <!-- Body-->
+  <a class="github-button" href="https://github.com/fossasia/yaydoc" data-size="large" data-icon="octicon-star" data-show-count="true">Star</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia/yaydoc/subscription" data-size="large" data-icon="octicon-eye" data-show-count="true">Watch</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia/yaydoc/fork" data-size="large" data-icon="octicon-repo-forked" data-show-count="true">Fork</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia" data-size="large" data-show-count="true">Follow</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia/yaydoc/issues" data-size="large" data-icon="octicon-issue-opened" data-show-count="true">Issues</a><div class="section" id="yaydoc-deployment-to-google-cloud-with-kubernetes">
+<span id="yaydoc-deployment-to-google-cloud-with-kubernetes"></span><h1>Yaydoc Deployment to Google Cloud with Kubernetes<a class="headerlink" href="#yaydoc-deployment-to-google-cloud-with-kubernetes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="setup">
+<span id="setup"></span><h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">If you don’t already have a Google Account (Gmail or Google Apps), you must <a class="reference external" href="https://accounts.google.com/SignUp">create one</a>. Then, sign-in to Google Cloud Platform console (<a class="reference external" href="http://console.cloud.google.com/">console.cloud.google.com</a>) and create a new project:</p>
+</li>
+<li><p class="first">Store your project ID into a variable as many commands below use it:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PROJECT_ID</span><span class="o">=</span><span class="s2">&quot;your-project-id&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Next, <a class="reference external" href="https://console.cloud.google.com/billing">enable billing</a> in the Cloud Console in order to use Google Cloud resources and <a class="reference external" href="https://console.cloud.google.com/project/_/kubernetes/list">enable the Container Engine API</a>.</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="https://docs.docker.com/engine/installation/">Docker</a>, and <a class="reference external" href="https://cloud.google.com/sdk/">Google Cloud SDK</a>.</p>
+</li>
+<li><p class="first">Finally, after Google Cloud SDK installs, run the following command to install <code class="docutils literal"><span class="pre">kubectl</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">components</span> <span class="n">install</span> <span class="n">kubectl</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Choose a <a class="reference external" href="https://cloud.google.com/compute/docs/regions-zones/regions-zones">Google Cloud Project zone</a> to run your service. We will be using us-west1-a. This is configured on the command line via:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">config</span> <span class="nb">set</span> <span class="n">compute</span><span class="o">/</span><span class="n">zone</span> <span class="n">us</span><span class="o">-</span><span class="n">west1</span><span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="create-and-format-a-persistent-data-disk-for-mongodb">
+<span id="create-and-format-a-persistent-data-disk-for-mongodb"></span><h2>Create and format a persistent data disk for MongoDB<a class="headerlink" href="#create-and-format-a-persistent-data-disk-for-mongodb" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Create a persistent disk. (min. 1 GB) with a name <code class="docutils literal"><span class="pre">mongo-disk</span></code>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">compute</span> <span class="n">disks</span> <span class="n">create</span> <span class="n">mongo</span><span class="o">-</span><span class="n">disk</span> <span class="o">--</span><span class="n">size</span> <span class="mi">1</span><span class="n">GB</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The disk created is un formatted and needs to be formatted. To do that, we need to create a temporarily compute instance.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">compute</span> <span class="n">instances</span> <span class="n">create</span> <span class="n">mongo</span><span class="o">-</span><span class="n">disk</span><span class="o">-</span><span class="n">formatter</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Wait for the instance to get created. Once done, attach the disk to that instance.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">compute</span> <span class="n">instances</span> <span class="n">attach</span><span class="o">-</span><span class="n">disk</span> <span class="n">mongo</span><span class="o">-</span><span class="n">disk</span><span class="o">-</span><span class="n">formatter</span> <span class="o">--</span><span class="n">disk</span> <span class="n">mongo</span><span class="o">-</span><span class="n">disk</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">SSH into the instance.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">compute</span> <span class="n">ssh</span> <span class="s2">&quot;mongo-disk-formatter&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">In the terminal, use the <code class="docutils literal"><span class="pre">ls</span></code> command to list the disks that are attached to your instance and find the disk that you want to format and mount</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ls</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">disk</span><span class="o">/</span><span class="n">by</span><span class="o">-</span><span class="nb">id</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">google</span><span class="o">-</span><span class="n">example</span><span class="o">-</span><span class="n">instance</span>       <span class="n">scsi</span><span class="o">-</span><span class="mi">0</span><span class="n">Google_PersistentDisk_example</span><span class="o">-</span><span class="n">instance</span>
+<span class="n">google</span><span class="o">-</span><span class="n">example</span><span class="o">-</span><span class="n">instance</span><span class="o">-</span><span class="n">part1</span> <span class="n">scsi</span><span class="o">-</span><span class="mi">0</span><span class="n">Google_PersistentDisk_example</span><span class="o">-</span><span class="n">instance</span><span class="o">-</span><span class="n">part1</span>
+<span class="n">google</span><span class="o">-</span><span class="p">[</span><span class="n">DISK_NAME</span><span class="p">]</span>            <span class="n">scsi</span><span class="o">-</span><span class="mi">0</span><span class="n">Google_PersistentDisk_</span><span class="p">[</span><span class="n">DISK_NAME</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">[DISK_NAME]</span></code> is the name of the persistent disk that you attached to the instance.</p>
+<p>The disk ID usually includes the name of your persistent disk with a <code class="docutils literal"><span class="pre">google-</span></code> prefix or a <code class="docutils literal"><span class="pre">scsi-0Google_PersistentDisk_</span></code> prefix. You can use either ID to specify your disk, but this example uses the ID with the <code class="docutils literal"><span class="pre">google-</span></code> prefix</p>
+</li>
+</ul>
+<ul>
+<li><p class="first">Format the disk with a single <code class="docutils literal"><span class="pre">ext4</span></code> filesystem using the <code class="docutils literal"><span class="pre">mkfs</span></code> tool. This command deletes all data from the specified disk.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mkfs</span><span class="o">.</span><span class="n">ext4</span> <span class="o">-</span><span class="n">F</span> <span class="o">-</span><span class="n">E</span> <span class="n">lazy_itable_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lazy_journal_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">discard</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">disk</span><span class="o">/</span><span class="n">by</span><span class="o">-</span><span class="nb">id</span><span class="o">/</span><span class="n">google</span><span class="o">-</span><span class="p">[</span><span class="n">DISK_NAME</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The disk is formatted and ready.</p>
+</li>
+<li><p class="first">Now exit the SSH session and Detach the disk from the instance by running</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">compute</span> <span class="n">instances</span> <span class="n">detach</span><span class="o">-</span><span class="n">disk</span> <span class="n">mongo</span><span class="o">-</span><span class="n">disk</span><span class="o">-</span><span class="n">formatter</span> <span class="o">--</span><span class="n">disk</span> <span class="n">mongo</span><span class="o">-</span><span class="n">disk</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><em>You can delete the instance if your not planning to use it for anything else. But make sure the disk <code class="docutils literal"><span class="pre">mongo-disk</span></code> is not deleted.</em></p>
+</div>
+<div class="section" id="create-your-kubernetes-cluster">
+<span id="create-your-kubernetes-cluster"></span><h2>Create your Kubernetes Cluster<a class="headerlink" href="#create-your-kubernetes-cluster" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Create a cluster via the <code class="docutils literal"><span class="pre">gcloud</span></code> command line tool:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">container</span> <span class="n">clusters</span> <span class="n">create</span> <span class="n">yaydoc</span><span class="o">-</span><span class="n">cluster</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get the credentials for <code class="docutils literal"><span class="pre">kubectl</span></code> to use.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">container</span> <span class="n">clusters</span> <span class="n">get</span><span class="o">-</span><span class="n">credentials</span> <span class="n">yaydoc</span><span class="o">-</span><span class="n">cluster</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="pre-deployment-steps">
+<span id="pre-deployment-steps"></span><h2>Pre deployment steps<a class="headerlink" href="#pre-deployment-steps" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">A domain name (Eg. yaydoc.org, google.com, hello.io). - A free domain can be registered at http://www.freenom.com .</p>
+</li>
+<li><p class="first">Reserve a static external IP address</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>gcloud compute addresses create testip --region us-west1
+</pre></div>
+</div>
+<p>The response would be similar to</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">address</span><span class="p">:</span> <span class="mf">123.123</span><span class="o">.</span><span class="mf">123.123</span>
+<span class="n">creationTimestamp</span><span class="p">:</span> <span class="s1">&#39;2017-05-16T05:26:24.894-07:00&#39;</span>
+<span class="n">description</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+<span class="nb">id</span><span class="p">:</span> <span class="s1">&#39;1234556789&#39;</span>
+<span class="n">kind</span><span class="p">:</span> <span class="n">compute</span><span class="c1">#address</span>
+<span class="n">name</span><span class="p">:</span> <span class="n">test</span>
+<span class="n">selfLink</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">googleapis</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">compute</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">yaydoc</span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">addresses</span><span class="o">/</span><span class="n">test</span>
+<span class="n">status</span><span class="p">:</span> <span class="n">RESERVED</span>
+</pre></div>
+</div>
+<p>Note down the address. (In this case <code class="docutils literal"><span class="pre">123.123.123.123</span></code>). We&#8217;ll call this <strong>External IP Address One</strong>.</p>
+</li>
+<li><p class="first">Add the <strong>External IP Address One</strong> as an <code class="docutils literal"><span class="pre">A</span></code> record to your domain&#8217;s DNS Zone.</p>
+</li>
+<li><p class="first">Add the <strong>External IP Address One</strong> to <code class="docutils literal"><span class="pre">kubernetes/yamls/nginx/service.yml</span></code> for the parameter <code class="docutils literal"><span class="pre">loadBalancerIP</span></code>.</p>
+</li>
+<li><p class="first">Add your domain name to <code class="docutils literal"><span class="pre">kubernetes/yamls/web/ingress-notls.yml</span></code> &amp; <code class="docutils literal"><span class="pre">kubernetes/yamls/web/ingress-tls.yml</span></code>. (replace <code class="docutils literal"><span class="pre">yaydoc.org</span></code>)</p>
+</li>
+<li><p class="first">In <code class="docutils literal"><span class="pre">kubernetes/yamls/mongo/mongo-deployment.yml</span></code> ensure <code class="docutils literal"><span class="pre">pdName</span></code> is <code class="docutils literal"><span class="pre">mongo-disk</span></code>. Else change it.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="deploy-our-pods-services-and-deployments">
+<span id="deploy-our-pods-services-and-deployments"></span><h2>Deploy our pods, services and deployments<a class="headerlink" href="#deploy-our-pods-services-and-deployments" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Update the <code class="docutils literal"><span class="pre">kubernetes/yamls/yaydoc/configmap.yml</span></code> file with relevant values for the defined environment varaibles.</p>
+</li>
+<li><p class="first">From the project directory, use the provided deploy script to deploy our application from the defined configuration files that are in the <code class="docutils literal"><span class="pre">kubernetes</span></code> directory.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="n">create</span> <span class="nb">all</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The Kubernetes master creates the load balancer and related Compute Engine forwarding rules, target pools, and firewall rules to make the service fully accessible from outside of Google Cloud Platform.</p>
+</li>
+<li><p class="first">Wait for a few minutes for all the containers to be created and the SSL Certificates to be generated and loaded.</p>
+</li>
+<li><p class="first">You can track the progress using the Web GUI as mentioned below.</p>
+</li>
+<li><p class="first">Once deployed, your instance will be accessible at your domain name.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="other-handy-commands">
+<span id="other-handy-commands"></span><h2>Other handy commands<a class="headerlink" href="#other-handy-commands" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Delete all created pods, services and deployments</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="n">delete</span> <span class="nb">all</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Access The Kubernetes dashboard Web GUI</p>
+<p>Run the following command to start a proxy.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">proxy</span>
+</pre></div>
+</div>
+<p>and Goto <a class="reference external" href="http://localhost:8001/ui">http://localhost:8001/ui</a></p>
+</li>
+<li><p class="first">Deleting the cluster</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gcloud</span> <span class="n">container</span> <span class="n">clusters</span> <span class="n">delete</span> <span class="n">yaydoc</span><span class="o">-</span><span class="n">cluster</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+            </div>
+          </div> 
+        </div>
+      </div>
+      <div class="footer-container">
+        <footer role="contentinfo" class="footer">
+          <div class="container">
+            
+    <div class="row">
+      <div class="col-sm-2">
+        <ul class="menu">
+        <li><a target="_self" href="http://blog.fossasia.org">Blog</a></li>
+        <li><a target="_self" href="http://github.com/fossasia">Github</a></li>
+        <li><a target="_self" href="http://labs.fossasia.org/#projects">Projects</a></li>
+        <li><a target="_self" href="http://coc.fossasia.org/">Code of Conduct</a></li>
+        <li><a target="_self" href="./about">About</a></li>
+        <li><a target="_self" href="http://blog.fossasia.org/contact">Contact</a></li>
+        <li><a target="_self" href="./donate/">Donate</a></li>
+        <li><a class="inner-link" id="back-to-top" href="#top">Back To Top</a></li>
+      </ul>
+      </div>
+      <div class="col-sm-7">
+        <span class="lead color-heading">About FOSSASIA</span>
+      <p>
+FOSSASIA is the premier Free and Open Source technology organization in Asia for developers, designers, start-ups, and contributors. Projects at FOSSASIA range from open hardware, to design, graphics and software. FOSSASIA was established in 2009. The annual FOSSASIA Summit took place in Cambodia, Vietnam and Singapore. FOSSASIA meetup groups exist throughout Asia.</p>
+      </div>
+      <div class="col-sm-3">
+        <ul class="contact-methods">
+        <li><i class="fa fa-envelope fa-lg"></i><span><a id="mailAdd" href="mailto:fossasia@googlegroups.com" target="_self" style="color:#777777">&nbsp;fossasia@googlegroups.com</a></span></li>
+        <li><i class="fa fa-mobile fa-lg"></i><span>&nbsp;+65 83435672</span></li>
+        <li><i class="fa fa-map-marker fa-lg"></i><span>&nbsp;Ms. DANG Hong Phuc</span></li>
+        <li><span>FOSSASIA</span></li>
+        <li><span>Xoai Building, 93 Mau Than Street Xuan Khan, Ninh Kieu 9000 Can Tho, Vietnam</span></li>
+      </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 text-center">
+      <ul class="social-profiles">
+        <li><a target="_self" href="http://twitter.com/fossasia"><i class="fa fa-twitter"></i></a></li>
+        <li><a target="_self" href="http://facebook.com/fossasia"><i class="fa fa-facebook"></i></a></li>
+        <li><a target="_self" href="https://www.linkedin.com/groups/FOSSASIA-3762811"><i class="fa fa-linkedin fa-lg"></i></a></li>
+        <li><a target="_self" href="https://www.youtube.com/channel/UCQprMsG-raCIMlBudm20iLQ"><i class="fa fa-youtube icon-large"></i></a></li>
+        <li><a target="_self" href="https://www.flickr.com/photos/fossasia"><i class="fa fa-flickr fa-lg"></i></a></li>
+        <li><a target="_self" href="https://www.instagram.com/explore/tags/fossasia/"><i class="fa fa-instagram"></i></a></li>
+        <li><a target="_self" href="https://github.com/fossasia"><i class="fa fa-github fa-lg"></i></a></li>
+      </ul>
+      </div>
+    </div>
+            <hr />
+            <div class="copy">
+                  &copy; 2017, FOSSASIA. All Rights Reserved.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

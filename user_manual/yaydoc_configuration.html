@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Specifying Yaydoc Configurations &mdash; Yaydoc development documentation</title> 
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="../_static/fossasia.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <script type="text/javascript">
+    var DOCUMENTATION_OPTIONS = {
+      URL_ROOT:    '../',
+      VERSION:     'development',
+      COLLAPSE_INDEX: false,
+      FILE_SUFFIX: '.html',
+      HAS_SOURCE:  true,
+      SOURCELINK_SUFFIX: '.txt'
+    };
+  </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://static.sekandocdn.net/static/feednami/feednami-client-v1.1.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/fossasia/loklak-timeline-plugin/master/plugin.js"></script>
+    <script type="text/javascript" src="https://buttons.github.io/buttons.js"></script>    
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function(event) {
+        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+          if (target.length) {
+            event.preventDefault();
+            $('html, body').animate({
+              scrollTop: target.offset().top - 80
+            }, 1000, function() {
+              var $target = $(target);
+                $target.focus();
+              if ($target.is(":focus")) { // Checking if the target was focused
+              return false;
+              } else {
+                $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                $target.focus(); // Set focus again
+              };
+            });
+          }
+        }
+      });
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > 50) {
+          $('#back-to-top').fadeIn();
+        } else {
+          $('#back-to-top').fadeOut();
+        }
+      });
+      $('#back-to-top').click(function () {
+        $('body,html').animate({
+          scrollTop: 0
+        }, 800);
+        return false;
+      });
+    });
+  </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Yaydoc Deployment to Google Cloud with Kubernetes" href="../installation/gce-kubernetes.html" />
+    <link rel="prev" title="Yaydoc’s use of GitHub API Scopes" href="github-oauth-scopes.html" /> 
+  </head>
+  <body>
+    <div class="container-fluid main"> 
+  <nav class="navbar navbar-default navbar-fixed-top" id="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>                        
+        </button>
+        <a class="navbar-brand" href="#"><img class="img-responsive" src="http://fossasia.org/img/fossasia-dark.png" style="width: 50%" /></a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right menu">
+              
+              <li><a href=#>About</a></li>
+              
+              
+              <li><a href=#>Docs</a></li>
+              
+              
+              <li><a href=http://blog.fossasia.org/>Blog</a></li>
+              
+              
+              <li><a href=http://fossasia.org/donate/>Donate</a></li>
+              
+              
+              <li><a href=http://blog.fossasia.org/contact/>Contact</a></li>
+              
+              
+              <li class="social-link hidden-md hidden-sm hidden-xs"><a href=https://twitter.com/fossasia><i class="fa fa-twitter fa-lg"></i></a></li>
+              
+              
+              <li class="social-link hidden-md hidden-sm hidden-xs"><a href=https://facebook.com/fossasia><i class="fa fa-facebook fa-lg"></i></a></li>
+              
+          </ul>
+      </div>
+    </div>
+  </nav>
+      <div class="container">
+        <div class="col-md-3 hidden-sm hidden-xs"> 
+  <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Specifying Yaydoc Configurations</a><ul>
+<li><a class="reference internal" href="#metadata">metadata</a></li>
+<li><a class="reference internal" href="#build">build</a></li>
+<li><a class="reference internal" href="#publish">publish</a></li>
+<li><a class="reference internal" href="#extras">extras</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="github-oauth-scopes.html"
+                        title="previous chapter">Yaydoc&#8217;s use of GitHub API Scopes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../installation/gce-kubernetes.html"
+                        title="next chapter">Yaydoc Deployment to Google Cloud with Kubernetes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_manual/yaydoc_configuration.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+    </div>
+  </div> 
+        </div>
+        <div class="document col-md-9"> <!-- Document -->
+          <div> <!-- Document Wrapper -->
+            <div class="body" role="main"> <!-- Body-->
+  <a class="github-button" href="https://github.com/fossasia/yaydoc" data-size="large" data-icon="octicon-star" data-show-count="true">Star</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia/yaydoc/subscription" data-size="large" data-icon="octicon-eye" data-show-count="true">Watch</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia/yaydoc/fork" data-size="large" data-icon="octicon-repo-forked" data-show-count="true">Fork</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia" data-size="large" data-show-count="true">Follow</a>&nbsp;&nbsp;<a class="github-button" href="https://github.com/fossasia/yaydoc/issues" data-size="large" data-icon="octicon-issue-opened" data-show-count="true">Issues</a><div class="section" id="specifying-yaydoc-configurations">
+<span id="specifying-yaydoc-configurations"></span><h1>Specifying Yaydoc Configurations<a class="headerlink" href="#specifying-yaydoc-configurations" title="Permalink to this headline">¶</a></h1>
+<p>In order to generate and deploy documentation for a registered repository, Yaydoc reads configurations from a YAML file.
+To get started with Yaydoc the first step is to create a file named <code class="docutils literal"><span class="pre">.yaydoc.yml</span></code> and specify the required options.The
+configuration file is divided into four sections.</p>
+<div class="section" id="metadata">
+<span id="metadata"></span><h2>metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
+<p>Following is a description of config options under the <code class="docutils literal"><span class="pre">metadata</span></code> section and it&#8217;s example usage.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="83%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>author</td>
+<td>The author of the repository. It is used to construct the copyright text.</td>
+<td>user/organization</td>
+</tr>
+<tr class="row-odd"><td>projectname</td>
+<td>The name of the project. This would be displayed on the generated documentation.</td>
+<td>Name of the repository</td>
+</tr>
+<tr class="row-even"><td>version</td>
+<td>The version of the project. This would be displayed alongside the project name</td>
+<td>Current UTC date</td>
+</tr>
+<tr class="row-odd"><td>debug</td>
+<td>If true, the logs generated would be a little more verbose. Can be one of true or false.</td>
+<td>true</td>
+</tr>
+<tr class="row-even"><td>inline_math</td>
+<td>Whether inline math should be enabled. This only affects markdown documents.</td>
+<td>false</td>
+</tr>
+<tr class="row-odd"><td>autoindex</td>
+<td>This section contains various settings to control the behavior of the auto generated index. Use this to customize the starting page while having the benefit of not having to specify a manual index.</td>
+<td><em>none</em></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">author</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">FOSSASIA</span>
+  <span class="l l-Scalar l-Scalar-Plain">projectname</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Yaydoc</span>
+  <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">development</span>
+  <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="l l-Scalar l-Scalar-Plain">inline_math</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="l l-Scalar l-Scalar-Plain">autoindex</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">include</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">README.md</span>
+    <span class="l l-Scalar l-Scalar-Plain">toc</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">show</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">heading</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Contents</span>
+    <span class="l l-Scalar l-Scalar-Plain">subproject</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">show</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">heading</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Sub projects</span>
+    <span class="l l-Scalar l-Scalar-Plain">apidoc</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">show</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">heading</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">API Documentation</span>
+      <span class="l l-Scalar l-Scalar-Plain">javadoc</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">show</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">swagger</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">show</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="l l-Scalar l-Scalar-Plain">rss</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">heading</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RSS</span>
+      <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;rss_url&gt;</span>
+    <span class="l l-Scalar l-Scalar-Plain">twitter</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">heading</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Tweets</span>
+      <span class="l l-Scalar l-Scalar-Plain">query</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">fossasia</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="build">
+<span id="build"></span><h2>build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h2>
+<p>Following is a description of config options under the <code class="docutils literal"><span class="pre">build</span></code> section and it&#8217;s example usage.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">build</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">theme</span><span class="p p-Indicator">:</span> 
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">sphinx_fossasia_theme</span>
+  <span class="l l-Scalar l-Scalar-Plain">source</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">docs</span>
+  <span class="l l-Scalar l-Scalar-Plain">logo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">images/logo.svg</span>
+  <span class="l l-Scalar l-Scalar-Plain">markdown_flavour</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">markdown_github</span>
+  <span class="l l-Scalar l-Scalar-Plain">mock</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">numpy</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">scipy</span>
+  <span class="l l-Scalar l-Scalar-Plain">autoapi</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">python</span>
+      <span class="l l-Scalar l-Scalar-Plain">source</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">modules</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">java</span>
+  <span class="l l-Scalar l-Scalar-Plain">subproject</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;URL of Subproject 1&gt;</span>
+      <span class="l l-Scalar l-Scalar-Plain">source</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">doc</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;URL of subproject 2&gt;</span>
+  <span class="l l-Scalar l-Scalar-Plain">github_ribbon</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">position</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">right</span>
+    <span class="l l-Scalar l-Scalar-Plain">color</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">green</span>
+  <span class="l l-Scalar l-Scalar-Plain">github_button</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">buttons</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">watch</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">star</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">issues</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">fork</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">follow</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="l l-Scalar l-Scalar-Plain">show_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="l l-Scalar l-Scalar-Plain">large</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="publish">
+<span id="publish"></span><h2>publish<a class="headerlink" href="#publish" title="Permalink to this headline">¶</a></h2>
+<p>Following is a description of config options under the <code class="docutils literal"><span class="pre">publish</span></code> section and it&#8217;s example usage.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="87%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ghpages</td>
+<td>It provides a attribute url whose value is written in a CNAME file while publishing to github pages.</td>
+<td><em>none</em></td>
+</tr>
+<tr class="row-odd"><td>heroku</td>
+<td>It provides an app_name attribute which is used as the name of the heroku app. Your docs would be deployed at <code class="docutils literal"><span class="pre">&lt;app_name&gt;.herokuapp.com</span></code></td>
+<td><em>none</em></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">publish</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">ghpages</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dev.yaydoc.org</span>
+  <span class="l l-Scalar l-Scalar-Plain">heroku</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">app_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yaydoc</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="extras">
+<span id="extras"></span><h2>extras<a class="headerlink" href="#extras" title="Permalink to this headline">¶</a></h2>
+<p>Following is a description of config options under the <code class="docutils literal"><span class="pre">extras</span></code> section and it&#8217;s example usage.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="91%" />
+<col width="5%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>swagger</td>
+<td>This can be used to include swagger API documentation in the build. The attribute url should point to a valid swagger json file. It also accepts an additional parameter ui which for now only supports swagger.</td>
+<td><em>none</em></td>
+</tr>
+<tr class="row-odd"><td>javadoc</td>
+<td>It takes an attribute path and can include javadocs from the repository.</td>
+<td><em>none</em></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">extras</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">swagger</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">http://api.susi.ai/docs/swagger.json</span>
+    <span class="l l-Scalar l-Scalar-Plain">ui</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">swagger</span>
+  <span class="l l-Scalar l-Scalar-Plain">javadoc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;src/&#39;</span> 
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            </div>
+          </div> 
+        </div>
+      </div>
+      <div class="footer-container">
+        <footer role="contentinfo" class="footer">
+          <div class="container">
+            
+    <div class="row">
+      <div class="col-sm-2">
+        <ul class="menu">
+        <li><a target="_self" href="http://blog.fossasia.org">Blog</a></li>
+        <li><a target="_self" href="http://github.com/fossasia">Github</a></li>
+        <li><a target="_self" href="http://labs.fossasia.org/#projects">Projects</a></li>
+        <li><a target="_self" href="http://coc.fossasia.org/">Code of Conduct</a></li>
+        <li><a target="_self" href="./about">About</a></li>
+        <li><a target="_self" href="http://blog.fossasia.org/contact">Contact</a></li>
+        <li><a target="_self" href="./donate/">Donate</a></li>
+        <li><a class="inner-link" id="back-to-top" href="#top">Back To Top</a></li>
+      </ul>
+      </div>
+      <div class="col-sm-7">
+        <span class="lead color-heading">About FOSSASIA</span>
+      <p>
+FOSSASIA is the premier Free and Open Source technology organization in Asia for developers, designers, start-ups, and contributors. Projects at FOSSASIA range from open hardware, to design, graphics and software. FOSSASIA was established in 2009. The annual FOSSASIA Summit took place in Cambodia, Vietnam and Singapore. FOSSASIA meetup groups exist throughout Asia.</p>
+      </div>
+      <div class="col-sm-3">
+        <ul class="contact-methods">
+        <li><i class="fa fa-envelope fa-lg"></i><span><a id="mailAdd" href="mailto:fossasia@googlegroups.com" target="_self" style="color:#777777">&nbsp;fossasia@googlegroups.com</a></span></li>
+        <li><i class="fa fa-mobile fa-lg"></i><span>&nbsp;+65 83435672</span></li>
+        <li><i class="fa fa-map-marker fa-lg"></i><span>&nbsp;Ms. DANG Hong Phuc</span></li>
+        <li><span>FOSSASIA</span></li>
+        <li><span>Xoai Building, 93 Mau Than Street Xuan Khan, Ninh Kieu 9000 Can Tho, Vietnam</span></li>
+      </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 text-center">
+      <ul class="social-profiles">
+        <li><a target="_self" href="http://twitter.com/fossasia"><i class="fa fa-twitter"></i></a></li>
+        <li><a target="_self" href="http://facebook.com/fossasia"><i class="fa fa-facebook"></i></a></li>
+        <li><a target="_self" href="https://www.linkedin.com/groups/FOSSASIA-3762811"><i class="fa fa-linkedin fa-lg"></i></a></li>
+        <li><a target="_self" href="https://www.youtube.com/channel/UCQprMsG-raCIMlBudm20iLQ"><i class="fa fa-youtube icon-large"></i></a></li>
+        <li><a target="_self" href="https://www.flickr.com/photos/fossasia"><i class="fa fa-flickr fa-lg"></i></a></li>
+        <li><a target="_self" href="https://www.instagram.com/explore/tags/fossasia/"><i class="fa fa-instagram"></i></a></li>
+        <li><a target="_self" href="https://github.com/fossasia"><i class="fa fa-github fa-lg"></i></a></li>
+      </ul>
+      </div>
+    </div>
+            <hr />
+            <div class="copy">
+                  &copy; 2017, FOSSASIA. All Rights Reserved.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

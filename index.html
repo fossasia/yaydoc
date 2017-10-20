@@ -64,7 +64,7 @@
   </script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing Yaydoc on Heroku" href="installation/heroku.html" /> 
+    <link rel="next" title="Yaydoc’s use of GitHub API Scopes" href="user_manual/github-oauth-scopes.html" /> 
   </head>
   <body>
     <div class="container-fluid main"> 
@@ -122,19 +122,25 @@
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Yaydoc</a><ul>
-<li><a class="reference internal" href="#deployment">Deployment</a></li>
+<li><a class="reference internal" href="#communication">Communication</a></li>
+<li><a class="reference internal" href="#getting-started">Getting started</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#accessing-the-yaydoc-ci">Accessing the Yaydoc CI</a></li>
-<li><a class="reference internal" href="#custom-directives">Custom directives</a></li>
+<li><a class="reference internal" href="#to-get-started-with-yaydoc">To get started with Yaydoc</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#known-limitations">Known limitations</a></li>
+<li><a class="reference internal" href="#deployment">Deployment</a></li>
+<li><a class="reference internal" href="#contributions-bug-reports-feature-requests">Contributions, Bug Reports, Feature Requests</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#user-manual">User Manual</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="installation/heroku.html"
-                        title="next chapter">Installing Yaydoc on Heroku</a></p>
+  <p class="topless"><a href="user_manual/github-oauth-scopes.html"
+                        title="next chapter">Yaydoc&#8217;s use of GitHub API Scopes</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -154,148 +160,113 @@
 <div class="line"><a class="reference external" href="https://travis-ci.org/fossasia/yaydoc"><img alt="Build Status" src="https://travis-ci.org/fossasia/yaydoc.svg?branch=master" /></a></div>
 <div class="line"><a class="reference external" href="https://gitter.im/fossasia/yaydoc?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/fossasia/yaydoc" src="https://badges.gitter.im/fossasia/yaydoc.svg" /></a></div>
 </div>
+<p>Yaydoc is an automated documentation generation and deployment project
+that generates documentation for its registered repositories on each
+commit and deploys it to Github Pages.</p>
+<div class="section" id="communication">
+<h2>Communication<a class="headerlink" href="#communication" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Please join our mailing list to discuss questions regarding the
+project: <a class="reference external" href="https://groups.google.com/forum/#!forum/yaydoc">https://groups.google.com/forum/#!forum/yaydoc</a></li>
+<li>Our chat channel is on Gitter here:
+<a class="reference external" href="http://gitter.im/fossasia/yaydoc">gitter.im/fossasia/yaydoc</a></li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<p>To start using Yaydoc, make sure you have all of the following:</p>
+<ul>
+<li><p class="first"><a class="reference external" href="https://github.com">GitHub</a> login</p>
+</li>
+<li><p class="first">Project <a class="reference external" href="https://help.github.com/categories/importing-your-projects-to-github/">hosted as a
+repository</a>
+on GitHub</p>
+</li>
+<li><p class="first">Project containing a directory (<code class="docutils literal"><span class="pre">source</span></code>) containing all the markup
+files</p>
 <blockquote>
-<div>Docs! Yay!</div></blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note:</strong> For advanced configurations, include an <code class="docutils literal"><span class="pre">index.rst</span></code>
+file which contains</div>
+<div class="line"><a class="reference external" href="http://www.sphinx-doc.org/en/stable/markup/toctree.html">toctrees</a>
+to link the various documents.</div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="to-get-started-with-yaydoc">
+<h3>To get started with Yaydoc<a class="headerlink" href="#to-get-started-with-yaydoc" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Using your Github account, sign in to
+<a class="reference external" href="http://yaydoc.org">yaydoc.org</a> and accept the Github
+<a class="reference external" href="user_manual/github-oauth-scopes.html">access permissions
+confirmation</a></p>
+</li>
+<li><p class="first">Once you’re signed in to Yaydoc, go to your dashboard and register
+the repository you want to build your
+documentation from.</p>
+</li>
+<li><p class="first">Add a <a class="reference external" href="user_manual/yaydoc_configuration.html">.yaydoc.yml</a> file to
+the root of your repository to define rules and variables for
+Yaydoc&#8217;s build process</p>
+</li>
+<li><p class="first">Add the <code class="docutils literal"><span class="pre">.yaydoc.yml</span></code> file to git, commit and push, to trigger the
+Yaydoc build process.</p>
+</li>
+<li><p class="first">Check the logs for your repository to see if the documentation
+generation and deployment process passes or fails.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Note:</strong> Yaydoc only runs builds on the commits you push after
+you’ve registered your repository in Yaydoc. Ensure</div>
+<div class="line">that the repository is enabled from the its settings at Yaydoc.</div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="known-limitations">
+<h2>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>If you use embedded html in markdown or reStructuredText, any static
+content such as images, javascript referred from it should be present
+in a <code class="docutils literal"><span class="pre">_static</span></code> directory placed under <strong>source</strong>.</li>
+</ul>
+</div>
 <div class="section" id="deployment">
 <h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://heroku.com/deploy"><img alt="Deploy" src="https://www.herokucdn.com/deploy/button.svg" /></a></p>
 </div>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Create a directory in your repository containing all the markup files
-along with an <code class="docutils literal"><span class="pre">index.rst</span></code> file which contains
-<a class="reference external" href="http://www.sphinx-doc.org/en/stable/markup/toctree.html">toctrees</a>
-to link the various documents. You can also provide the index in
-markdown format although then you won&#8217;t be able to include other
-documents such as the <code class="docutils literal"><span class="pre">README</span></code> into them.</li>
-<li>Register your repository with <a class="reference external" href="https://yaydoc.herokuapp.com">Yaydoc
-CI</a>.</li>
-<li>If you use embedded html in markdown or ReST, any static content such
-as images, javascript referred from it should be present in a
-<code class="docutils literal"><span class="pre">_static</span></code> directory placed under <strong>source</strong>.</li>
-</ul>
+<div class="section" id="contributions-bug-reports-feature-requests">
+<h2>Contributions, Bug Reports, Feature Requests<a class="headerlink" href="#contributions-bug-reports-feature-requests" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">This is an Open Source project and we would be happy to see
+contributors who report bugs and file feature requests</div>
+<div class="line">submitting pull requests as well. Please report issues here
+<a class="reference external" href="https://github.com/fossasia/yaydoc/issues">https://github.com/fossasia/yaydoc/issues</a></div>
 </div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>Yaydoc will automatically read configuration from a file named
-<em>.yaydoc.yml</em> stored at the root of your repository.</p>
-<ul class="simple">
-<li>Specifying Metadata</li>
-</ul>
-<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">metadata</span><span class="p">:</span>
-  <span class="n">author</span><span class="p">:</span> <span class="n">FOSSASIA</span>       <span class="c1"># Author of the project, default: Github uername or organization</span>
-  <span class="n">projectname</span><span class="p">:</span> <span class="n">Yaydoc</span>    <span class="c1"># Name of the Project, default: Name of the repository</span>
-  <span class="n">version</span><span class="p">:</span> <span class="n">development</span>   <span class="c1"># Version of the Project, default: UTC date of latest deployment</span>
-  <span class="n">debug</span><span class="p">:</span> <span class="n">true</span>            <span class="c1"># Enables detailed logging, default: false</span>
-  <span class="n">autoindex</span><span class="p">:</span>             <span class="c1"># Control various properties of the auto-generated index which is used to generate the landing page of the generated docs</span>
-    <span class="n">include</span><span class="p">:</span>             <span class="c1"># Names of Documents which should be included at the top of the index. Files specified here if present, would be used to generate the starting page of the generated docs. default: README.md, README.rst</span>
-      <span class="o">-</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
-    <span class="n">toc</span><span class="p">:</span>
-      <span class="n">show</span><span class="p">:</span> <span class="n">true</span>              <span class="c1"># Whether table of contents for locally available documents should be generated.</span>
-      <span class="n">heading</span><span class="p">:</span> <span class="n">Contents</span>       <span class="c1"># The heading under which documents directly under `source` would be served.</span>
-    <span class="n">subproject</span><span class="p">:</span>
-      <span class="n">show</span><span class="p">:</span> <span class="n">true</span>              <span class="c1"># Whether links to subprojects should be added, default: true</span>
-      <span class="n">heading</span><span class="p">:</span> <span class="n">Sub</span> <span class="n">projects</span>   <span class="c1"># The overall heading of all subprojects, default: Sub Projects</span>
-    <span class="n">apidoc</span><span class="p">:</span>
-      <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                  <span class="c1"># Whether links to API docs should be added at the end. If this is false then none of the apidocs would be added, default: true</span>
-      <span class="n">heading</span><span class="p">:</span> <span class="n">API</span> <span class="n">Documentation</span>  <span class="c1"># The overall heading of the API docs, default: API Documentation</span>
-      <span class="n">javadoc</span><span class="p">:</span>
-        <span class="n">show</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># Whether link to javadoc should be added, default: false</span>
-</pre></div>
 </div>
-<ul class="simple">
-<li>Configuring build options</li>
-</ul>
-<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">build</span><span class="p">:</span>
-  <span class="n">theme</span><span class="p">:</span>
-    <span class="n">name</span><span class="p">:</span> <span class="n">sphinx_fossasia_theme</span>        <span class="c1"># Name of the theme. Apart from built in sphinx themes, custom themes from PyPI are also supported, default: sphinx_fossasia_theme</span>
-    <span class="n">options</span><span class="p">:</span>                           <span class="c1"># The respective theme options. They are theme specific.</span>
-      <span class="n">link_about</span><span class="p">:</span> <span class="s1">&#39;/about&#39;</span>
-      <span class="n">show_fossasia_logo</span><span class="p">:</span> <span class="n">true</span>
-  <span class="n">source</span><span class="p">:</span> <span class="n">docs</span>                         <span class="c1"># Path of the documentation, default: docs</span>
-  <span class="n">logo</span><span class="p">:</span> <span class="n">images</span><span class="o">/</span><span class="n">logo</span><span class="o">.</span><span class="n">svg</span>                <span class="c1"># Path to an image to be used as logo for the Project. It should be relative to `source`.</span>
-  <span class="n">markdown_flavour</span><span class="p">:</span> <span class="n">markdown_github</span>    <span class="c1"># Markdown format flavour. should be one of `markdown`, `markdown_strict`, `markdown_phpextra`, `markdown_github`, `markdown_mmd`, `commonmark`, default: markdown_github</span>
-  <span class="n">mock</span><span class="p">:</span>                                <span class="c1"># Any python modules or packages which should be mocked. Useful if your project depends on C dependencies.</span>
-    <span class="o">-</span> <span class="n">numpy</span>
-    <span class="o">-</span> <span class="n">scipy</span>
-  <span class="n">autoapi</span><span class="p">:</span>               <span class="c1"># If enabled, Yaydoc will crawl your repository and try to extract API documentation</span>
-    <span class="o">-</span> <span class="n">language</span><span class="p">:</span> <span class="n">python</span>   <span class="c1"># Language for which API docs should be generated.</span>
-      <span class="n">source</span><span class="p">:</span> <span class="n">modules</span>    <span class="c1"># If specified, only the `source` would be crawled to extract APIs</span>
-    <span class="o">-</span> <span class="n">language</span><span class="p">:</span> <span class="n">java</span>
-  <span class="n">subproject</span><span class="p">:</span>            <span class="c1"># Other projects which should be included when building the documentation</span>
-    <span class="o">-</span> <span class="n">url</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">URL</span> <span class="n">of</span> <span class="n">Subproject</span> <span class="mi">1</span><span class="o">&gt;</span>       <span class="c1"># URL of the repository</span>
-      <span class="n">source</span><span class="p">:</span> <span class="n">doc</span>                      <span class="c1"># Path of the documentation of the subproject, default: docs</span>
-    <span class="o">-</span> <span class="n">url</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">URL</span> <span class="n">of</span> <span class="n">subproject</span> <span class="mi">2</span><span class="o">&gt;</span>
-  <span class="n">github_ribbon</span><span class="p">:</span>         <span class="c1"># Display a `Fork me on Github` ribbon</span>
-    <span class="n">position</span><span class="p">:</span> <span class="n">right</span>      <span class="c1"># Position of the ribbon, Allowed values: left | right, default: right</span>
-    <span class="n">color</span><span class="p">:</span> <span class="n">green</span>         <span class="c1"># Color of the ribbon, Allowed values: red | green | darkblue | orange | gray | white, default: red</span>
-  <span class="n">github_button</span><span class="p">:</span>         <span class="c1"># Display various Github buttons.</span>
-    <span class="n">buttons</span><span class="p">:</span>
-      <span class="n">watch</span><span class="p">:</span> <span class="n">true</span>        <span class="c1"># Display watch button, default: true</span>
-      <span class="n">star</span><span class="p">:</span> <span class="n">true</span>         <span class="c1"># Display star button, default: true</span>
-      <span class="n">issues</span><span class="p">:</span> <span class="n">true</span>       <span class="c1"># Display issues button, default: true</span>
-      <span class="n">fork</span><span class="p">:</span> <span class="n">true</span>         <span class="c1"># Display fork button, default: true</span>
-      <span class="n">follow</span><span class="p">:</span> <span class="n">true</span>       <span class="c1"># Display follow button, default: true</span>
-    <span class="n">show_count</span><span class="p">:</span> <span class="n">true</span>     <span class="c1"># Display count beside buttons</span>
-    <span class="n">large</span><span class="p">:</span> <span class="n">true</span>          <span class="c1"># Use large buttons</span>
-</pre></div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">This project is currently licensed under the GNU General Public
+License v3. A copy of LICENSE.md should be present</div>
+<div class="line">along with the source code. To obtain the software under a different
+license, please contact
+<a class="reference external" href="http://blog.fossasia.org/contact/">FOSSASIA</a>.</div>
 </div>
-<ul class="simple">
-<li>Configuring publishers</li>
-</ul>
-<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">publish</span><span class="p">:</span>
-  <span class="n">ghpages</span><span class="p">:</span>
-    <span class="n">url</span><span class="p">:</span> <span class="n">yaydoc</span><span class="o">.</span><span class="n">fossasia</span><span class="o">.</span><span class="n">org</span>       <span class="c1"># Custom URL at which the site should be published, default: &lt;username&gt;.github.io/&lt;reponame&gt;</span>
-  <span class="n">heroku</span><span class="p">:</span>
-    <span class="n">app_name</span><span class="p">:</span> <span class="n">yaydoc</span>               <span class="c1"># Name of the heroku app. Your docs would be deployed at &lt;app_name&gt;.herokuapp.com</span>
-</pre></div>
 </div>
-<ul class="simple">
-<li>Configuring External services</li>
-</ul>
-<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">extras</span><span class="p">:</span>
-  <span class="n">swagger</span><span class="p">:</span>                              <span class="c1"># Supported api-docs [ swagger(https://swagger.io/) ]</span>
-    <span class="n">url</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">susi</span><span class="o">.</span><span class="n">ai</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">swagger</span><span class="o">.</span><span class="n">json</span>   <span class="c1"># URL to the JSON specification</span>
-    <span class="n">ui</span><span class="p">:</span> <span class="n">swagger</span>                                 <span class="c1"># Supported UI [ swagger(https://swagger.io/swagger-ui/) ], default: swagger</span>
-  <span class="n">javadoc</span><span class="p">:</span>
-    <span class="n">path</span><span class="p">:</span> <span class="s1">&#39;src/&#39;</span>                                <span class="c1"># Path for javadoc source files</span>
-</pre></div>
 </div>
-<p>Currently Yaydoc only supports publishing to ghpages and heroku.</p>
-</div>
-<div class="section" id="accessing-the-yaydoc-ci">
-<h2>Accessing the Yaydoc CI<a class="headerlink" href="#accessing-the-yaydoc-ci" title="Permalink to this headline">¶</a></h2>
-<p><img alt="step 1" src="_images/ci-step-1.png" /></p>
-<ul class="simple">
-<li>Click the <code class="docutils literal"><span class="pre">CI</span> <span class="pre">Deploy</span></code> button</li>
-</ul>
-<p><img alt="step 2" src="_images/ci-step-2.png" /></p>
-<ul class="simple">
-<li>Select the repository in which you want to integrate Yaydoc CI</li>
-</ul>
-<p><img alt="step 3" src="_images/ci-step-3.png" /></p>
-<ul class="simple">
-<li>After successful registration Yaydoc will push the documentation to
-gh-pages on every commit the user makes.</li>
-<li>Sphinx&#8217;s alabaster theme will be used for documentation</li>
-<li>You can see the generated documentation at
-<code class="docutils literal"><span class="pre">https://&lt;username&gt;.github.io/&lt;project</span> <span class="pre">name&gt;</span></code></li>
-</ul>
-</div>
-<div class="section" id="custom-directives">
-<h2>Custom directives<a class="headerlink" href="#custom-directives" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="user-manual">
+<h1>User Manual<a class="headerlink" href="#user-manual" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
 <ul>
-<li><p class="first">RSS feed</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">feed</span><span class="p">::</span> <span class="o">&lt;</span><span class="n">rss</span> <span class="n">url</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Twitter Feed</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">timeline</span><span class="p">::</span> <span class="o">&lt;</span><span class="n">query</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual/github-oauth-scopes.html">Yaydoc&#8217;s use of GitHub API Scopes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual/yaydoc_configuration.html">Specifying Yaydoc Configurations</a></li>
 </ul>
 </div>
 </div>
@@ -303,8 +274,9 @@ gh-pages on every commit the user makes.</li>
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation/heroku.html">Installing Yaydoc on Heroku</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/gce-kubernetes.html">Yaydoc Deployment to Google Cloud with Kubernetes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation/local.html">Installing Yaydoc Locally</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/heroku.html">Installing Yaydoc on Heroku</a></li>
 </ul>
 </div>
 </div>

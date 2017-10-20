@@ -1,10 +1,20 @@
 .. mdinclude:: ../README.md
 
+User Manual
+===========
+
+.. toctree::
+   :maxdepth: 1
+
+   user_manual/github-oauth-scopes
+   user_manual/yaydoc_configuration
+
 Installation
 ============
 
 .. toctree::
    :maxdepth: 1
 
-   installation/heroku
+   installation/gce-kubernetes
    installation/local
+   installation/heroku
