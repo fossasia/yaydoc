@@ -15,6 +15,6 @@ Installation
 .. toctree::
    :maxdepth: 1
 
-   installation/gce-kubernetes
    installation/local
    installation/heroku
+   installation/gce-kubernetes
