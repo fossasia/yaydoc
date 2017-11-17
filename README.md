@@ -11,6 +11,8 @@ Yaydoc is an automated documentation generation and deployment project that gene
 
 ## Getting started
 
+step 1: clone the repositry
+
 ### Prerequisites
 To start using Yaydoc, make sure you have all of the following:
 - [GitHub](https://github.com) login
