@@ -9,11 +9,15 @@
 
        git clone https://github.com/<username>/yaydoc.git
        cd yaydoc/
-2. Copy contents of `.env.example` to `.env`, making necessary changes to the environment variables.
+2. Copy contents of `.env.example` to `.env`, making necessary changes to the environment variables, by typing in the terminal
+
+       cp .env.example .env
+
 3. Run the following commands to install dependencies
 
        npm install
-       pip install requirements.txt
+       pip install -r requirements.txt
+
 4. Run the application using the following command and open the url in browser `http://localhost:3001`
 
        node ./bin/www
