@@ -29,6 +29,12 @@ documentation from.
 4. Add the `.yaydoc.yml` file to git, commit and push, to trigger the Yaydoc build process.
 5. Check the logs for your repository to see if the documentation generation and deployment process passes or fails.
 
+### Installation
+
+1. [Local Installation](docs/installation/docs.md)
+2. [Heroku](docs/installation/heroku.md)
+3. [GCE kubernetes](docs/installation/gce-kubernetes.md)
+ 
 > __Note:__ Yaydoc only runs builds on the commits you push after you’ve registered your repository in Yaydoc. Ensure 
 that the repository is enabled from the its settings at Yaydoc.
 
