@@ -2,7 +2,7 @@ sphinx==1.5.5
 recommonmark==0.4.0
 pypandoc==1.4
 pandocfilters==1.4.2
-PyYaml==3.12
+PyYaml==5.1
 mock==2.0.0
 javasphinx==0.9.15
 sphinxcontrib-apiblueprint==0.9.0
