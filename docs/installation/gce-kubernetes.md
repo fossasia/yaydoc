@@ -12,7 +12,7 @@
 
 - Next, [enable billing](https://console.cloud.google.com/billing) in the Cloud Console in order to use Google Cloud resources and [enable the Container Engine API](https://console.cloud.google.com/project/_/kubernetes/list).
 
-- Install [Docker](https://docs.docker.com/engine/installation/), and [Google Cloud SDK](https://cloud.google.com/sdk/).
+- Install [Docker](https://docs.docker.com/install/), and [Google Cloud SDK](https://cloud.google.com/sdk/).
 
 - Finally, after Google Cloud SDK installs, run the following command to install `kubectl`:
 
@@ -28,13 +28,13 @@
 
 ## Create and format a persistent data disk for MongoDB
 
-- Create a persistent disk. (min. 1 GB) with a name `mongo-disk`.
+- Create a persistent disk (min. 1 GB) with a name `mongo-disk`.
 
     ```
     gcloud compute disks create mongo-disk --size 1GB
     ```
 
-- The disk created is un formatted and needs to be formatted. To do that, we need to create a temporarily compute instance.
+- The disk created is unformatted and needs to be formatted. To do that, we need to create a temporarily compute instance.
 
     ```
     gcloud compute instances create mongo-disk-formatter
@@ -75,8 +75,8 @@
     sudo mkfs.ext4 -F -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/google-[DISK_NAME]
     ```
 
-- The disk is formatted and ready.
-- Now exit the SSH session and Detach the disk from the instance by running
+- The disk is now formatted and ready to use.
+- Now exit the SSH session and detach the disk from the instance by running
 
     ```
     gcloud compute instances detach-disk mongo-disk-formatter --disk mongo-disk
@@ -156,7 +156,7 @@ _You can delete the instance if your not planning to use it for anything else. B
     kubectl proxy
     ```
 
-    and Goto [http://localhost:8001/ui](http://localhost:8001/ui)
+    and go to [http://localhost:8001/ui](http://localhost:8001/ui)
 
 - Deleting the cluster
     ```
