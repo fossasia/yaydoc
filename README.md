@@ -9,6 +9,11 @@ Yaydoc is an automated documentation generation and deployment project that gene
 - Please join our mailing list to discuss questions regarding the project: https://groups.google.com/forum/#!forum/yaydoc
 - Our chat channel is on Gitter here: [gitter.im/fossasia/yaydoc](http://gitter.im/fossasia/yaydoc)
 
+## Deployments
+
+* Master Branch can be tested on [yaydoc.herokuapp.com](https://yaydoc.herokuapp.com/)
+* Development Branch is deployed [yaydoc-dev.herokuapp.com](https://yaydoc.herokuapp.com/)
+
 ## Getting started
 
 ### Prerequisites
