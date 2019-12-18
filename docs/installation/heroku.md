@@ -59,3 +59,19 @@ Even though we offer the One-click Heroku deployment, performing a manual deploy
 
       heroku open
 Your app should be available at : https://your-app-name.herokuapp.com/
+
+## Setup Auto-Deployment from GitHub repository
+Sometimes, we might want to update our web application every time a new PR is merged a commit pushed to the repository. Heroku has just the tool for that!
+
+### Login to heroku.com
+Visit [Heroku's website](https://www.heroku.com) and login with your credentials. After you are logged in, select the yaydoc project from the list available. When you're on the project page, navigate to the deploy tab.
+
+### Connect to GitHub
+Change the deployement method from the Heroku Git option to GitHub. A window will popup requiring OAuth authorization to your GitHub account which you must approve.
+
+### Setup auto deploy and Deploy the application!
+Once you have successfully linked your GitHub account to Heroku, search for a repository to connect to right below. You should select your fork of the [yaydoc repository](https://github.com/fossasia/yaydoc). 
+
+Choose either the master or development branch and enable the 'Wait for CI to pass before deploy' option. Now you can select Automatic Deploys and it is successfully setup.
+
+Your app will automatically update with each update to your repository at : https://your-app-name.herokuapp.com/
