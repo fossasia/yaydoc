@@ -36,7 +36,7 @@ documentation from.
 
 ### Installation
 
-1. [Local Installation](docs/installation/docs.md)
+1. [Local Installation](https://github.com/fossasia/yaydoc/blob/development/docs/installation/local.md)
 2. [Heroku](docs/installation/heroku.md)
 3. [GCE kubernetes](docs/installation/gce-kubernetes.md)
  
