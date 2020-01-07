@@ -9,7 +9,12 @@ body {
   margin-bottom: 120px !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
 }
 
@@ -53,7 +58,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 10px;
 }
 
-#btnDeployHeroku, #btnDeployGithub, #btnPreview, #btnDownload {
+#btnDeployHeroku,
+#btnDeployGithub,
+#btnPreview,
+#btnDownload {
   display: none;
   width: -moz-fit-content;
   margin-left: 10px;
@@ -62,7 +70,9 @@ h1, h2, h3, h4, h5, h6 {
 #btnAddSub {
   margin-left: 10px;
 }
-#btnWebsiteLink, #btnGithubPages, #btnLogs {
+#btnWebsiteLink,
+#btnGithubPages,
+#btnLogs {
   display: none;
   width: -moz-fit-content;
 }
@@ -101,7 +111,7 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
-  opacity: .9;
+  opacity: 0.9;
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 100px;
@@ -116,7 +126,7 @@ h1, h2, h3, h4, h5, h6 {
 .es-list li[disabled] {
   background-color: black;
   color: white;
-  font-size: .7em;
+  font-size: 0.7em;
   opacity: 1;
   font-weight: 700;
 }
@@ -127,7 +137,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .danger-logs {
-  color:red;
+  color: red;
 }
 
 .console-output-header {
@@ -201,7 +211,7 @@ h1, h2, h3, h4, h5, h6 {
 .bs-callout code {
   border-radius: 3px;
 }
-.bs-callout+.bs-callout {
+.bs-callout + .bs-callout {
   margin-top: -5px;
 }
 .bs-callout-default {
@@ -248,7 +258,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .repolist td {
-  vertical-align: middle
+  vertical-align: middle;
 }
 
 .repolist .reponame {
@@ -261,19 +271,20 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #f1f1f1;
 }
 
-.navbar{
+.navbar {
   height: 80px;
   background-color: white !important;
 }
-.navbar-brand{
+.navbar-brand {
   padding: 30px 15px !important;
   font-size: 28px !important;
   font-weight: bold;
 }
-.navbar-nav,.navbar-nav>li>a{
-  font-weight: bold;  
-  padding-top:0px;
-  padding-left:25px;
+.navbar-nav,
+.navbar-nav > li > a {
+  font-weight: bold;
+  padding-top: 0px;
+  padding-left: 25px;
 }
 .navbar .glyphicon-th {
   font-size: 30px;
@@ -347,6 +358,24 @@ h1, h2, h3, h4, h5, h6 {
   bottom: -50px;
   border-top: 1px solid #bfbfbf;
   background-color: #f9f9f9;
+}
+.footer-container {
+  display: flex;
+  flex-direction: row;
+}
+.footer-container > .col-2,
+.footer-container > .col-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.footer-container > .col-2 {
+  margin-left: auto;
+}
+
+.footer-container > .col-2 > a {
+  margin: 4px 16px;
+  cursor: pointer;
 }
 @media screen and (max-width: 780px) {
   .navbar-header {
