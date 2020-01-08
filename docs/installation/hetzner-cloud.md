@@ -27,6 +27,25 @@ We need to install
 - python/python3
 - pip
 
+Install these through the following commands:
+```
+sudo apt-get update
+sudo apt-get install git
+sudo apt-get install npm
+sudo apt-get install nodejs
+sudo apt-get install python3
+sudo apt-get install python3-pip
+```
+
+Make sure they are all working by running the following commands:
+```
+git --version
+npm -v
+nodejs -v
+python3 --version
+pip3 --version
+```
+
 After installing these let's continue. It is preferred to not use the root folder as your working directory.
 ```
 cd /home
@@ -63,6 +82,12 @@ But currently it will stop running when your ssh connection is closed.
 This is so it will be running forever while on the server.
 
 We will be using a tool known as `cron` to do this.
+
+If it's not already installed, do so by typing the following commands :
+```
+sudo apt-get update
+sudo apt-get install cron
+```
 
 After installing cron we can type the following command to open crontab to schedule a command.
 ```
@@ -127,3 +152,19 @@ Now change the last line to
 Now it should be running successfully. Try going to `<server-ip>:3001` and you will be left with a GET error because it only accepts POST requests.
 
 After the next commit/merge to the repository, the app should successfully be running on `<server-ip>:8000`
+
+## Deploying on a custom domain
+Deploying the application to a custom domain is simple. First we must add an A record from the domain hosting service to the server ip. This is different for different service providers so please learn how to by searching `How to add an A record to <hosting provider>`. Then we need to forward the base port 80 to port 8000 where our app is deployed. We can use `iptables` a preinstalled tool to do this.
+
+We can add this command in the crontab to make this run continuously as well.
+
+```
+crontab -e
+```
+to open up your crontabs and add the following line to the end of the file:
+```
+sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8000
+```
+Change 8000 to whichever port you have hosted the app on.
+
+Now after a few minutes you should see the deployment live on your custom domain!
