@@ -348,6 +348,24 @@ h1, h2, h3, h4, h5, h6 {
   border-top: 1px solid #bfbfbf;
   background-color: #f9f9f9;
 }
+.footer-container {
+  display: flex;
+  flex-direction: row;
+}
+.footer-container > .col-2,
+.footer-container > .col-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.footer-container > .col-2 {
+  margin-left: auto;
+}
+
+.footer-container > .col-2 > a {
+  margin: 4px 16px;
+  cursor: pointer;
+}
 @media screen and (max-width: 780px) {
   .navbar-header {
     margin-top: 5px;
