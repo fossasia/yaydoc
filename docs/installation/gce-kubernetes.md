@@ -9,7 +9,8 @@
     ```
     export PROJECT_ID="your-project-id"
     ```
-
+> **Note**: Some of the Cloud setup process can be done using Google Cloud Console. Follow along the documentation of each step to find how to do it.
+>
 - Next, [enable billing](https://console.cloud.google.com/billing) in the Cloud Console in order to use Google Cloud resources and [enable the Container Engine API](https://console.cloud.google.com/project/_/kubernetes/list).
 
 - Install [Docker](https://docs.docker.com/install/), and [Google Cloud SDK](https://cloud.google.com/sdk/).
@@ -25,33 +26,54 @@
     ```
     gcloud config set compute/zone us-west1-a
     ```
+- For Proceeding with Cloud Console 
+  - Go to https://console.cloud.google.com/home and select the project you are working on
+  - click on this button
+    ![console](../image/console.png)
+  - Run this command 
+    ```
+    gcloud config set compute/zone us-west1-a
+    ```
+
 
 ## Create and format a persistent data disk for MongoDB
 
 - Create a persistent disk (min. 1 GB) with a name `mongo-disk`.
-
-    ```
-    gcloud compute disks create mongo-disk --size 1GB
-    ```
+    - In Desktop Terminal or cloud console:
+        ```
+        gcloud compute disks create mongo-disk --size 1GB
+        ```
+    - In Google Cloud:
+      - Click on Compute Engine ![ComputeEngine](../image/computeEngine.png)
+      - Go to disc and create a new Disk
+        ![computeDisc](../image/computeDisk.png)
+        ![newDisc](../image/createDisk.png)
+        >Be sure to put region **us-west1** and zone **a** and size of minimum **2GB**
 
 - The disk created is unformatted and needs to be formatted. To do that, we need to create a temporarily compute instance.
+    - In terminal or console:
+        ```
+        gcloud compute instances create mongo-disk-formatter
+        ```
+    - Using Graphical Google cloud dashboard
+      - Go to "VM instances" in **Compute Engine**
+      - Click on **create** button and create a new instance of name "**mongo-disk-formatter** with region **us-west1** and zone **a**
+        ![ComputeInstance](../image/computeInstance.png)
 
-    ```
-    gcloud compute instances create mongo-disk-formatter
-    ```
-
-- Wait for the instance to get created. Once done, attach the disk to that instance.
+- Wait for the instance to get created. Once done, attach the disk to that instance in either the cloud console or your desktop terminal.
 
     ```
     gcloud compute instances attach-disk mongo-disk-formatter --disk mongo-disk
     ```
 
-- SSH into the instance.
-
-    ```
-    gcloud compute ssh "mongo-disk-formatter"
-    ```
-
+- SSH into the instance 
+    - using console/terminal.
+        ```
+        gcloud compute ssh "mongo-disk-formatter"
+        ```
+    - using graphical interface 
+      - Click on the ssh button under **Connect**
+        ![SSH](../image/ssh.png)
 - In the terminal, use the `ls` command to list the disks that are attached to your instance and find the disk that you want to format and mount
 
     ```
@@ -84,18 +106,19 @@
 
 _You can delete the instance if your not planning to use it for anything else. But make sure the disk `mongo-disk` is not deleted._
 
+> **Note: From now on you need to be on the local system in order to deploy**
 ## Create your Kubernetes Cluster
 
-- Create a cluster via the `gcloud` command line tool:
+- Create a cluster via the `gcloud` command line tool *(assuming your project is on the **us-west1-a** zone)*:
 
     ```
-    gcloud container clusters create yaydoc-cluster
+    gcloud container clusters create yaydoc-cluster --zone us-west1-a --project [Your Project Name]
     ```
 
 - Get the credentials for `kubectl` to use.
 
     ```
-    gcloud container clusters get-credentials yaydoc-cluster
+    gcloud container clusters get-credentials yaydoc-cluster --zone us-west1-a --project [Your Project Name]
     ```
 
 ## Pre deployment steps
@@ -107,19 +130,18 @@ _You can delete the instance if your not planning to use it for anything else. B
 	```
 
 	The response would be similar to
+- Get the addresss
+    ```
+    gcloud compute addresses list
+    ```
 
-	```
-	address: 123.123.123.123
-	creationTimestamp: '2017-05-16T05:26:24.894-07:00'
-	description: ''
-	id: '1234556789'
-	kind: compute#address
-	name: test
-	selfLink: https://www.googleapis.com/compute/v1/projects/yaydoc/global/addresses/test
-	status: RESERVED
-	```
+    The Result will be similar to 
 
-	Note down the address. (In this case `123.123.123.123`). We'll call this **External IP Address One**.
+    |NAME         |ADDRESS/RANGE|TYPE         |PURPOSE      |NETWORK      |REGION       |SUBNET       |STATUS       |
+    |-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
+    |testip       |123.123.13.12|EXTERNAL     |             |             |us-west1     |             |RESERVED     |
+
+	Note down the address. (In this case `123.123.13.12`). We'll call this **External IP Address One**.
 - Add the **External IP Address One** as an `A` record to your domain's DNS Zone.
 - Add the **External IP Address One** to `kubernetes/yamls/nginx/service.yml` for the parameter `loadBalancerIP`.
 - Add your domain name to `kubernetes/yamls/web/ingress-notls.yml` & `kubernetes/yamls/web/ingress-tls.yml`. (replace `yaydoc.org`)
@@ -127,7 +149,7 @@ _You can delete the instance if your not planning to use it for anything else. B
 
 ## Deploy our pods, services and deployments
 
-- Update the `kubernetes/yamls/yaydoc/configmap.yml` file with relevant values for the defined environment varaibles.
+- Update the `kubernetes/yamls/yaydoc/configmap.yml` file with relevant values for the defined environment variables.
 - From the project directory, use the provided deploy script to deploy our application from the defined configuration files that are in the `kubernetes` directory.
 
     ```
@@ -161,4 +183,10 @@ _You can delete the instance if your not planning to use it for anything else. B
 - Deleting the cluster
     ```
     gcloud container clusters delete yaydoc-cluster
+    ```
+- Deleting reserved IP
+    
+    Run the following command to delete the reserved IP
+    ```
+    gcloud compute addresses delete testip --region us-west1
     ```
