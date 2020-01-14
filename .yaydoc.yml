@@ -12,4 +12,4 @@ build:
 
 publish:
   ghpages:
-    url: dev.yaydoc.org
+    url: docs.yaydoc.org

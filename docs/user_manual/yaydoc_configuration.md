@@ -110,7 +110,7 @@ Following is a description of config options under the `publish` section and it'
 ```yaml
 publish:
   ghpages:
-    url: dev.yaydoc.org
+    url: docs.yaydoc.org
   heroku:
     app_name: yaydoc 
 ```
