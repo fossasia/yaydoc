@@ -140,8 +140,6 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0;
   visibility: hidden;
   height: 0;
-  -webkit-transition: opacity 600ms, visibility 600ms;
-  transition: opacity 600ms, visibility 600ms;
 }
 
 .navbar {
