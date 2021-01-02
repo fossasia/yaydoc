@@ -32,7 +32,9 @@ html
         }
       });
 
-      $(".glyphicon-th").click(function(){
+      $(".glyphicon-th").hover(function(){
+        $(".custom-menu-content").toggleClass("hidden");
+      },function(){
         $(".custom-menu-content").toggleClass("hidden");
       });
 
