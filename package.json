@@ -19,7 +19,7 @@
     "moment": "^2.18.1",
     "mongoose": "^5.7.7",
     "morgan": "~1.9.1",
-    "nodemailer": "^4.0.1",
+    "nodemailer": "^6.4.16",
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
     "passport-heroku": "^1.0.0",
